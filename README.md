@@ -12,6 +12,10 @@ Rachael<br/>
 Paar<br/>
 Marisa Kirisame<br/>
 fluffyshambler<br/>
+Crazy Toni<br/>
+
+* Composer:<br/>
+Speedy<br/>
 
 * Testers:<br/>
 leodoom85<br/>
