@@ -13,11 +13,11 @@ Paar<br/>
 Marisa Kirisame<br/>
 fluffyshambler<br/>
 Crazy Toni<br/>
+whirledtsar<br/>
 
 * Composer:<br/>
 Speedy<br/>
 
 * Testers:<br/>
 leodoom85<br/>
-FishyClockwork<br/>
 XxMiltenXx<br/>
