@@ -1,0 +1,80 @@
+H2TX* textures from Hexen 2 compiled by Ceeb
+NW*, W_*, F*, NF* textures from C.R.U.E.L. pack by Ettingrinder
+SNOW* Skybox from the Kothic Skyboxes pack by Kell
+
+C.R.U.E.L. full credits:
+
+Improvements on the standard IWAD graphics:
+ W_058
+ W_077
+ EGW_336
+ 
+Imports from the Hexen beta:
+ NW_0000
+
+Original work by ETTiNGRiNDER:
+ NW_0004 and NW_0005 (Replacing formerly rip-based textures, fully from scratch)
+ NW_0021 and NW_0022 (designed to match with the black TOMBxx textures)
+ NW_0064 and NW_0065
+ NW_0067 and NW_0068
+ NW_0154 and NW_0155
+ NW_0169
+ SKYWALL3
+ SKY5GREY
+
+From work by Vader:
+ NW_0026 to NW_0031
+ NW_0094 to NW_0097 (Further edited)
+ NW_0101 to NW_0104 (Further edited)
+ NW_0107 to NW_0112 (Further edited)
+
+From work by Zrrion the Insect:
+ NW_0032 to NW_0040
+ NW_0041 (Further edited)
+ NW_0042 to NW_0049
+ NW_0071 to NW_0072 (Further edited)
+ NW_0151 to NW_0153
+ NW_0156 to NW_0160
+
+From work by Ogro:
+ NW_0025 (Further edited)
+ NW_0050 to NW_0057 (Further edited)
+ NW_0063 (Further edited)
+ NW_0072 (Further edited)
+ NW_0081 and NW_0082 (Further edited)
+ NW_0128 to NW_0132 (Further edited)
+
+From work by Dr. Doctor:
+ NW_0006 to NW_0008
+ NW_0089 and NW_0090 (Further edited)
+ NW_0105 and NW_0106 (Further edited)
+ NW_0120 to NW_0123 (Further edited)
+
+From work by Cage:
+ NW_0002 and NW_0003
+ 
+From work by Abbuw:
+ NW_0060 (Further edited)
+ 
+From work by Minigunner
+ SKY6RED (Further edited)
+ 
+From the "Baker's Legacy" texture pack:
+ NW_0001
+ 
+FLAT GRAPHIC CREDITS
+--------------------
+
+Improvements on the standard IWAD graphics:
+ F_044
+ 
+Imports from the Hexen beta:
+ F_016
+ F_056
+ F_060
+ F_079
+ F_080
+ F_090
+
+From work by Zrrion the Insect:
+ NF_002 and NF_003
