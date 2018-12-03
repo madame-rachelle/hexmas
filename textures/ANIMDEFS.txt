@@ -1,3 +1,157 @@
+// C.R.U.E.L. textures by Ettingrinder
+
+; 01 Lava floor
+flat x_001
+pic 1 tics 5
+pic 2 tics 5
+pic 3 tics 5
+pic 4 tics 5
+
+; 02 Water floor
+flat x_005
+pic 1 rand 5 12
+pic 2 rand 5 12
+pic 3 rand 5 12
+pic 4 rand 5 12
+
+; 03 Swamp floor
+flat x_009
+pic 1 rand 3 10
+pic 2 rand 3 10
+pic 3 rand 3 10
+pic 2 rand 3 10
+
+; 04 Level portal
+texture tport1
+pic 1 tics 5
+pic 2 tics 5
+pic 3 tics 5
+pic 4 tics 5
+pic 5 tics 5
+pic 6 tics 5
+pic 7 tics 5
+pic 8 tics 5
+pic 9 tics 5
+
+; 05 Water wall
+texture x_water1
+pic 1 rand 5 12
+pic 2 rand 5 12
+pic 3 rand 5 12
+pic 4 rand 5 12
+
+; 06 Swamp wall
+texture x_swmp1
+pic 1 tics 5
+pic 2 tics 5
+pic 3 tics 5
+
+; 07 Lava wall
+texture x_fire01
+pic 1 tics 5
+pic 2 tics 5
+pic 3 tics 5
+pic 4 tics 5
+
+; 08 Flowing sewer pipe (Mod to multitexture all flow grate textures)
+; x_swr1
+texture x_flow1
+pic 1 tics 5
+pic 2 tics 5
+pic 3 tics 5
+
+; 09 Korax flames (Animation sequence modded)
+texture x_fac01
+pic 1 tics 5
+pic 2 tics 5
+pic 3 tics 5
+pic 4 tics 5
+;pic 3 tics 5
+;pic 2 tics 5
+
+; 10 Red teleportal floor
+flat x_012
+pic 1 rand 4 6
+pic 2 rand 4 6
+pic 3 rand 4 6
+pic 4 rand 4 6
+pic 5 rand 4 6
+
+; 11 Korax head in flames
+texture x_fac09
+pic 1 tics 5
+pic 2 tics 5
+pic 3 tics 5
+pic 4 tics 5
+
+; 12 Gears with missing piece
+texture gear0A
+pic 1 tics 12
+pic 2 tics 12
+
+; 13 Repaired gears
+texture gear02
+pic 1 tics 6
+pic 2 tics 6
+pic 3 tics 6
+pic 4 tics 6
+
+; 14 Clock small hand (can be sacrificed)
+texture clock01
+pic 1 tics 160
+pic 2 tics 160
+pic 3 tics 160
+pic 4 tics 160
+pic 5 tics 160
+pic 6 tics 160
+pic 7 tics 160
+pic 8 tics 160
+
+; 15 Clock big hand (can be sacrificed)
+texture clock11
+pic 1 tics 20
+pic 2 tics 20
+pic 3 tics 20
+pic 4 tics 20
+pic 5 tics 20
+pic 6 tics 20
+pic 7 tics 20
+pic 8 tics 20
+
+; 16 Blue teleportal floor
+flat f_084
+pic 1 rand 4 6
+pic 2 rand 4 6
+pic 3 rand 4 6
+pic 4 rand 4 6
+pic 5 rand 4 6
+
+; 17 Lava lamps (new)
+texture x_lamp1
+pic 1 tics 5
+pic 2 tics 5
+pic 3 tics 5
+pic 4 tics 5
+
+; Putting highly contrasting patches next
+; to each other could cause visual glitching,
+; so the flame set had to be split in two,
+; unfortunately.
+
+; 18 Walls with flames, dark (new)
+texture x_flame1
+pic 1 tics 4
+pic 2 tics 4
+pic 3 tics 4
+
+; 19 Walls with flames, light (new)
+texture x_flame4
+pic 1 tics 4
+pic 2 tics 4
+pic 3 tics 4
+
+// Hexen 2
+
 texture CANDLE_1 range CANDLE_5 rand 3 5
 
 texture RUNE1_1 range RUNE1_5 tics 7 oscillate
@@ -15,14 +169,3 @@ warp2 texture ENERGY2
 
 warp2 texture SILVER1
 warp2 texture SKULWARP
-
-/*
-Well here you go, PNG Hexen II textures. Some neat stuff here. These would good for, oh I dunno, Heretic or Hexen? :P
-Probably Doom as well. Either way, some require either some editing in a paint program or TEXTURES for mirroring.
-
-As far as I know, I got all the garbage (model skins, corrupted shit and so on) out of here, I cleaned up what needed
-to be cleaned, aaaaand I'm pretty sure I found most if not all of the animations. Buttons are undefined so you'll need
-to do that yourself.
-
-A big thanks to Gez for adding Quake .BSP support to SLADE! --Ceeb
-/*
