@@ -1,0 +1,14 @@
+Class mkElderWizard : Actor
+{
+	Default
+	{
+		//$Title Elder Wizard
+		//$Category Marisa/Monsters
+	}
+	States
+	{
+	Spawn:
+		LMWZ A -1;
+		Stop;
+	}
+}

@@ -1,0 +1,55 @@
+Class mkGreenTwinedTorchUnlit : ZTwinedTorchUnlit
+{
+	Default
+	{
+		//$Title Green Twined Torch (Unlit)
+		//$Sprite TWTRI0
+		//$Category Marisa/Decoration
+		Translation "81:121=#[192,255,192]", "122:255=#[128,255,128]";
+	}
+}
+
+Class mkGreenTwinedTorch : ZTwinedTorch
+{
+	Default
+	{
+		//$Title Green Twined Torch
+		//$Sprite TWTRA0
+		//$Category Marisa/Decoration
+		Translation "81:121=#[192,255,192]", "122:255=#[128,255,128]";
+	}
+}
+
+Class mkSmolGreenFlame : FlameSmall
+{
+	Default
+	{
+		//$Title Small Green Flame
+		//$Sprite FFSMA0
+		//$Category Marisa/Decoration
+		Translation "81:121=#[192,255,192]", "122:255=#[128,255,128]";
+	}
+}
+
+// for shootable ceiling switches
+Class mkShootMe : Actor
+{
+	Default
+	{
+		//$Title Shootable Ceiling Switch
+		//$Category Marisa/Decoration
+		Radius 16;
+		Height 8;
+		+NOGRAVITY;
+		+SPAWNCEILING;
+		+SHOOTABLE;
+		+NODAMAGE;
+		+NOBLOOD;
+	}
+	override int DamageMobj( Actor inflictor, Actor source, int damage, Name mod, int flags, double angle )
+	{
+		if ( special ) level.ExecuteSpecial(special,source,null,false,args[0],args[1],args[2],args[3],args[4]);
+		if ( bSTANDSTILL ) special = 0;
+		return 0;
+	}
+}

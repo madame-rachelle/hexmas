@@ -1,0 +1,251 @@
+// edited textures
+brightmap texture GSPAWN09
+{
+	map GSPAWB09
+}
+brightmap texture GSPAWN10
+{
+	map GSPAWB10
+}
+
+// acolyte
+brightmap sprite ACOLA1
+{
+	map "brightmaps/ACOLA1.png"
+	disablefullbright
+}
+brightmap sprite ACOLA8A2
+{
+	map "brightmaps/ACOLA8A2.png"
+	disablefullbright
+}
+brightmap sprite ACOLB1
+{
+	map "brightmaps/ACOLB1.png"
+	disablefullbright
+}
+brightmap sprite ACOLB8B2
+{
+	map "brightmaps/ACOLB8B2.png"
+	disablefullbright
+}
+brightmap sprite ACOLC1
+{
+	map "brightmaps/ACOLC1.png"
+	disablefullbright
+}
+brightmap sprite ACOLC7C3
+{
+	map "brightmaps/ACOLC7C3.png"
+	disablefullbright
+}
+brightmap sprite ACOLC8C2
+{
+	map "brightmaps/ACOLC8C2.png"
+	disablefullbright
+}
+brightmap sprite ACOLD1
+{
+	map "brightmaps/ACOLD1.png"
+	disablefullbright
+}
+brightmap sprite ACOLD6D4
+{
+	map "brightmaps/ACOLD6D4.png"
+	disablefullbright
+}
+brightmap sprite ACOLD7D3
+{
+	map "brightmaps/ACOLD7D3.png"
+	disablefullbright
+}
+brightmap sprite ACOLD8D2
+{
+	map "brightmaps/ACOLD8D2.png"
+	disablefullbright
+}
+brightmap sprite ACOLE1
+{
+	map "brightmaps/ACOLE1.png"
+	disablefullbright
+}
+brightmap sprite ACOLE5
+{
+	map "brightmaps/ACOLE5.png"
+	disablefullbright
+}
+brightmap sprite ACOLE6E4
+{
+	map "brightmaps/ACOLE6E4.png"
+	disablefullbright
+}
+brightmap sprite ACOLE7E3
+{
+	map "brightmaps/ACOLE7E3.png"
+	disablefullbright
+}
+brightmap sprite ACOLE8E2
+{
+	map "brightmaps/ACOLE8E2.png"
+	disablefullbright
+}
+brightmap sprite ACOLF1
+{
+	map "brightmaps/ACOLF1.png"
+	disablefullbright
+}
+brightmap sprite ACOLF5
+{
+	map "brightmaps/ACOLF5.png"
+	disablefullbright
+}
+brightmap sprite ACOLF6F4
+{
+	map "brightmaps/ACOLF6F4.png"
+	disablefullbright
+}
+brightmap sprite ACOLF7F3
+{
+	map "brightmaps/ACOLF7F3.png"
+	disablefullbright
+}
+brightmap sprite ACOLF8F2
+{
+	map "brightmaps/ACOLF8F2.png"
+	disablefullbright
+}
+brightmap sprite ACOLG0
+{
+	map "brightmaps/ACOLG0.png"
+	disablefullbright
+}
+brightmap sprite ACOLH0
+{
+	map "brightmaps/ACOLH0.png"
+	disablefullbright
+}
+brightmap sprite ACOLI0
+{
+	map "brightmaps/ACOLI0.png"
+	disablefullbright
+}
+brightmap sprite ACOLJ0
+{
+	map "brightmaps/ACOLJ0.png"
+	disablefullbright
+}
+brightmap sprite ACOLK0
+{
+	map "brightmaps/ACOLK0.png"
+	disablefullbright
+}
+brightmap sprite ACOLL0
+{
+	map "brightmaps/ACOLL0.png"
+	disablefullbright
+}
+brightmap sprite ACOLM0
+{
+	map "brightmaps/ACOLM0.png"
+	disablefullbright
+}
+brightmap sprite ACOLN0
+{
+	map "brightmaps/ACOLN0.png"
+	disablefullbright
+}
+brightmap sprite ACOLO0
+{
+	map "brightmaps/ACOLO0.png"
+	disablefullbright
+}
+
+// lights
+brightmap sprite TWTRA0
+{
+	map "brightmaps/TWTRA0.png"
+	disablefullbright
+}
+brightmap sprite TWTRB0
+{
+	map "brightmaps/TWTRB0.png"
+	disablefullbright
+}
+brightmap sprite TWTRC0
+{
+	map "brightmaps/TWTRC0.png"
+	disablefullbright
+}
+brightmap sprite TWTRD0
+{
+	map "brightmaps/TWTRD0.png"
+	disablefullbright
+}
+brightmap sprite TWTRE0
+{
+	map "brightmaps/TWTRE0.png"
+	disablefullbright
+}
+brightmap sprite TWTRF0
+{
+	map "brightmaps/TWTRF0.png"
+	disablefullbright
+}
+brightmap sprite TWTRG0
+{
+	map "brightmaps/TWTRG0.png"
+	disablefullbright
+}
+brightmap sprite TWTRH0
+{
+	map "brightmaps/TWTRH0.png"
+	disablefullbright
+}
+
+flickerlight2 TWINETORCHGRN
+{
+	attenuate 1
+	color 0.4 1.0 0.4
+	size 69
+	secondarysize 78
+	interval 0.1
+	offset 0 64 0
+}
+
+object mkGreenTwinedTorch
+{
+    frame TWTRA { light TWINETORCHGRN }
+    frame TWTRB { light TWINETORCHGRN }
+    frame TWTRC { light TWINETORCHGRN }
+    frame TWTRD { light TWINETORCHGRN }
+    frame TWTRE { light TWINETORCHGRN }
+    frame TWTRF { light TWINETORCHGRN }
+    frame TWTRG { light TWINETORCHGRN }
+    frame TWTRH { light TWINETORCHGRN }
+}
+
+object mkGreenTwinedTorchUnlit
+{
+    frame TWTRA { light TWINETORCHGRN }
+    frame TWTRB { light TWINETORCHGRN }
+    frame TWTRC { light TWINETORCHGRN }
+    frame TWTRD { light TWINETORCHGRN }
+    frame TWTRE { light TWINETORCHGRN }
+    frame TWTRF { light TWINETORCHGRN }
+    frame TWTRG { light TWINETORCHGRN }
+    frame TWTRH { light TWINETORCHGRN }
+}
+
+flickerlight2 HCANDLESGRN
+{
+	attenuate 1
+	color 0.4 1.0 0.4
+	size 24
+	secondarysize 30
+	interval 0.1
+}
+
+object mkSmolGreenFlame
+{
+    frame FFSM { light HCANDLESGRN }
+}

@@ -1,0 +1,7 @@
+version "3.7"
+
+#include "zscript/marisa/fx.zsc"
+#include "zscript/marisa/deco.zsc"
+#include "zscript/marisa/npc.zsc"
+#include "zscript/marisa/enemy.zsc"
+#include "zscript/marisa/boss.zsc"

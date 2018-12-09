@@ -1,0 +1,21 @@
+map MARISA "Untitled"
+{
+	music = "creepy"
+	sky1 = "ARCTICSK"
+}
+
+DoomEdNums
+{
+	6400 = "mkSnowMaker"
+	6401 = "mkFogMaker"
+	6410 = "mkGreenTwinedTorch"
+	6411 = "mkGreenTwinedTorchUnlit"
+	6412 = "mkSmolGreenFlame"
+	6413 = "mkShootMe"
+	6420 = "mkSnowEttin"
+	6421 = "mkIceSerpent"
+	6422 = "mkElderApprentice"
+	6423 = "mkElderAcolyte"
+	6424 = "mkElderWizard"
+	6430 = "mkClericNPC"
+}
