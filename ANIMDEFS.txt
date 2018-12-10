@@ -152,7 +152,7 @@ pic 3 tics 4
 
 // Hexen 2
 
-texture CANDLE_1 range CANDLE_5 rand 3 5
+texture optional CANDLE_1 range CANDLE_5 rand 3 5
 
 texture RUNE1_1 range RUNE1_5 tics 7 oscillate
 
