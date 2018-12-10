@@ -1,5 +1,7 @@
 Class mkClericNPC : Actor
 {
+	Actor spawnspot;
+
 	Default
 	{
 		//$Title Cleric NPC
@@ -12,7 +14,6 @@ Class mkClericNPC : Actor
 		Height 64;
 		MONSTER;
 		+FRIENDLY;
-		+STANDSTILL;
 		-COUNTKILL;
 		Obituary "%o got bludgeoned by a cleric.";
 		Tag "Cleric";
@@ -38,16 +39,49 @@ Class mkClericNPC : Actor
 		}
 		else A_PlaySound("FighterHammerMiss",CHAN_WEAPON);
 	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		spawnspot = Spawn("MapSpot",SpawnPoint);
+	}
 	States
 	{
 	Spawn:
-		CLER A 2 A_Look();
+		CLER A 2
+		{
+			A_LookEx(LOF_NOJUMP);
+			if ( target && (!bFRIENDLY || !target.player) )
+				return ResolveState("See");
+			return ResolveState(null);
+		}
 		Wait;
 	See:
 		CLER AABBCCDD 2
 		{
 			A_Chase();
-			return A_JumpIf(!target||target.Health<=0,"Spawn");
+			if ( !target || (target.health <= 0) || (target.player && bFRIENDLY) )
+			{
+				A_ClearTarget();
+				goal = spawnspot;
+				if ( !goal ) ThrowAbortException("Spawn Spot does not exist for Cleric NPC");
+				return ResolveState("Returning");
+			}
+			return ResolveState(null);
+		}
+		Loop;
+	Returning:
+		CLER AABBCCDD 2
+		{
+			A_Chase(null,null);
+			if ( Distance3D(spawnspot) < speed )
+			{
+				SetOrigin(SpawnPoint,true);
+				angle = SpawnAngle;
+				A_ClearTarget();
+				goal = null;
+				return ResolveState("Spawn");
+			}
+			return ResolveState(null);
 		}
 		Loop;
 	Melee:
