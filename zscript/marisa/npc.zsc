@@ -133,3 +133,51 @@ Class mkClericNPC : Actor
 		Stop;
 	}
 }
+
+Class mkApprenticeSighting : Actor
+{
+	override void Activate( Actor activator )
+	{
+		if ( !InStateSequence(CurState,FindState("Spawn")) ) return;
+		let t = ThinkerIterator.Create("MapSpot");
+		Actor a;
+		while ( a = Actor(t.Next()) )
+		{
+			if ( a.tid != args[0] ) continue;
+			target = a;
+			break;
+		}
+		if ( target ) SetStateLabel("Turn");
+	}
+	Default
+	{
+		//$Title Elder Apprentice (Sighting)
+		//$Category Marisa/Decoration
+		Translation "0:255=@100[0,0,0]", "187:202=216:216";
+		Speed 8;
+		Radius 16;
+		Height 64;
+		+SOLID;
+		+CANPASS;
+		+DROPOFF;
+		Tag "????";
+	}
+	States
+	{
+	Spawn:
+		MAGE A -1 Bright;
+		Stop;
+	Turn:
+		MAGE A 40 Bright;
+		MAGE A 1 Bright A_FaceTarget(6);
+		MAGE A 0 Bright A_JumpIf(deltaangle(angle,AngleTo(target))<double.epsilon,"Run");
+		Goto Turn+1;
+	Run:
+		MAGE AAABBBCCCDDD 2 Bright
+		{
+			if ( Distance2D(target) <= speed ) Destroy();
+			else TryMove(Vec2Offset(cos(angle)*speed,sin(angle)*speed),32);
+		}
+		Loop;
+	}
+}

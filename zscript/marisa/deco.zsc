@@ -31,6 +31,17 @@ Class mkSmolGreenFlame : FlameSmall
 	}
 }
 
+Class mkGreenChandelier : ZChandelier
+{
+	Default
+	{
+		//$Title Green Chandelier
+		//$Sprite CDLRA0
+		//$Category Marisa/Decoration
+		Translation "81:121=#[192,255,192]", "122:255=#[128,255,128]";
+	}
+}
+
 // for shootable ceiling switches
 Class mkShootMe : Actor
 {

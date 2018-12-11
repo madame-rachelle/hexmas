@@ -8,6 +8,12 @@ brightmap texture GSPAWN10
 	map GSPAWB10
 }
 
+hardwareshader texture "ELDERFL"
+{
+	Shader "shaders/glsl/bwarp.fp"
+	Speed 0.2
+}
+
 // acolyte
 brightmap sprite ACOLA1
 {
@@ -202,6 +208,22 @@ brightmap sprite TWTRH0
 	disablefullbright
 }
 
+brightmap sprite CDLRA0
+{
+	map "brightmaps/CDLRA0.png"
+	disablefullbright
+}
+brightmap sprite CDLRB0
+{
+	map "brightmaps/CDLRB0.png"
+	disablefullbright
+}
+brightmap sprite CDLRC0
+{
+	map "brightmaps/CDLRC0.png"
+	disablefullbright
+}
+
 flickerlight2 TWINETORCHGRN
 {
 	attenuate 1
@@ -214,26 +236,40 @@ flickerlight2 TWINETORCHGRN
 
 object mkGreenTwinedTorch
 {
-    frame TWTRA { light TWINETORCHGRN }
-    frame TWTRB { light TWINETORCHGRN }
-    frame TWTRC { light TWINETORCHGRN }
-    frame TWTRD { light TWINETORCHGRN }
-    frame TWTRE { light TWINETORCHGRN }
-    frame TWTRF { light TWINETORCHGRN }
-    frame TWTRG { light TWINETORCHGRN }
-    frame TWTRH { light TWINETORCHGRN }
+	frame TWTRA { light TWINETORCHGRN }
+	frame TWTRB { light TWINETORCHGRN }
+	frame TWTRC { light TWINETORCHGRN }
+	frame TWTRD { light TWINETORCHGRN }
+	frame TWTRE { light TWINETORCHGRN }
+	frame TWTRF { light TWINETORCHGRN }
+	frame TWTRG { light TWINETORCHGRN }
+	frame TWTRH { light TWINETORCHGRN }
 }
 
 object mkGreenTwinedTorchUnlit
 {
-    frame TWTRA { light TWINETORCHGRN }
-    frame TWTRB { light TWINETORCHGRN }
-    frame TWTRC { light TWINETORCHGRN }
-    frame TWTRD { light TWINETORCHGRN }
-    frame TWTRE { light TWINETORCHGRN }
-    frame TWTRF { light TWINETORCHGRN }
-    frame TWTRG { light TWINETORCHGRN }
-    frame TWTRH { light TWINETORCHGRN }
+	frame TWTRA { light TWINETORCHGRN }
+	frame TWTRB { light TWINETORCHGRN }
+	frame TWTRC { light TWINETORCHGRN }
+	frame TWTRD { light TWINETORCHGRN }
+	frame TWTRE { light TWINETORCHGRN }
+	frame TWTRF { light TWINETORCHGRN }
+	frame TWTRG { light TWINETORCHGRN }
+	frame TWTRH { light TWINETORCHGRN }
+}
+
+flickerlight2 CHANDELIERGRN
+{
+	attenuate 1
+	color 0.4 1.0 0.4
+	size 96
+	secondarysize 104
+	interval 0.1
+}
+
+object mkGreenChandelier
+{
+	frame CDLR { light CHANDELIERGRN }
 }
 
 flickerlight2 HCANDLESGRN
@@ -247,5 +283,5 @@ flickerlight2 HCANDLESGRN
 
 object mkSmolGreenFlame
 {
-    frame FFSM { light HCANDLESGRN }
+	frame FFSM { light HCANDLESGRN }
 }
