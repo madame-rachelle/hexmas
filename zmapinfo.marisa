@@ -1,7 +1,14 @@
+GameInfo
+{
+	AddEventHandlers = "mkGradingHandler"
+}
+
 map MARISA "Untitled"
 {
 	music = "creepy"
-	sky1 = "ARCTICSK"
+	sky1 = "ARCTICS1"
+	sky2 = "ARCTICS2", 0.03
+	doublesky
 }
 
 DoomEdNums
@@ -13,6 +20,8 @@ DoomEdNums
 	6412 = "mkSmolGreenFlame"
 	6413 = "mkShootMe"
 	6414 = "mkGreenChandelier"
+	6415 = "mkGreenStatueTall"
+	6416 = "mkGreenStatueShort"
 	6420 = "mkSnowEttin"
 	6421 = "mkIceSerpent"
 	6422 = "mkElderApprentice"

@@ -64,3 +64,41 @@ Class mkShootMe : Actor
 		return 0;
 	}
 }
+
+class mkGreenStatueTall : Actor
+{
+	Default
+	{
+		//$Title Actually Green Tall Gargoyle Statue
+		//$Category Marisa/Decoration
+		Translation "0:66=%[0.00,0.00,0.00]:[0.81,1.03,0.75]", "67:255=%[0.00,0.00,0.00]:[0.74,1.51,0.64]";
+		Radius 14;
+		Height 108;
+		+SOLID;
+	}
+	States
+	{
+	Spawn:
+		STT2 A -1;
+		Stop;
+	}
+}
+
+class mkGreenStatueShort : Actor
+{
+	Default
+	{
+		//$Title Actually Green Short Gargoyle Statue
+		//$Category Marisa/Decoration
+		Translation "0:66=%[0.00,0.00,0.00]:[0.81,1.03,0.75]", "67:255=%[0.00,0.00,0.00]:[0.74,1.51,0.64]";
+		Radius 14;
+		Height 62;
+		+SOLID;
+	}
+	States
+	{
+	Spawn:
+		STT4 A -1;
+		Stop;
+	}
+}
