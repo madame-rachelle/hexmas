@@ -112,7 +112,7 @@ Class mkClericNPC : Actor
 		CLER \ 1 A_FreezeDeathChunks();
 		Wait;
 	Burn:
-		CLER C 5 Bright A_PlaySound("PlayerClericBurnDeath");
+		FDTH C 5 Bright A_PlaySound("PlayerClericBurnDeath");
 		FDTH D 4 Bright;
 		FDTH G 5 Bright;
 		FDTH H 4 Bright A_PlaySound("PlayerClericCrazyDeath");
@@ -136,6 +136,8 @@ Class mkClericNPC : Actor
 
 Class mkApprenticeSighting : Actor
 {
+	int scnt, bcnt;
+	bool stp;
 	override void Activate( Actor activator )
 	{
 		if ( !InStateSequence(CurState,FindState("Spawn")) ) return;
@@ -148,6 +150,15 @@ Class mkApprenticeSighting : Actor
 			break;
 		}
 		if ( target ) SetStateLabel("Turn");
+	}
+	override void Tick()
+	{
+		Super.Tick();
+		if ( --bcnt <= 0 )
+		{
+			bcnt = 50;
+			A_PlaySound("apprentice/active",CHAN_5,0.5,attenuation:4.0);
+		}
 	}
 	Default
 	{
@@ -175,6 +186,13 @@ Class mkApprenticeSighting : Actor
 	Run:
 		MAGE AAABBBCCCDDD 2 Bright
 		{
+			if ( !(scnt%6) )
+			{
+				if ( stp ) A_PlaySound("world/amb4",CHAN_AUTO,0.5,attenuation:3.5);
+				else A_PlaySound("world/amb11",CHAN_AUTO,0.5,attenuation:3.5);
+				stp = !stp;
+			}
+			scnt++;
 			if ( Distance2D(target) <= speed ) Destroy();
 			else TryMove(Vec2Offset(cos(angle)*speed,sin(angle)*speed),32);
 		}

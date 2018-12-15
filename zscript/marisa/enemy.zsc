@@ -1,47 +1,301 @@
-Class mkSnowEttin : Actor
+Class mkSnowEttin : Ettin
 {
 	Default
 	{
 		//$Title Snow Ettin
+		//$Sprite ETTNA0
 		//$Category Marisa/Monsters
 		Translation "81:145=%[0.07,0.09,0.09]:[1.13,1.38,1.50]", "246:254=%[0.07,0.09,0.09]:[1.13,1.39,1.51]";
-	}
-	States
-	{
-	Spawn:
-		ETTN A -1;
-		Stop;
+		DamageFactor "Ice", 0.0;
+		Tag "Snow Ettin";
+		Obituary "%o was mashed by a Snow Ettin.";
 	}
 }
 
-Class mkIceSerpent : Actor
+Class mkIceDemon : Demon2
 {
 	Default
 	{
 		//$Title Ice Serpent
+		//$Sprite DEM2A0
 		//$Category Marisa/Monsters
-		Translation "81:96=67:80", "97:121=67:80", "164:185=146:163";
+		Translation "81:96=67:80", "97:121=67:80", "122:145=67:80", "164:185=146:163";
+		DamageFactor "Ice", 0.0;
+		BloodColor "Blue";
+		HitObituary "%o got too close to an Ice Serpent.";
+		Obituary "%o was cryogenized by an Ice Serpent.";
+		Tag "Ice Serpent";
+	}
+	States
+	{
+	Missile:
+		DEM2 E 5 A_FaceTarget();
+		DEM2 F 6 A_FaceTarget();
+		DEM2 G 5
+		{
+			A_PlaySound("MageShardsFire",CHAN_WEAPON);
+			Actor mo = A_SpawnProjectile("FrostMissile",62,0);
+			if ( mo )
+			{
+				mo.special1 = FrostMissile.SHARDSPAWN_LEFT|FrostMissile.SHARDSPAWN_DOWN|FrostMissile.SHARDSPAWN_UP|FrostMissile.SHARDSPAWN_RIGHT;
+				mo.special2 = 2;
+				mo.args[0] = 3;
+			}
+		}
+		Goto See;
+	}
+}
+
+Class mkIcyShards : Actor
+{
+	Default
+	{
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+MISSILE;
+		+NOTELEPORT;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		for ( int i=0; i<3; i++ )
+		{
+			let a = Spawn("mkIcyShard",pos);
+			a.target = target;
+			a.angle = angle+FRandom[Apprentice](-5,5);
+			a.pitch = pitch+FRandom[Apprentice](-5,5);
+			a.vel = (cos(a.angle)*cos(a.pitch),sin(a.angle)*cos(a.pitch),-sin(a.pitch))*a.speed;
+		}
+		Destroy();
+	}
+}
+
+Class mkIcyPoof : Actor
+{
+	Default
+	{
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+MISSILE;
+		+THRUACTORS;
+		+NOTELEPORT;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		if ( target ) angle = target.angle;
 	}
 	States
 	{
 	Spawn:
-		DEM2 A -1;
+	Death:
+		TNT1 AAAA 1
+		{
+			for ( int i=0; i<3; i++ )
+			{
+				Vector3 smk = (cos(angle),sin(angle),0)*FRandom[Apprentice](1.3,3.2);
+				smk += (FRandom[Apprentice](-0.5,0.5),FRandom[Apprentice](-0.5,0.5),FRandom[Apprentice](-0.5,0.5));
+				let a = Spawn("mkIcyPoof2",pos);
+				a.vel = smk;
+			}
+		}
+		Stop;
+	}
+}
+
+Class mkIcyPoof2 : Actor
+{
+	Default
+	{
+		RenderStyle "Translucent";
+		Alpha 0.2;
+		Scale 0.8;
+		Radius 2;
+		Height 2;
+		Translation "0:255=%[0.40,0.40,0.40]:[1.20,1.20,1.20]";
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+MISSILE;
+		+THRUACTORS;
+		+NOTELEPORT;
+	}
+	States
+	{
+	Spawn:
+	Death:
+		SHEX ABCDE 5 Bright;
+		Stop;
+	}
+}
+
+Class mkIcyShard : Actor
+{
+	Default
+	{
+		Scale 0.4;
+		Speed 25;
+		Radius 2;
+		Height 2;
+		Translation "0:255=%[0.40,0.40,0.40]:[1.20,1.20,1.20]";
+		DamageFunction Random[Apprentice](1,3);
+		DamageType "Ice";
+		PROJECTILE;
+		DeathSound "MageShardsExplode";
+	}
+	States
+	{
+	Spawn:
+		SHRD ABC 3 Bright;
+		Loop;
+	Death:
+		SHEX ABCDE 5 Bright;
 		Stop;
 	}
 }
 
 Class mkElderApprentice : Actor
 {
+	int bcnt;
 	Default
 	{
 		//$Title Elder Apprentice
 		//$Category Marisa/Monsters
 		Translation "0:255=#[102,102,102]", "146:163=[0,0,0]:[49,122,73]", "0:32=[0,0,0]:[49,122,73]", "231:239=33:50", "164:185=231:239", "186:202=231:239", "51:66=231:239";
+		Health 120;
+		PainChance 255;
+		Speed 10;
+		Radius 16;
+		Height 64;
+		MONSTER;
+		Obituary "%o was turned into a popsicle by an Elder Apprentice.";
+		Tag "Elder Apprentice";
+		SeeSound "apprentice/see";
+		BloodColor "Purple";
+	}
+	override void Tick()
+	{
+		Super.Tick();
+		if ( bDORMANT || (Health <= 0) ) return;
+		if ( --bcnt <= 0 )
+		{
+			bcnt = 50;
+			double vol = bAMBUSH?0.15:0.5;
+			A_PlaySound("apprentice/active",CHAN_5,vol,attenuation:4.0);
+		}
+	}
+	action void A_ApprenticeAttack()
+	{
+		A_PlaySound("FireDemonAttack",CHAN_WEAPON);
+		if ( !target ) return;
+		SpawnMissileXYZ(Vec3Angle(radius,angle+45,50.),target,"mkIcyPoof",false);
+		SpawnMissileXYZ(Vec3Angle(radius,angle-45,50.),target,"mkIcyPoof",false);
+		if ( CheckMeleeRange() && abs(deltaangle(angle,AngleTo(target))) < 45 )
+		{
+			int dmg = Random[Apprentice](3,5);
+			target.DamageMobj(self,self,dmg,'Ice');
+			target.vel += Vec3To(target).unit()*12;
+			return;
+		}
+		Actor a;
+		a = SpawnMissileXYZ(Vec3Angle(radius,angle+45,50.),target,"mkIcyShards");
+		if ( a ) a.angle = AngleTo(target);
+		a = SpawnMissileXYZ(Vec3Angle(radius,angle-45,50.),target,"mkIcyShards");
+		if ( a ) a.angle = AngleTo(target);
+	}
+	action bool CheckDoor()
+	{
+		FLineTraceData d;
+		LineTrace(angle,radius*speed,0,TRF_THRUACTORS,50.,data:d);
+		if ( d.HitType != TRACE_HitWall ) return false;
+		if ( d.HitLine.Activation&SPAC_MUse )
+		{
+			d.HitLine.Activate(self,d.LineSide,SPAC_Use);
+			return true;
+		}
+		return false;
+	}
+	action bool CheckDoorMove()
+	{
+		FLineTraceData d;
+		LineTrace(angle,radius*speed,0,TRF_THRUACTORS,height,data:d);
+		if ( (d.HitType == TRACE_HitWall) && d.HitLine.Activation&SPAC_MUse ) return false;
+		return true;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		if ( score == 1 ) SetStateLabel("LookMirror");
 	}
 	States
 	{
 	Spawn:
-		MAGE A -1;
+		MAGE A 2 A_Look();
+		Wait;
+	LookMirror:
+		MAGE A 2
+		{
+			A_Look();
+			A_LookEx(0,0,200,0,360);
+		}
+		Wait;
+	See:
+		MAGE AABBCCDD 2
+		{
+			A_Chase();
+			return A_JumpIf(CheckDoor(),"WaitDoor");
+		}
+		Loop;
+	WaitDoor:
+		MAGE A 2 A_JumpIf(CheckDoorMove(),"See");
+		Wait;
+	Melee:
+	Missile:
+		MAGE EEE 4 A_FaceTarget(30);
+		MAGE F 8 A_ApprenticeAttack();
+		MAGE E 4;
+		Goto See;
+	Pain:
+		MAGE G 4;
+		MAGE G 4 A_PlaySound("apprentice/pain");
+		Goto See;
+	Death:
+		MAGE H 6;
+		MAGE I 6 A_PlaySound("apprentice/death");
+		MAGE JK 6;
+		MAGE L 6 A_NoBlocking();
+		MAGE M 6;
+		MAGE N -1;
+		Stop;
+	XDeath:
+		MAGE O 5 A_PlaySound("apprentice/xdeath");
+		MAGE P 5;
+		MAGE R 5 A_NoBlocking();
+		MAGE STUVW 5;
+		MAGE X -1;
+		Stop;
+	Ice:
+		MAGE Y 5 A_FreezeDeath();
+		MAGE Y 1 A_FreezeDeathChunks();
+		Wait;
+	Burn:
+		FDTH E 5 Bright A_PlaySound("PlayerMageBurnDeath");
+		FDTH F 4 Bright;
+		FDTH G 5 Bright;
+		FDTH H 4 Bright A_PlaySound("apprentice/death");
+		FDTH I 5 Bright;
+		FDTH J 4 Bright;
+		FDTH K 5 Bright;
+		FDTH L 4 Bright;
+		FDTH M 5 Bright;
+		FDTH N 4 Bright;
+		FDTH O 5 Bright;
+		FDTH P 4 Bright;
+		FDTH Q 5 Bright;
+		FDTH R 4 Bright;
+		FDTH S 5 Bright A_NoBlocking();
+		FDTH T 4 Bright;
+		FDTH U 5 Bright;
+		FDTH V 4 Bright;
 		Stop;
 	}
 }
@@ -52,6 +306,9 @@ Class mkElderAcolyte : Actor
 	{
 		//$Title Elder Acolyte
 		//$Category Marisa/Monsters
+		+NOBLOOD;
+		Obituary "%o was blown to pieces by an Elder Acolyte.";
+		Tag "Elder Acolyte";
 	}
 	States
 	{

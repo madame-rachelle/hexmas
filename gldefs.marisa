@@ -375,3 +375,17 @@ object mkSmolGreenFlame
 {
 	frame FFSM { light HCANDLESGRN }
 }
+
+flickerlight2 LARGEFLAMEGRN
+{
+	attenuate 1
+	color 0.4 1.0 0.4
+	size 60
+	secondarysize 72
+	interval 0.1
+}
+
+object mkLargeGreenFlame
+{
+	frame FFLG { light LARGEFLAMEGRN }
+}

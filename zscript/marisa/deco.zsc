@@ -31,6 +31,17 @@ Class mkSmolGreenFlame : FlameSmall
 	}
 }
 
+Class mkLargeGreenFlame : FlameLarge
+{
+	Default
+	{
+		//$Title Large Green Flame
+		//$Sprite FFLGA0
+		//$Category Marisa/Decoration
+		Translation "81:121=#[192,255,192]", "122:255=#[128,255,128]";
+	}
+}
+
 Class mkGreenChandelier : ZChandelier
 {
 	Default

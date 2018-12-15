@@ -4,6 +4,10 @@ Class mkElderWizard : Actor
 	{
 		//$Title Elder Wizard
 		//$Category Marisa/Monsters
+		BloodColor "Purple";
+		Tag "Elder Wizard";
+		Obituary "%o succumbed to the Elder Wizard.";
+		HitObituary "%o was turned inside out by the Elder Wizard.";
 	}
 	States
 	{

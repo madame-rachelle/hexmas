@@ -1,2 +1,68 @@
 IgniteSmall DSZIP
 Tinky Default
+
+world/amb11	AMB11
+world/amb4	AMB4
+world/amb8	AMB8
+
+amb/Stower4c	Stower4c
+amb/Stower52	Stower52
+amb/Stower53	Stower53
+amb/drip03	drip03
+amb/drip04	drip04
+amb/drip05	drip05
+amb/drip06	drip06
+amb/drip07	drip07
+amb/druml21	druml21
+amb/drums21	drums21
+amb/growl	growl
+amb/growl2	growl2
+amb/growl3	growl3
+amb/hum67	hum67
+amb/inLNpipe	inLNpipe
+amb/lava67	lava67
+amb/scaryL2	scaryL2
+amb/scaryL3	scaryL3
+amb/scaryN2	scaryN2
+amb/scaryN4	scaryN4
+amb/wbridgeC	wbridgeC
+amb/wind01	wind01
+amb/wind30	wind30
+amb/wind32	wind32
+amb/wind33	wind33
+
+$ambient 6400 amb/Stower4c point continuous 1.0
+$ambient 6401 amb/Stower52 point continuous 1.0
+$ambient 6402 amb/Stower53 point continuous 1.0
+$ambient 6403 amb/drip03 point random 1.0 3.0 1.0
+$ambient 6404 amb/drip04 point random 1.0 3.0 1.0
+$ambient 6405 amb/drip05 point random 1.0 3.0 1.0
+$ambient 6406 amb/drip06 point random 1.0 3.0 1.0
+$ambient 6407 amb/drip07 point random 1.0 3.0 1.0
+$ambient 6408 amb/druml21 point continuous 1.0
+$ambient 6409 amb/drums21 point continuous 1.0
+$ambient 6410 amb/growl point continuous 1.0
+$ambient 6411 amb/growl2 point continuous 1.0
+$ambient 6412 amb/growl3 point continuous 1.0
+$ambient 6413 amb/hum67 point continuous 1.0
+$ambient 6414 amb/inLNpipe point continuous 1.0
+$ambient 6415 amb/lava67 point continuous 1.0
+$ambient 6416 amb/scaryL2 point random 30.0 90.0 1.0
+$ambient 6417 amb/scaryL3 point random 30.0 90.0 1.0
+$ambient 6418 amb/scaryN2 point random 30.0 90.0 1.0
+$ambient 6419 amb/scaryN4 point random 30.0 90.0 1.0
+$ambient 6420 amb/wbridgeC point random 5.0 15.0 1.0
+$ambient 6421 amb/wind01 point continuous 1.0
+$ambient 6422 amb/wind30 point continuous 1.0
+$ambient 6423 amb/wind32 point continuous 1.0
+$ambient 6424 amb/wind33 point continuous 1.0
+
+apprentice/active	apract
+apprentice/death	aprdie
+apprentice/pain1	aprpai
+apprentice/pain2	aprpai2
+$random apprentice/pain { apprentice/pain1 apprentice/pain2 }
+apprentice/see1		aprsit
+apprentice/see2		aprsit2
+$random apprentice/see { apprentice/see1 apprentice/see2 }
+apprentice/xdeath	aprxdie
