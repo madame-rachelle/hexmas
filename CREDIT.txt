@@ -1,6 +1,9 @@
-H2TX* textures from Hexen 2 compiled by Ceeb
-NW*, W_*, F*, NF* textures from C.R.U.E.L. pack by Ettingrinder
-SNOW* Skybox from the Kothic Skyboxes pack by Kell
+Knight Archer monster: Ravagefox, based on sprites by Raven Software & CodenniumRed
+tulku3 MIDI: Hexen 2 - Portals Of Praevus
+H2TX* textures: Hexen 2, compiled by Ceeb
+NW*, W_*, F*, NF* textures: C.R.U.E.L. pack by Ettingrinder
+SNOW* skybox: Kothic Skyboxes pack by Kell
+TRE* sprites: Necrodome
 
 C.R.U.E.L. full credits:
 
