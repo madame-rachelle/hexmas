@@ -126,6 +126,9 @@ Class mkGradingHandler : EventHandler
 	}
 }
 
+// note: under no circumstance should the "mkFog" RNG be used for
+// anything but clientside actions
+
 Class mkSnow : Actor
 {
 	Default
@@ -139,6 +142,7 @@ Class mkSnow : Actor
 		+DONTSPLASH;
 		+THRUACTORS;
 		+FORCEXYBILLBOARD;
+		FloatBobPhase 0;
 	}
 	override void PostBeginPlay()
 	{
@@ -148,11 +152,11 @@ Class mkSnow : Actor
 			Destroy();
 			return;
 		}
-		Scale *= FRandom[Fog](0.8,1.6);
-		Alpha = FRandom[Fog](0.1,0.4);
-		Vel.X = FRandom[Fog](-0.1,0.1);
-		Vel.Y = FRandom[Fog](-0.1,0.1);
-		Vel.Z = FRandom[Fog](-0.4,-1.2);
+		Scale *= FRandom[mkFog](0.8,1.6);
+		Alpha = FRandom[mkFog](0.1,0.4);
+		Vel.X = FRandom[mkFog](-0.1,0.1);
+		Vel.Y = FRandom[mkFog](-0.1,0.1);
+		Vel.Z = FRandom[mkFog](-0.4,-1.2);
 	}
 	States
 	{
@@ -171,10 +175,14 @@ Class mkSnowMaker : Actor
 
 	override void Activate( Actor activator )
 	{
+		if ( activator.player && (activator.player != players[consoleplayer]) )
+			return;
 		active = true;
 	}
 	override void Deactivate( Actor activator )
 	{
+		if ( activator.player && (activator.player != players[consoleplayer]) )
+			return;
 		active = false;
 	}
 	override void PostBeginPlay()
@@ -193,7 +201,7 @@ Class mkSnowMaker : Actor
 		int num = args[3];
 		for ( int i=0; i<num; i++ )
 		{
-			Vector3 spawnpos = pos+(FRandom[Fog](-x,x),FRandom[Fog](-y,y),FRandom[Fog](-z,z));
+			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
 			if ( !level.IsPointInMap(spawnpos) )
 				continue;
 			let f = Spawn("mkSnow",spawnpos);
@@ -233,20 +241,21 @@ Class mkFog : Actor
 		Scale 3.0;
 		RenderStyle "Shaded";
 		StencilColor "FFFFFF";
+		FloatBobPhase 0;
 	}
 
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
 		double ang, pt;
-		scale *= FRandom[Fog](0.75,1.25);
-		basealpha = FRandom[Fog](0.05,0.2);
-		ang = FRandom[Fog](0,360);
-		pt = FRandom[Fog](-90,90);
-		vel = (cos(pt)*cos(ang),cos(pt)*sin(ang),-sin(pt))*FRandom[Fog](0.1,0.4);
-		lifespan = Random[Fog](100,300);
+		scale *= FRandom[mkFog](0.75,1.25);
+		basealpha = FRandom[mkFog](0.05,0.2);
+		ang = FRandom[mkFog](0,360);
+		pt = FRandom[mkFog](-90,90);
+		vel = (cos(pt)*cos(ang),cos(pt)*sin(ang),-sin(pt))*FRandom[mkFog](0.1,0.4);
+		lifespan = Random[mkFog](100,300);
 		lifetime = 0;
-		SetState(FindState("Spawn")+Random[Fog](0,19));
+		SetState(FindState("Spawn")+Random[mkFog](0,19));
 	}
 	override void Tick()
 	{
@@ -270,10 +279,14 @@ Class mkFogMaker : Actor
 
 	override void Activate( Actor activator )
 	{
+		if ( activator.player && (activator.player != players[consoleplayer]) )
+			return;
 		active = true;
 	}
 	override void Deactivate( Actor activator )
 	{
+		if ( activator.player && (activator.player != players[consoleplayer]) )
+			return;
 		active = false;
 	}
 	override void PostBeginPlay()
@@ -292,7 +305,7 @@ Class mkFogMaker : Actor
 		int num = args[3];
 		for ( int i=0; i<num; i++ )
 		{
-			Vector3 spawnpos = pos+(FRandom[Fog](-x,x),FRandom[Fog](-y,y),FRandom[Fog](-z,z));
+			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
 			if ( !level.IsPointInMap(spawnpos) )
 				continue;
 			let f = Spawn("mkFog",spawnpos);
@@ -313,5 +326,32 @@ Class mkFogMaker : Actor
 	Spawn:
 		TNT1 A 3 A_DoFog();
 		Wait;
+	}
+}
+
+Class mkBreakGlass : Actor
+{
+	Default
+	{
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		for ( int i=0; i<64; i++ )
+		{
+			Vector3 shardpos = Vec3Angle(FRandom[Glass](-25,25),angle+90,FRandom[Glass](-50,50));
+			String scls = String.Format("SGShard%d",Random[Glass](0,9));
+			let s = Spawn(scls,shardpos);
+			s.A_SetTranslation('mkGlass');
+			s.bNOGRAVITY = false;
+			s.Gravity = 0.04;
+			double ang = angle+FRandom[Glass](-15,15);
+			s.vel.xy = (cos(ang),sin(ang))*FRandom[Glass](0.8,3.2);
+			s.vel.z = FRandom[Glass](0.2,0.8);
+		}
+		Destroy();
 	}
 }

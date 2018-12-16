@@ -59,6 +59,7 @@ $ambient 6424 amb/wind33 point continuous 1.0
 
 apprentice/active	apract
 apprentice/death	aprdie
+apprentice/htaed	apreid
 apprentice/pain1	aprpai
 apprentice/pain2	aprpai2
 $random apprentice/pain { apprentice/pain1 apprentice/pain2 }
@@ -66,3 +67,15 @@ apprentice/see1		aprsit
 apprentice/see2		aprsit2
 $random apprentice/see { apprentice/see1 apprentice/see2 }
 apprentice/xdeath	aprxdie
+
+acolyte/active	acoact
+acolyte/death	acodie
+acolyte/pain	acopai
+acolyte/see	acosit
+$random acolyte/actives { acolyte/active acolyte/see }
+
+eldrich/active	wizact
+eldrich/attack	wizatk
+eldrich/death	wizdie
+eldrich/pain	wizpai
+eldrich/see	wizsit

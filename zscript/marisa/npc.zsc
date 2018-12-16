@@ -20,9 +20,9 @@ Class mkClericNPC : Actor
 	}
 	override int DamageMobj( Actor inflictor, Actor source, int damage, Name mod, int flags, double angle )
 	{
-		if ( source && source.player && bFRIENDLY )
+		if ( (Health > 0) && source && source.player && bFRIENDLY )
 		{
-			source.A_Print("Have you gone insane?");
+			A_PrintBold("Have you gone insane?");
 			bFRIENDLY = false;
 		}
 		return Super.DamageMobj(inflictor,source,damage,mod,flags,angle);
@@ -110,12 +110,14 @@ Class mkClericNPC : Actor
 		CLER [ -1;
 		Stop;
 	Ice:
+		TNT1 A 0 { Translation = 0; }
 		CLER \ 5 A_FreezeDeath();
 		CLER \ 1 A_FreezeDeathChunks();
 		Wait;
 	Burn:
 		FDTH C 5 Bright A_PlaySound("PlayerClericBurnDeath");
 		FDTH D 4 Bright;
+		TNT1 A 0 { Translation = 0; }
 		FDTH G 5 Bright;
 		FDTH H 4 Bright A_PlaySound("PlayerClericCrazyDeath");
 		FDTH I 5 Bright;
