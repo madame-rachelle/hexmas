@@ -78,6 +78,8 @@ Class mkClericNPC : Actor
 				SetOrigin(SpawnPoint,true);
 				angle = SpawnAngle;
 				A_ClearTarget();
+				A_ResetHealth();
+				bFRIENDLY = true;
 				goal = null;
 				return ResolveState("Spawn");
 			}

@@ -3,12 +3,41 @@ Class mkSnowEttin : Ettin
 	Default
 	{
 		//$Title Snow Ettin
-		//$Sprite ETTNA0
+		//$Sprite ETTNA1
 		//$Category Marisa/Monsters
-		Translation "81:145=%[0.07,0.09,0.09]:[1.13,1.38,1.50]", "246:254=%[0.07,0.09,0.09]:[1.13,1.39,1.51]";
+		Translation "81:145=%[0.00,0.00,0.00]:[1.73,1.73,2.00]", "246:254=%[0.00,0.00,0.00]:[1.73,1.73,2.00]", "2:32=122:145", "33:50=122:145", "51:51=125:125";
 		DamageFactor "Ice", 0.0;
 		Tag "Snow Ettin";
 		Obituary "%o was mashed by a Snow Ettin.";
+		Scale 1.2;
+		Health 320;
+		Speed 15;
+		Radius 30;
+		Height 80;
+		MinMissileChance 100;
+		MissileHeight 40;
+	}
+	action void A_SnowEttinAttack()
+	{
+		if ( !target ) return;
+		A_PlaySound("FireDemonAttack",CHAN_WEAPON);
+		let p = Spawn("mkIcyPoof",Vec3Angle(radius/2,angle,missileheight));
+		p.angle = AngleTo(target);
+		let a = SpawnMissile(target,"mkIcyShards");
+		if ( a )
+		{
+			a.args[0] = 9;
+			a.args[1] = 18;
+			a.args[2] = 6;
+		}
+	}
+	States
+	{
+	Missile:
+		ETTN EF 6 A_FaceTarget;
+		ETTN G 4 A_PlaySound("FighterHammerMiss");
+		ETTN G 4 A_SnowEttinAttack();
+		Goto See;
 	}
 }
 
@@ -17,7 +46,7 @@ Class mkIceDemon : Demon2
 	Default
 	{
 		//$Title Ice Serpent
-		//$Sprite DEM2A0
+		//$Sprite DEM2A1
 		//$Category Marisa/Monsters
 		Translation "81:96=67:80", "97:121=67:80", "122:145=67:80", "164:185=146:163";
 		DamageFactor "Ice", 0.0;
@@ -25,6 +54,11 @@ Class mkIceDemon : Demon2
 		HitObituary "%o got too close to an Ice Serpent.";
 		Obituary "%o was cryogenized by an Ice Serpent.";
 		Tag "Ice Serpent";
+		Health 400;
+		Scale 1.5;
+		Speed 16;
+		Radius 48;
+		Height 96;
 	}
 	States
 	{
@@ -50,21 +84,24 @@ Class mkIcyShards : Actor
 {
 	Default
 	{
+		Speed 1;
 		+NOBLOCKMAP;
 		+NOGRAVITY;
 		+MISSILE;
 		+NOTELEPORT;
+		Args 3, 6, 4;
 	}
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
-		for ( int i=0; i<3; i++ )
+		for ( int i=0; i<args[0]; i++ )
 		{
 			let a = Spawn("mkIcyShard",pos);
 			a.target = target;
-			a.angle = angle+FRandom[Apprentice](-5,5);
-			a.pitch = pitch+FRandom[Apprentice](-5,5);
-			a.vel = (cos(a.angle)*cos(a.pitch),sin(a.angle)*cos(a.pitch),-sin(a.pitch))*a.speed;
+			a.angle = angle+FRandom[Apprentice](-args[1],args[1]);
+			a.pitch = pitch+FRandom[Apprentice](-args[2],args[2]);
+			a.vel = (cos(a.angle)*cos(a.pitch),sin(a.angle)*cos(a.pitch),-sin(a.pitch))*a.speed*FRandom[Apprentice](0.8,1.2);
+			a.vel.z += 1.1;
 		}
 		Destroy();
 	}
@@ -140,6 +177,8 @@ Class mkIcyShard : Actor
 		DamageFunction Random[Apprentice](1,3);
 		DamageType "Ice";
 		PROJECTILE;
+		-NOGRAVITY;
+		Gravity 0.125;
 		DeathSound "MageShardsExplode";
 	}
 	States
