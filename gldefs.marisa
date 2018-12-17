@@ -30,77 +30,7 @@ hardwareshader texture "ELDERFL1"
 }
 hardwareshader texture "ELDERFL2"
 {
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFL3"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFL4"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFL5"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFL6"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFL7"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFL8"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFL9"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFLA"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFLB"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFLC"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFLD"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFLE"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFLF"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
-	Speed 0.2
-}
-hardwareshader texture "ELDERFLG"
-{
-	Shader "shaders/glsl/bwarp.fp" 330
+	Shader "shaders/glsl/bwarp_d.fp" 330
 	Speed 0.2
 }
 

@@ -3,7 +3,7 @@ uniform float timer;
 vec4 ProcessTexel()
 {
 	vec2 uv = vTexCoord.st;
-	uv.y -= timer*0.534;
+	uv.y -= timer*1.234;
 	vec3 col = vec3(0,0,0);
 	uv.x -= timer*0.01234;
 	uv.y -= timer*0.02124;

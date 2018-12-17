@@ -26,6 +26,8 @@ amb/scaryL3	scaryL3
 amb/scaryN2	scaryN2
 amb/scaryN4	scaryN4
 amb/wbridgeC	wbridgeC
+amb/wcreak3	wcreak3
+$random amb/bcreaks { amb/wbridgeC amb/wcreak3 }
 amb/wind01	wind01
 amb/wind30	wind30
 amb/wind32	wind32
