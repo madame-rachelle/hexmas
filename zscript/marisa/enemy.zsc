@@ -17,6 +17,7 @@ Class mkSnowEttin : Ettin
 		MinMissileChance 100;
 		MissileHeight 40;
 		+MISSILEMORE;
+		+NOICEDEATH;
 	}
 	action void A_SnowEttinAttack()
 	{
@@ -27,6 +28,7 @@ Class mkSnowEttin : Ettin
 		let a = SpawnMissile(target,"mkIcyShards");
 		if ( a )
 		{
+			a.pitch = BulletSlope();
 			a.args[0] = 9;
 			a.args[1] = 18;
 			a.args[2] = 6;
@@ -63,6 +65,7 @@ Class mkIceDemon : Demon2
 		Speed 16;
 		Radius 48;
 		Height 96;
+		+NOICEDEATH;
 	}
 	States
 	{
@@ -75,6 +78,7 @@ Class mkIceDemon : Demon2
 			Actor mo = A_SpawnProjectile("FrostMissile",62,0);
 			if ( mo )
 			{
+				mo.pitch = BulletSlope();
 				mo.special1 = FrostMissile.SHARDSPAWN_LEFT|FrostMissile.SHARDSPAWN_DOWN|FrostMissile.SHARDSPAWN_UP|FrostMissile.SHARDSPAWN_RIGHT;
 				mo.special2 = 2;
 				mo.args[0] = 3;
@@ -164,7 +168,7 @@ Class mkIcyPoof2 : Actor
 	{
 	Spawn:
 	Death:
-		SHEX ABCDE 5 Bright;
+		SHEX ABCDE 5;
 		Stop;
 	}
 }
@@ -383,7 +387,6 @@ Class mkAcolyteFire : Actor
 {
 	Default
 	{
-		RenderStyle "Add";
 		Scale 0.5;
 		Speed 15;
 		Radius 2;
@@ -497,8 +500,6 @@ Class mkElderAcolyte : Actor
 		+FLOAT;
 		+NOGRAVITY;
 		+NOBLOOD;
-		+TELESTOMP;
-		+DONTOVERLAP;
 		+NOTARGETSWITCH;
 		SeeSound "acolyte/see";
 		PainSound "acolyte/pain";
@@ -512,6 +513,7 @@ Class mkElderAcolyte : Actor
 		if ( !target ) return;
 		A_FaceTarget();
 		let a = SpawnMissileXYZ(Vec3Angle(radius,angle,45.),target,"mkAcolyteBoom",false);
+		a.pitch = BulletSlope();
 		if ( Distance3D(target) > radius*2.4 ) a.args[0] = 1;
 		else
 		{
@@ -525,6 +527,12 @@ Class mkElderAcolyte : Actor
 		double newz = pos.z - BobSin(bobstate) / 2.;
 		bobstate = (bobstate + 4) & 63;
 		newz += BobSin(bobstate) / 2.;
+		if ( target )
+		{
+			Vector3 pdiff = level.Vec3Diff(pos,target.pos);
+			if ( pdiff.z > 32 ) newz += 3.;
+			else if ( pdiff.z < -32 ) newz -= 3.;
+		}
 		SetOrigin(Vec2OffsetZ(0,0,newz),true);
 		A_VileChase();
 	}
@@ -646,7 +654,7 @@ Class mkElderAcolyte : Actor
 		ACOL J 5 Bright
 		{
 			A_PlaySound("SorcererBallExplode",CHAN_WEAPON);
-			A_Explode(Random[AcolyteBoom](25,40));
+			A_Explode(Random[AcolyteBoom](25,40),120);
 		}
 		ACOL K 5 Bright;
 		ACOL LM 4 Bright;

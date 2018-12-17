@@ -1,18 +1,111 @@
+// PS: not fully implemented yet
+//
+// movement is limited to teleporting around strategically
+// has a pretty punishing long charge time melee attack for players that stay
+// close for too long
+// ranged attacks (in order of preference):
+//  - seeking fireballs
+//  - fire pillars
+//  - teleport (has a shockwave)
+//  - create acolytes
+//  - charged laser (pretty much a master spark)
+// melee attack:
+//  - if players are within melee range for 6 seconds, localized explosions at feet.
 Class mkElderWizard : Actor
 {
 	Default
 	{
 		//$Title Elder Wizard
 		//$Category Marisa/Monsters
+		Scale 3.0;
+		Health 6400;
+		Mass int.max;
+		Radius 30;
+		Height 240;
+		DamageFactor "Fire", 0.4;
+		DamageFactor "Ice", 0.25;
+		PainChance 160;
+		PainChance "Melee", 0;
 		BloodColor "Purple";
 		Tag "Elder Wizard";
 		Obituary "%o succumbed to the Elder Wizard.";
-		HitObituary "%o was turned inside out by the Elder Wizard.";
+		HitObituary "%o got too close to the Elder Wizard.";
+		MONSTER;
+		+BOSS;
+		+DONTMORPH;
+		+DONTTHRUST;
+		+NOTARGET;
+		+NOICEDEATH;
+		+FULLVOLACTIVE;
+		+DONTDRAIN;
+		+NOTELEFRAG;
+		+LOOKALLAROUND;
+		+INTERPOLATEANGLES;
+		SeeSound "eldrich/see";
+		ActiveSound "eldrich/active";
+		PainSound "eldrich/pain";
+		DeathSound "eldrich/death";
+	}
+	override int DamageMobj( Actor inflictor, Actor source, int damage, Name mod, int flags, double angle )
+	{
+		// further reduce the holy damage
+		if ( inflictor is 'HolySpirit' ) damage /= 3;
+		return Super.DamageMobj(inflictor,source,damage,mod,flags,angle);
+	}
+	void A_DeathFlash()
+	{
+		A_PlaySound("eldrich/flash",CHAN_WEAPON,attenuation:ATTN_NONE);
+		players[consoleplayer].camera.A_SetBlend("80 FF 80",1.,10);
 	}
 	States
 	{
 	Spawn:
-		LMWZ A -1;
+		LMWZ A 2
+		{
+			A_LookEx(LOF_NOJUMP,0,0,0,360);
+			if ( target )
+			{
+				A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+				A_PlaySound(SeeSound,CHAN_VOICE,attenuation:ATTN_NONE);
+				return ResolveState("See");
+			}
+			return ResolveState(null);
+		}
+		Wait;
+	See:
+		LMWZ A 2 A_FaceTarget(15);
+		Wait;
+	Pain:
+		LMWZ E 4;
+		LMWZ E 12
+		{
+			A_PlaySound(PainSound,CHAN_VOICE,attenuation:ATTN_NONE);
+			A_QuakeEx(3,3,3,20,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		}
+		Goto See;
+	Death:
+		LMWZ E 4;
+		LMWZ E 4 A_DeathFlash();
+		LMWZ E 20 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		LMWZ E 4 A_DeathFlash();
+		LMWZ E 40 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		LMWZ E 4 A_DeathFlash();
+		LMWZ E 60 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		LMWZ F 0 A_Scream();
+		LMWZ F 20 A_QuakeEx(9,9,9,180,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		LMWZ GHIJK 20;
+		LMWZ L -1 A_NoBlocking();
 		Stop;
+	InIce:
+		LMWZ E -1;
+		Stop;
+	OutOfIce:
+		LMWZ E 8;
+		LMWZ E 16
+		{
+			A_Pain();
+			A_QuakeEx(3,3,3,20,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		}
+		Goto Spawn;
 	}
 }

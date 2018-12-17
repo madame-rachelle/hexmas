@@ -5,7 +5,7 @@ Texture "ARCTICS1", 256, 200
 {
 	Patch "SKYWALL2", 0, 0
 	{
-		Translation "1:8=67:80", "0:0=0:0", "33:33=74:74"
+		Translation "1:8=67:80", "33:33=74:74"
 	}
 }
 

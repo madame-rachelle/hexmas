@@ -389,3 +389,191 @@ object mkLargeGreenFlame
 {
 	frame FFLG { light LARGEFLAMEGRN }
 }
+
+pointlight WHITEPOOF0
+{
+	color 0.5 0.5 0.5
+	size 20
+	attenuate 1
+}
+pointlight WHITEPOOF1
+{
+	color 0.6 0.6 0.6
+	size 30
+	attenuate 1
+}
+pointlight WHITEPOOF2
+{
+	color 0.4 0.4 0.4
+	size 25
+	attenuate 1
+}
+pointlight WHITEPOOF3
+{
+	color 0.2 0.2 0.2
+	size 20
+	attenuate 1
+}
+pointlight WHITEPOOFX
+{
+	color 0.8 0.8 0.8
+	size 80
+	attenuate 1
+}
+
+object mkIcyShard
+{
+	frame SHRD { light WHITEPOOF0 }
+	frame SHEXA { light WHITEPOOF1 }
+	frame SHEXB { light WHITEPOOF2 }
+	frame SHEXB { light WHITEPOOF2 }
+	frame SHEXC { light WHITEPOOF3 }
+	frame SHEXD { light WHITEPOOF3 }
+}
+
+object mkElderApprentice
+{
+	frame MAGEF { light WHITEPOOFX }
+}
+
+flickerlight SERPENTBALLGRN
+{
+	attenuate 1
+	color 0.2 0.4 0.2
+	size 40
+	secondarysize 48
+	chance 0.5
+}
+flickerlight SERPENTBALLGRN_X1
+{
+	attenuate 1
+	color 0.2 0.4 0.2
+	size 48
+	secondarysize 56
+	chance 0.5
+}
+flickerlight SERPENTBALLGRN_X2
+{
+	attenuate 1
+	color 0.15 0.3 0.15
+	size 52
+	secondarysize 60
+	chance 0.5
+}
+flickerlight SERPENTBALLGRN_X3
+{
+	attenuate 1
+	color 0.1 0.2 0.1
+	size 64
+	secondarysize 72
+	chance 0.5
+}
+flickerlight SERPENTBALLGRN_X4
+{
+	attenuate 1
+	color 0.05 0.1 0.05
+	size 72
+	secondarysize 80
+	chance 0.5
+}
+
+object mkAcolyteFire
+{
+	frame DMFXA { light SERPENTBALLGRN }
+	frame DMFXB { light SERPENTBALLGRN }
+	frame DMFXC { light SERPENTBALLGRN }
+	frame DMFXD { light SERPENTBALLGRN_X1 }
+	frame DMFXE { light SERPENTBALLGRN_X2 }
+	frame DMFXF { light SERPENTBALLGRN_X3 }
+	frame DMFXG { light SERPENTBALLGRN_X4 }
+	frame DMFXH { light SERPENTBALLGRN_X4 }
+}
+
+flickerlight REAVERBALLGRN_X1
+{
+	attenuate 1
+	color 0.5 1.0 0.5
+	size 96
+	secondarysize 108
+}
+flickerlight REAVERBALLGRN_X2
+{
+	attenuate 1
+	color 0.4 0.6 0.4
+	size 90
+	secondarysize 104
+}
+flickerlight REAVERBALLGRN_X3
+{
+	attenuate 1
+	color 0.1 0.2 0.1
+	size 84
+	secondarysize 96
+}
+
+object mkAcolyteBoom
+{
+	frame WRBLD { light REAVERBALLGRN_X1 }
+	frame WRBLE { light REAVERBALLGRN_X2 }
+	frame WRBLF { light REAVERBALLGRN_X3 }
+}
+
+pointlight ACOLYTEATK1
+{
+	attenuate 1
+	color 0.2 0.4 0.2
+	offset 0 40 0
+	size 90
+}
+pointlight ACOLYTEATK2
+{
+	attenuate 1
+	color 0.3 0.6 0.3
+	offset 0 40 0
+	size 120
+}
+pointlight ACOLYTEATK3
+{
+	attenuate 1
+	color 0.5 1.0 0.5
+	offset 0 40 0
+	size 150
+}
+
+flickerlight ACOLYTE_X1
+{
+	attenuate 1
+	color 0.5 1.0 0.5
+	offset 0 40 0
+	size 96
+	secondarysize 108
+}
+flickerlight ACOLYTE_X2
+{
+	attenuate 1
+	color 0.4 0.6 0.4
+	offset 0 40 0
+	size 90
+	secondarysize 104
+}
+flickerlight ACOLYTE_X3
+{
+	attenuate 1
+	color 0.1 0.2 0.1
+	offset 0 40 0
+	size 84
+	secondarysize 96
+}
+
+object mkElderAcolyte
+{
+	frame ACOLD { light ACOLYTEATK1 }
+	frame ACOLE { light ACOLYTEATK2 }
+	frame ACOLF { light ACOLYTEATK3 }
+	frame ACOLH { light ACOLYTE_X3 }
+	frame ACOLI { light ACOLYTE_X2 }
+	frame ACOLJ { light ACOLYTE_X1 }
+	frame ACOLK { light ACOLYTE_X1 }
+	frame ACOLL { light ACOLYTE_X2 }
+	frame ACOLM { light ACOLYTE_X3 }
+}
