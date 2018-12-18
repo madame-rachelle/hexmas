@@ -355,3 +355,42 @@ Class mkBreakGlass : Actor
 		Destroy();
 	}
 }
+
+Class mkWarpPipe : Actor
+{
+	int cnt;
+	static void WarpScream( Actor caller )
+	{
+		caller.A_PlaySound("*falling",CHAN_VOICE,1.0,false,ATTN_NONE,true);
+	}
+	Default
+	{
+		//$Title Warp Tunnel
+		//$Category Marisa/FX
+		RenderStyle "Translucent";
+		Alpha 0.99;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+ROLLSPRITE;
+		+INTERPOLATEANGLES;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		A_PlaySound("EtherealTeleport",CHAN_BODY,1.0,true,16.0);
+	}
+	override void Tick()
+	{
+		Super.Tick();
+		cnt++;
+		angle = sin(cnt*1.333)*12;
+		pitch = cos(cnt*1.666)*6;
+		roll = sin(cnt*0.888)*3;
+	}
+	States
+	{
+	Spawn:
+		PRKM A -1 Bright;
+		Stop;	}
+}

@@ -15,6 +15,7 @@ DoomEdNums
 {
 	6400 = "mkSnowMaker"
 	6401 = "mkFogMaker"
+	6402 = "mkWarpPipe"
 	6410 = "mkGreenTwinedTorch"
 	6411 = "mkGreenTwinedTorchUnlit"
 	6412 = "mkSmolGreenFlame"

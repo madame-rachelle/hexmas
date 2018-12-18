@@ -1,0 +1,11 @@
+Model "mkWarpPipe"
+{
+	Path "models"
+	Model 0 "warp_pipe.obj"
+	Skin 0 "ELDERFL3"
+	USEACTORPITCH
+	USEACTORROLL
+	DONTCULLBACKFACES
+	Scale 8 8 4.8
+	FrameIndex PRKM A 0 0
+}
