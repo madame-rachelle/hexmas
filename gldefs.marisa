@@ -33,6 +33,11 @@ hardwareshader texture "ELDERFL2"
 	Shader "shaders/glsl/bwarp_d.fp" 330
 	Speed 0.2
 }
+hardwareshader texture "ELDERFL3"
+{
+	Shader "shaders/glsl/bwarp_w.fp" 330
+	Speed 0.2
+}
 
 // acolyte
 brightmap sprite ACOLA1

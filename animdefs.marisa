@@ -1,1 +1,3 @@
 texture GPORT1 range GPORT9 tics 5
+
+switch SW_G_UP on sound Switch1 pic SW_G_DN tics 0
