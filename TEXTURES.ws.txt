@@ -1,0 +1,113 @@
+// non-animating clock hands
+
+Texture "CLOCK01A", 128, 128
+{
+	Patch "CLOCK01", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK02A", 128, 128
+{
+	Patch "CLOCK02", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK03A", 128, 128
+{
+	Patch "CLOCK03", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK04A", 128, 128
+{
+	Patch "CLOCK04", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK05A", 128, 128
+{
+	Patch "CLOCK05", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK06A", 128, 128
+{
+	Patch "CLOCK06", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK07A", 128, 128
+{
+	Patch "CLOCK07", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK08A", 128, 128
+{
+	Patch "CLOCK08", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK11A", 128, 128
+{
+	Patch "CLOCK11", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK12A", 128, 128
+{
+	Patch "CLOCK12", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK13A", 128, 128
+{
+	Patch "CLOCK13", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK14A", 128, 128
+{
+	Patch "CLOCK14", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK15A", 128, 128
+{
+	Patch "CLOCK15", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK16A", 128, 128
+{
+	Patch "CLOCK16", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK17A", 128, 128
+{
+	Patch "CLOCK17", 0, 0
+	{
+	}
+}
+
+Texture "CLOCK18A", 128, 128
+{
+	Patch "CLOCK18", 0, 0
+	{
+	}
+}
