@@ -1,3 +1,21 @@
+Insects			insects1
+Crickets    	crkets
+Crickets2   	crkets1
+Katydid     	katydid
+Frogs2      	frogs
+Owl2        	owl
+Bird2       	bird
+Slurp       	shlurp
+Bubble2     	bubble
+Drop        	drop2
+Rock2       	rocks
+Chains2     	chains
+Gong2       	gong
+SteelScrape 	steel1
+SteelScrape2	steel2
+Wind            wind3
+IceStartMove    icemv2
+
 $ambient 1 Insects point random 15.0 60.0 0.8	//insects             
 $ambient 2 Crickets point random 10.0 60.0 0.8  //crickets   
 $ambient 3 Crickets2 point random 15.0 60.0 0.8 //crickets 2 
