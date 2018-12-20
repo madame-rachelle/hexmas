@@ -1,0 +1,19 @@
+Map FROSTBITE "Frostbitten Peak"
+{
+	Music = "tulku3"
+	FogDensity = 128
+	Skyfog = 512
+	ResetInventory
+	ResetHealth
+	ResetItems
+	FilterStarts
+	UsePlayerStartZ
+	ClipMidTextures
+	MonsterFallingDamage
+	Grinding_Polyobj
+}
+
+SpawnNums
+{
+	109 = IceShard2
+}
