@@ -1,4 +1,4 @@
-map MAP01 "Fortress"
+map FORTRESS "Fortress"
 {
         sky1 = "SKYFOG"
 	cluster = 1
