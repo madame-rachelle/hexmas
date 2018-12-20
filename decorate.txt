@@ -59,7 +59,7 @@ Actor TreeSnowTall 131
 		Spawn:
 		TRE8 A -1
 		Stop
-	}	
+	}
 }
 
 Actor TreeSnowShort 130
@@ -71,9 +71,9 @@ Actor TreeSnowShort 130
 	States
 	{
 		Spawn:
-		TRE7 A -1
+		TRE9 A -1
 		Stop
-	}	
+	}
 }
 
 Actor ArcherKnight 129
@@ -85,7 +85,7 @@ Actor ArcherKnight 129
     Speed 10
     PainChance 200
 	Mass 200
-    MONSTER 
+    MONSTER
     +FLOORCLIP
 	//+MISSILEMORE
 	+MISSILEEVENMORE
@@ -110,7 +110,7 @@ Actor ArcherKnight 129
         KNIG F 5 bright A_CustomMissile("ArcherArrow",32,5)
 		KNIG E 5
         Goto See
-	Missile2:	
+	Missile2:
         KNIG E 3 A_PlaySound("archer/draw")
         KNIG E 10 fast slow A_FaceTarget
         KNIG G 5 bright A_CustomMissile("ArcherArrow2",32,5)
