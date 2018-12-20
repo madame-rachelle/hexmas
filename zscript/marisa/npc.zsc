@@ -1,3 +1,6 @@
+// for dialogue advance
+Class mkBossClearedToken : Inventory {}
+
 Class mkClericNPC : Actor
 {
 	Actor spawnspot;
