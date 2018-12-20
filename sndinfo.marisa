@@ -32,6 +32,12 @@ amb/wind01	wind01
 amb/wind30	wind30
 amb/wind32	wind32
 amb/wind33	wind33
+amb/lightn1a	lightn1a
+amb/lightn2a	lightn2a
+amb/lightn3a	lightn3a
+amb/lightn4a	lightn4a
+amb/lightn5a	lightn5a
+$random amb/lightning { amb/lightn1a amb/lightn2a amb/lightn3a amb/lightn4a amb/lightn5a }
 
 $ambient 6400 amb/Stower4c point continuous 1.0
 $ambient 6401 amb/Stower52 point continuous 1.0
@@ -87,3 +93,6 @@ eldrich/beamst	mcfirest
 eldrich/beam	mcfirebm
 $pitchshift eldrich/beamst 0
 $pitchshift eldrich/beam 0
+
+eldrich/icebreak icebrk2
+$pitchshift eldrich/icebreak 0

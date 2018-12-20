@@ -6,7 +6,8 @@ Class mkSnowEttin : Ettin
 		//$Sprite ETTNA1
 		//$Category Marisa/Monsters
 		Translation "81:145=%[0.00,0.00,0.00]:[1.73,1.73,2.00]", "246:254=%[0.00,0.00,0.00]:[1.73,1.73,2.00]", "2:32=122:145", "33:50=122:145", "51:51=125:125";
-		DamageFactor "Ice", 0.2;
+		DamageFactor "Ice", 0.5;
+		DamageFactor "Fire", 1.5;
 		Tag "Snow Ettin";
 		Obituary "%o was smashed by a Snow Ettin.";
 		Scale 1.2;
@@ -17,7 +18,6 @@ Class mkSnowEttin : Ettin
 		MinMissileChance 100;
 		MissileHeight 40;
 		+MISSILEMORE;
-		+NOICEDEATH;
 	}
 	action void A_SnowEttinAttack()
 	{
@@ -55,7 +55,8 @@ Class mkIceDemon : Demon2
 		//$Sprite DEM2A1
 		//$Category Marisa/Monsters
 		Translation "81:96=67:80", "97:121=67:80", "122:145=67:80", "164:185=146:163";
-		DamageFactor "Ice", 0.1;
+		DamageFactor "Ice", 0.3;
+		DamageFactor "Fire", 2.0;
 		BloodColor "Blue";
 		HitObituary "%o got too close to an Ice Serpent.";
 		Obituary "%o was cryogenized by an Ice Serpent.";
@@ -209,12 +210,13 @@ Class mkElderApprentice : Actor
 		//$Title Elder Apprentice
 		//$Category Marisa/Monsters
 		Translation "0:255=#[102,102,102]", "146:163=[0,0,0]:[49,122,73]", "0:32=[0,0,0]:[49,122,73]", "231:239=33:50", "164:185=231:239", "186:202=231:239", "51:66=231:239";
-		Health 120;
-		PainChance 200;
+		Health 150;
+		PainChance 150;
 		Speed 10;
 		Radius 16;
 		Height 64;
 		MONSTER;
+		+FLOORCLIP;
 		Obituary "%o felt the cold touch of an Elder Apprentice.";
 		Tag "Elder Apprentice";
 		SeeSound "apprentice/see";
@@ -327,26 +329,6 @@ Class mkElderApprentice : Actor
 		MAGE Y 5 A_FreezeDeath();
 		MAGE Y 1 A_FreezeDeathChunks();
 		Wait;
-	Burn:
-		FDTH E 5 Bright A_PlaySound("PlayerMageBurnDeath");
-		FDTH F 4 Bright;
-		FDTH G 5 Bright;
-		FDTH H 4 Bright A_PlaySound("apprentice/death");
-		FDTH I 5 Bright;
-		FDTH J 4 Bright;
-		FDTH K 5 Bright;
-		FDTH L 4 Bright;
-		FDTH M 5 Bright;
-		FDTH N 4 Bright;
-		FDTH O 5 Bright;
-		FDTH P 4 Bright;
-		FDTH Q 5 Bright;
-		FDTH R 4 Bright;
-		FDTH S 5 Bright A_NoBlocking();
-		FDTH T 4 Bright;
-		FDTH U 5 Bright;
-		FDTH V 4 Bright;
-		Stop;
 	}
 }
 
@@ -500,7 +482,8 @@ Class mkElderAcolyte : Actor
 		+FLOAT;
 		+NOGRAVITY;
 		+NOBLOOD;
-		+NOTARGETSWITCH;
+		+NOTARGET;
+		+QUICKTORETALIATE;
 		SeeSound "acolyte/see";
 		PainSound "acolyte/pain";
 		DeathSound "acolyte/death";

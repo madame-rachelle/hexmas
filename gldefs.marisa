@@ -512,3 +512,18 @@ object mkElderAcolyte
 	frame ACOLL { light ACOLYTE_X2 }
 	frame ACOLM { light ACOLYTE_X3 }
 }
+
+flickerlight2 TELESMOKEGRN
+{
+	attenuate 1
+	color 0.0 1.0 0.0
+	size 96
+	secondarysize 108
+	interval 0.1
+	offset 0 44 0
+}
+
+object mkGreenTeleSmoke
+{
+    frame TSMK { light TELESMOKEGRN }
+}

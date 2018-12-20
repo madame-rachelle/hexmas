@@ -1,3 +1,5 @@
 texture GPORT1 range GPORT9 tics 5
+flat F_084G range F_088G tics 5
 
 switch SW_G_UP on sound Switch1 pic SW_G_DN tics 0
+switch SW52GOFF on sound Switch2 pic SW52GON tics 0

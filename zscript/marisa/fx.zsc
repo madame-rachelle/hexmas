@@ -11,22 +11,23 @@ Class mkGradingHandler : EventHandler
 	bool genabled;
 	marifx_gradingvars gvars, gvars_in, gvars_out;
 
-	static void GradingTransition( int preset, double speed = 1.0 )
+	static void GradingTransition( Actor activator, int preset, double speed = 1.0, bool local = false )
 	{
 		let hnd = mkGradingHandler(EventHandler.Find("mkGradingHandler"));
 		if ( !hnd ) return;
+		if ( local && activator && (activator.player != players[consoleplayer]) ) return;
 		switch ( preset )
 		{
 		case 0:
 			// outdoor preset
 			hnd.gvars_out.grademul = (0.99,1.03,1.09);
-			hnd.gvars_out.gradepow = (1.01,1.03,0.97);
+			hnd.gvars_out.gradepow = (1.01,1.03,0.87);
 			hnd.gvars_out.gradecol = (-0.46,-0.31,-0.82);
 			hnd.gvars_out.gradecolfact = -0.18;
 			hnd.gvars_out.gradesatmul = 0.88;
 			hnd.gvars_out.gradesatpow = 1.31;
-			hnd.gvars_out.gradevalmul = 0.98;
-			hnd.gvars_out.gradevalpow = 1.28;
+			hnd.gvars_out.gradevalmul = 0.91;
+			hnd.gvars_out.gradevalpow = 1.38;
 			break;
 		case 1:
 			// indoor preset
@@ -107,7 +108,7 @@ Class mkGradingHandler : EventHandler
 		gvars.gradevalmul = 1.0;
 		gvars.gradevalpow = 1.0;
 		if ( level.mapname ~== "MARISA" )
-			GradingTransition(0,0);
+			GradingTransition(null,0,0);
 	}
 
 	override void RenderOverlay( RenderEvent e )
@@ -202,8 +203,9 @@ Class mkSnowMaker : Actor
 		for ( int i=0; i<num; i++ )
 		{
 			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
-			if ( !level.IsPointInMap(spawnpos) )
-				continue;
+			// needs 3.7
+			//if ( !level.IsPointInMap(spawnpos) )
+			//	continue;
 			let f = Spawn("mkSnow",spawnpos);
 			f.master = invoker;
 		}
@@ -306,8 +308,9 @@ Class mkFogMaker : Actor
 		for ( int i=0; i<num; i++ )
 		{
 			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
-			if ( !level.IsPointInMap(spawnpos) )
-				continue;
+			// needs 3.7
+			//if ( !level.IsPointInMap(spawnpos) )
+			//	continue;
 			let f = Spawn("mkFog",spawnpos);
 			f.scale *= 1.+0.1*args[4];
 			f.master = invoker;
@@ -367,8 +370,6 @@ Class mkWarpPipe : Actor
 	{
 		//$Title Warp Tunnel
 		//$Category Marisa/FX
-		RenderStyle "Translucent";
-		Alpha 0.99;
 		+NOBLOCKMAP;
 		+NOGRAVITY;
 		+DONTSPLASH;
@@ -393,4 +394,28 @@ Class mkWarpPipe : Actor
 	Spawn:
 		PRKM A -1 Bright;
 		Stop;	}
+}
+
+Class mkIceIceBaby : Actor
+{
+	Default
+	{
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		for ( int i=0; i<256; i++ )
+		{
+			Vector3 shardpos = Vec3Offset(FRandom[Glass](-60,60),FRandom[Glass](-60,60),FRandom[Glass](-156,156));
+			let s = Spawn("IceChunk",shardpos);
+			double ang = angle+FRandom[Glass](0,360);
+			s.scale *= FRandom[Glass](1.2,2.2);
+			s.vel.xy = (cos(ang),sin(ang))*FRandom[Glass](1.2,4.5);
+			s.vel.z = FRandom[Glass](0.6,3.6);
+		}
+		Destroy();
+	}
 }
