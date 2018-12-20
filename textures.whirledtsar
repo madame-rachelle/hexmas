@@ -1,9 +1,5 @@
 // non-animating clock hands
 
-Texture "DUMMY", 64, 64
-{
-}
-
 Texture "CLOCK01A", 128, 128
 {
 	Patch "CLOCK01", 0, 0
