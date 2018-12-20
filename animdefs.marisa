@@ -1,19 +1,5 @@
 texture GPORT1 range GPORT9 tics 5
+flat F_084G range F_088G tics 5
 
-texture ELDERFL1
-	pic ELDERFL1 tics 5
-	pic ELDERFL2 tics 5
-	pic ELDERFL3 tics 5
-	pic ELDERFL4 tics 5
-	pic ELDERFL5 tics 5
-	pic ELDERFL6 tics 5
-	pic ELDERFL7 tics 5
-	pic ELDERFL8 tics 5
-	pic ELDERFL9 tics 5
-	pic ELDERFLA tics 5
-	pic ELDERFLB tics 5
-	pic ELDERFLC tics 5
-	pic ELDERFLD tics 5
-	pic ELDERFLE tics 5
-	pic ELDERFLF tics 5
-	pic ELDERFLG tics 5
+switch SW_G_UP on sound Switch1 pic SW_G_DN tics 0
+switch SW52GOFF on sound Switch2 pic SW52GON tics 0

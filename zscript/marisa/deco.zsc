@@ -113,3 +113,14 @@ class mkGreenStatueShort : Actor
 		Stop;
 	}
 }
+
+Class mkGreenTeleSmoke : TeleSmoke
+{
+	Default
+	{
+		//$Title Green Teleport Smoke
+		//$Sprite TSMKA0
+		//$Category Marisa/Decoration
+		Translation "0:255=%[0.00,0.00,0.00]:[0.81,1.03,0.75]";
+	}
+}

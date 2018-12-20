@@ -1,0 +1,22 @@
+Terrain ElderFluidShallow
+{
+	splash Sludge
+	footclip 8
+	liquid
+	friction 0.9
+}
+
+Terrain ElderFluid
+{
+	splash Sludge
+	footclip 16
+	liquid
+	friction 0.8
+}
+Terrain ElderFluidDeep
+{
+	splash Sludge
+	footclip 24
+	liquid
+	friction 0.7
+}

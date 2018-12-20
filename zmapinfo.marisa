@@ -1,20 +1,26 @@
 GameInfo
 {
-	AddEventHandlers = "mkGradingHandler"
+	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler"
 }
 
-map MARISA "Untitled"
+map MARISA "Viridescent"
 {
 	music = "creepy"
-	sky1 = "ARCTICS1"
-	sky2 = "ARCTICS2", 0.03
+	sky1 = "SKYWALL2"
+	sky2 = "ARCTICSK", 0.03
 	doublesky
+	evenlighting
+	monsterfallingdamage
+	strictmonsteractivation
+	checkswitchrange
+	grinding_polyobj
 }
 
 DoomEdNums
 {
 	6400 = "mkSnowMaker"
 	6401 = "mkFogMaker"
+	6402 = "mkWarpPipe"
 	6410 = "mkGreenTwinedTorch"
 	6411 = "mkGreenTwinedTorchUnlit"
 	6412 = "mkSmolGreenFlame"
@@ -23,6 +29,7 @@ DoomEdNums
 	6415 = "mkGreenStatueTall"
 	6416 = "mkGreenStatueShort"
 	6417 = "mkLargeGreenFlame"
+	6418 = "mkGreenTeleSmoke"
 	6420 = "mkSnowEttin"
 	6421 = "mkIceDemon"
 	6422 = "mkElderApprentice"

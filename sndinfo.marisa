@@ -26,10 +26,18 @@ amb/scaryL3	scaryL3
 amb/scaryN2	scaryN2
 amb/scaryN4	scaryN4
 amb/wbridgeC	wbridgeC
+amb/wcreak3	wcreak3
+$random amb/bcreaks { amb/wbridgeC amb/wcreak3 }
 amb/wind01	wind01
 amb/wind30	wind30
 amb/wind32	wind32
 amb/wind33	wind33
+amb/lightn1a	lightn1a
+amb/lightn2a	lightn2a
+amb/lightn3a	lightn3a
+amb/lightn4a	lightn4a
+amb/lightn5a	lightn5a
+$random amb/lightning { amb/lightn1a amb/lightn2a amb/lightn3a amb/lightn4a amb/lightn5a }
 
 $ambient 6400 amb/Stower4c point continuous 1.0
 $ambient 6401 amb/Stower52 point continuous 1.0
@@ -59,6 +67,7 @@ $ambient 6424 amb/wind33 point continuous 1.0
 
 apprentice/active	apract
 apprentice/death	aprdie
+apprentice/htaed	apreid
 apprentice/pain1	aprpai
 apprentice/pain2	aprpai2
 $random apprentice/pain { apprentice/pain1 apprentice/pain2 }
@@ -66,3 +75,24 @@ apprentice/see1		aprsit
 apprentice/see2		aprsit2
 $random apprentice/see { apprentice/see1 apprentice/see2 }
 apprentice/xdeath	aprxdie
+
+acolyte/active	acoact
+acolyte/death	acodie
+acolyte/pain	acopai
+acolyte/see	acosit
+$random acolyte/actives { acolyte/active acolyte/see }
+
+eldrich/active	wizact
+eldrich/attack	wizatk
+eldrich/death	wizdie
+eldrich/pain	wizpai
+eldrich/see	wizsit
+eldrich/flash	FLASHIE
+eldrich/tele	HEZETELE
+eldrich/beamst	mcfirest
+eldrich/beam	mcfirebm
+$pitchshift eldrich/beamst 0
+$pitchshift eldrich/beam 0
+
+eldrich/icebreak icebrk2
+$pitchshift eldrich/icebreak 0

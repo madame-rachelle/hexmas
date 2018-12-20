@@ -1,0 +1,51 @@
+Insects			insects1
+Crickets    	crkets
+Crickets2   	crkets1
+Katydid     	katydid
+Frogs2      	frogs
+Owl2        	owl
+Bird2       	bird
+Slurp       	shlurp
+Bubble2     	bubble
+Drop        	drop2
+Rock2       	rocks
+Chains2     	chains
+Gong2       	gong
+SteelScrape 	steel1
+SteelScrape2	steel2
+Wind            wind3
+IceStartMove    icemv2
+
+$ambient 1 Insects point random 15.0 60.0 0.8	//insects             
+$ambient 2 Crickets point random 10.0 60.0 0.8  //crickets   
+$ambient 3 Crickets2 point random 15.0 60.0 0.8 //crickets 2 
+$ambient 4 Katydid point random 10.0 90.0 0.8	//katydid
+$ambient 5 Frogs2 point random 5.0 30.0 0.8		//frogs 
+$ambient 6 Owl2 point random 5.0 60.0 0.8 		//owl
+$ambient 7 Bird2 point random 30.0 100.0 0.8   	//bird
+$ambient 8 Slurp point random 20.0 120.0 0.8 	//slurping movement
+$ambient 9 Bubble2 point random 5.0 10.0 0.8 	//bubbling lava
+$ambient 10 Drop point random 30.0 120.0 0.8	//water drop
+$ambient 11 Rock2 point random 15.0 90.0 0.8 	//rocks fall  
+$ambient 12 Chains2 point random 30.0 180.0 0.8 //chains dragging
+$ambient 13 Gong2 point random 30.0 180.0 0.8	//gong
+$ambient 14 SteelScrape point random 30.0 180.0 0.8   	//steel scrape
+$ambient 15 SteelScrape2 point random 30.0 180.0 0.8	//steel scrape 2
+$ambient 16 WaterMove point continuous 1.0				//flowing river
+$ambient 17 Wind point continuous 1.0					//wind
+$ambient 18 IceStartMove point random 15.0 90.0 0.8		//ice sounds
+
+archer/sight					archidle
+archer/draw						archdraw
+archer/attack					archsht1
+$random archer/attackboss		{ archer/attack1 archer/attack2 }
+archer/attack1					archsht2
+archer/attack2					archsht3
+$random archer/pain				{ archer/pain1 archer/pain2 }
+archer/pain1					archpain
+archer/pain2					archpai2
+$random archer/death			{ archer/death1 archer/death2 }
+archer/death1					archdeth
+archer/death2					archdth2
+archer/growl					archidle
+archer/hit						arr2flsh

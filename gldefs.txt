@@ -13,3 +13,17 @@ material flat "textures/snow.png"
 	metallic "materials/sparkly_metallic.png"
 	ao "materials/white.png"
 }
+material texture "snow"
+{
+	normal "materials/sparkly.png"
+	roughness "materials/sparkly.png"
+	metallic "materials/sparkly_metallic.png"
+	ao "materials/white.png"
+}
+material flat "snow"
+{
+	normal "materials/sparkly.png"
+	roughness "materials/sparkly.png"
+	metallic "materials/sparkly_metallic.png"
+	ao "materials/white.png"
+}

@@ -1,0 +1,44 @@
+// C.R.U.E.L. textures by Ettingrinder
+
+texture optional NW_0095
+allowdecals
+pic NW_0095 tics 5
+pic NW_0096 tics 5
+pic NW_0097 tics 5
+
+texture optional NW_0107
+allowdecals
+pic NW_0107 tics 5
+pic NW_0108 tics 5
+pic NW_0109 tics 5
+
+texture optional NW_0110
+allowdecals
+pic NW_0110 tics 5
+pic NW_0111 tics 5
+pic NW_0112 tics 5
+
+texture optional NW_0047
+pic NW_0047 tics 5
+pic NW_0048 tics 5
+pic NW_0049 tics 5
+
+// Hexen 2
+
+texture optional CANDLE_1 range CANDLE_5 rand 3 5
+
+texture RUNE1_1 range RUNE1_5 tics 7 oscillate
+
+texture RUNE2_1 range RUNE2_4 tics 7 oscillate
+
+texture RUNE3_1 range RUNE3_4 tics 7 oscillate
+
+texture RUNE4_1 range RUNE4_6 tics 7 oscillate
+
+texture optional EVILSK_1 range EVILSK_2 tics 12
+
+warp2 texture ENERGY1
+warp2 texture ENERGY2
+
+warp2 texture SILVER1
+warp2 texture SKULWARP

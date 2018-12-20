@@ -1,6 +1,14 @@
-H2TX* textures from Hexen 2 compiled by Ceeb
-NW*, W_*, F*, NF* textures from C.R.U.E.L. pack by Ettingrinder
-SNOW* Skybox from the Kothic Skyboxes pack by Kell
+Knight Archer monster: Ravagefox, based on sprites by Raven Software & CodenniumRed
+tulku3 MIDI: Hexen 2 - Portals Of Praevus
+H2TX* textures: Hexen 2, compiled by Ceeb
+NW*, W_*, F*, NF* textures: C.R.U.E.L. pack by Ettingrinder
+SNOW* skybox: Kothic Skyboxes pack by Kell
+TRE* sprites: Necrodome
+creepy, horror, drone, bossbttl tracks: Taken from Frackin' Universe (original credits unknown)
+GARGSMAL, GRGW_LWR fonts: NeuralStunner
+LMWZ* sprites: Freedoom
+ACOL* sprites: Eriance
+marisa/amb sounds: Unreal
 
 C.R.U.E.L. full credits:
 
@@ -8,7 +16,7 @@ Improvements on the standard IWAD graphics:
  W_058
  W_077
  EGW_336
- 
+
 Imports from the Hexen beta:
  NW_0000
 
@@ -52,22 +60,22 @@ From work by Dr. Doctor:
 
 From work by Cage:
  NW_0002 and NW_0003
- 
+
 From work by Abbuw:
  NW_0060 (Further edited)
- 
+
 From work by Minigunner
  SKY6RED (Further edited)
- 
+
 From the "Baker's Legacy" texture pack:
  NW_0001
- 
+
 FLAT GRAPHIC CREDITS
 --------------------
 
 Improvements on the standard IWAD graphics:
  F_044
- 
+
 Imports from the Hexen beta:
  F_016
  F_056
