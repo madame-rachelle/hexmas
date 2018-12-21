@@ -9,3 +9,15 @@ Model "mkWarpPipe"
 	Scale 8 8 4.8
 	FrameIndex PRKM A 0 0
 }
+
+Model "mkWizBeam"
+{
+	Path "models"
+	Model 0 "wizbeam.obj"
+	Skin 0 "WIZBEAM"
+	USEACTORPITCH
+	USEACTORROLL
+	DONTCULLBACKFACES
+	Scale 1 1 0.6
+	FrameIndex PRKM A 0 0
+}

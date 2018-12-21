@@ -90,7 +90,7 @@ eldrich/see	wizsit
 eldrich/flash	FLASHIE
 eldrich/tele	HEZETELE
 eldrich/beamst	mcfirest
-eldrich/beam	mcfirebm
+eldrich/beam	wbeam
 $pitchshift eldrich/beamst 0
 $pitchshift eldrich/beam 0
 

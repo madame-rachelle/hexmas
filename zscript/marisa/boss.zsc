@@ -1,18 +1,13 @@
-// PS: not fully implemented yet
-//
-// movement is limited to teleporting around strategically
-// has a pretty punishing long charge time melee attack for players that stay
-// close for too long
-// ranged attacks (in order of preference):
-//  - seeking fireballs
-//  - fire pillars
-//  - teleport (has a shockwave, spots use tid 13001)
-//  - create acolytes (spawn at map spots 13000, raise door with tag 1300), and apprentices (spawn at map spots 13002)
-//  - charged laser (pretty much a master spark)
-// melee attack:
-//  - if players are within melee range for 6 seconds, localized explosions at feet.
+// The Viridescent Lord.
+// The weakest in the Triad of Terror, right below the Nightmare Lord.
+// The strongest of them will appear someday... in another project.
 Class mkElderWizard : Actor
 {
+	Array<Actor> TeleSpots;
+	int last_tele;
+	int meleecharge, mcnt;
+	int lchg;
+
 	private static int ilerp( int a, int b, double theta )
 	{
 		return int(floor(a*(1.0-theta)+b*theta));
@@ -38,18 +33,257 @@ Class mkElderWizard : Actor
 		}
 	}
 
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		// populate arrays
+		ActorIterator t = ActorIterator.Create(13001);
+		Actor a;
+		while ( a = t.Next() ) TeleSpots.Push(a);
+		// set last spot to the last in the array (assuming the iterator follows map thing order)
+		last_tele = TeleSpots.Size()-1;
+	}
+
+	override int DamageMobj( Actor inflictor, Actor source, int damage, Name mod, int flags, double angle )
+	{
+		// reduce damage while attacking
+		if ( !InStateSequence(CurState,FindState("See")) ) damage /= 2;
+		mcnt -= Random[EWizDecide](3,9);
+		return Super.DamageMobj(inflictor,source,damage,mod,flags,angle);
+	}
+
+	// charge melee attack if players nearby
+	void A_WizCheckMelee()
+	{
+		A_FaceTarget(15);
+		if ( Random[EWizardAct]() < 6 )
+		{
+			A_QuakeEx(2,2,2,50,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+			PlayActiveSound();
+		}
+		bool inrange = false;
+		for ( int i=0; i<MAXPLAYERS; i++ )
+		{
+			if ( !playeringame[i] ) continue;
+			double dist = Distance2D(players[i].mo);
+			if ( dist > 120 ) continue;
+			inrange = true;
+			if ( (meleecharge > 40) && !Random[EWizMelee](0,10) && (dist < 90) )
+				players[i].mo.DamageMobj(self,self,meleecharge/40,'Melee',0,AngleTo(players[i].mo));
+		}
+		if ( inrange ) meleecharge++;
+		else meleecharge = max(0,meleecharge-4);
+		for ( int i=0; i<10; i++ )
+		{
+			double ang = 36*i+FRandom[EWizPoof](-18.,18.);
+			let p = Spawn("mkRisingMeleePoof",Vec3Angle(FRandom[EWizPoof](radius,100),ang,8));
+			p.vel.xy = (cos(ang),sin(ang))*FRandom[EWizPoof](1.0,3.0);
+			p.alpha = meleecharge/500.;
+		}
+		if ( meleecharge > 100 )
+		{
+			meleecharge = 0;
+			SetStateLabel("Melee");
+		}
+		mcnt--;
+		if ( mcnt <= 0 ) SetState(CurState+1);
+	}
+
+	void A_WizMeleePuffs()
+	{
+		for ( int i=0; i<MAXPLAYERS; i++ )
+		{
+			if ( !playeringame[i] || (Distance2D(players[i].mo) > 80) ) continue;
+			if ( !Random[EWizMelee](0,8) )
+				players[i].mo.DamageMobj(self,self,3,'Melee',0,AngleTo(players[i].mo));
+		}
+		for ( int i=0; i<10; i++ )
+		{
+			double ang = 36*i+FRandom[EWizPoof](-18.,18.);
+			let p = Spawn("mkRisingMeleePoof",Vec3Angle(FRandom[EWizPoof](radius,100),ang,8));
+			p.vel.xy = (cos(ang),sin(ang))*FRandom[EWizPoof](1.0,3.0);
+		}
+	}
+
+	void A_WizMelee()
+	{
+		A_QuakeEx(6,6,6,90,0,65535,"",QF_RELATIVE|QF_SCALEDOWN);
+		A_PlaySound("SorcererBigBallExplode",CHAN_WEAPON,attenuation:ATTN_NONE);
+		A_PlaySound("SorcererBallExplode",CHAN_ITEM,attenuation:ATTN_NONE);
+		for ( int i=0; i<10; i++ )
+		{
+			double ang = 36*i+FRandom[EWizPoof](-18.,18.);
+			let p = Spawn("mkWizMeleeBlast",Vec3Angle(radius,ang,0));
+			p.target = self;
+			p.vel.xy = (cos(ang),sin(ang))*p.speed;
+		}
+	}
+
+	// choose an attack to use
+	void A_WizDecide()
+	{
+		mcnt = Random[EWizDecide](60,90);
+		if ( !Random[EWizDecide](0,3) ) return;
+		int dec = Random[EWizDecide](0,12);
+		if ( dec <= 2 )
+		{
+			// charged laser
+			SetStatelabel("ChargeLaser");
+		}
+		else if ( dec <= 6 )
+		{
+			// seeking fireballs
+			SetStateLabel("SeekingFireballs");
+		}
+		else if ( dec <= 9 )
+		{
+			// teleport
+			SetStateLabel("Teleport");
+		}
+		else
+		{
+			// spawn enemies
+			int countmooks = 0;
+			let t = ThinkerIterator.Create("Actor");
+			Actor a;
+			while ( a = Actor(t.Next()) )
+			{
+				if ( a is 'mkMookCaller' ) return;
+				if ( (a.Health <= 0) || (a.master != self) ) continue;
+				countmooks++;
+			}
+			if ( countmooks <= 2 ) SetStateLabel("CallInMooks");
+		}
+	}
+
+	void A_TeleIn()
+	{
+		int rp = Random[EWizTeleport](0,TeleSpots.Size()-2);
+		if ( rp >= last_tele ) rp++;
+		last_tele = rp;
+		A_TeleportFlash();
+		bNODAMAGE = true;
+		bSOLID = false;
+		bSHOOTABLE = false;
+	}
+
+	void A_TeleOut()
+	{
+		bNODAMAGE = false;
+		bSOLID = true;
+		bSHOOTABLE = true;
+		TeleportMove(TeleSpots[last_tele].pos,true);
+		if ( target ) A_FaceTarget(0,0);
+		else
+		{
+			angle = TeleSpots[last_tele].angle;
+			pitch = 0;
+		}
+		A_TeleportFlash();
+	}
+
+	void A_DeathFlash()
+	{
+		A_PlaySound("eldrich/flash",CHAN_WEAPON,attenuation:ATTN_NONE);
+		players[consoleplayer].camera.A_SetBlend("80 FF 80",1.,10);
+	}
+
+	void A_TeleportFlash()
+	{
+		A_PlaySound("eldrich/tele",CHAN_WEAPON,attenuation:ATTN_NONE);
+		A_QuakeEx(4,4,4,50,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		players[consoleplayer].camera.A_SetBlend("80 FF 80",0.5,25);
+		for ( int i=0; i<360; i+=10 )
+		{
+			let s = Spawn("mkWizDust",pos);
+			s.vel.xy = (cos(i),sin(i))*9.0;
+		}
+		for ( int i=0; i<64; i++ )
+			Spawn("mkWizSprinkles",Vec3Offset(FRandom[EWizFX](-radius,radius),FRandom[EWizFX](-radius,radius),FRandom[EWizFX](0,height)));
+		for ( int i=0; i<8; i++ )
+		{
+			let s = Spawn("mkWizAfterImage",pos);
+			s.angle = angle;
+			s.vel = vel+(FRandom[EWizFX](-2,2),FRandom[EWizFX](-2,2),FRandom[EWizFX](-1,1));
+		}
+		let b = BlockThingsIterator.Create(self);
+		while ( b.Next() )
+		{
+			if ( !b.Thing || !b.Thing.bSHOOTABLE || (b.Thing.Health <= 0) || (b.Thing == self) || (Distance2D(b.Thing) > 200) ) continue;
+			b.Thing.DamageMobj(self,self,40,'Melee',DMG_THRUSTLESS);
+			double ang = AngleTo(b.Thing);
+			if ( b.Thing.Mass >= LARGE_MASS || b.Thing.bDONTTHRUST ) continue;
+			b.Thing.vel.xy += (cos(ang),sin(ang))*12;
+			b.Thing.vel.z += 8;
+		}
+	}
+
+	void A_ShootFireball()
+	{
+		A_FaceTarget(15);
+		let s = SpawnMissileXYZ(Vec3Angle(radius*2,angle,205.),target,"mkAcolyteBoom",false);
+		s.scale *= 1.5;
+		s.args[0] = 2;
+	}
+
+	void A_ChargeLaser()
+	{
+		A_FaceTarget(30);
+		Vector3 convergepos = Vec3Angle(radius*2,angle,205.);
+		double ang = FRandom[EWizFX](0,360);
+		double pt = FRandom[EWizFX](-90,90);
+		Vector3 spawnpos = level.Vec3Offset(convergepos,(cos(ang)*cos(pt),sin(ang)*cos(pt),-sin(pt))*80);
+		for ( int i=0; i<4; i++ )
+		{
+			let s = Spawn("mkWizSprinkleConverge",spawnpos);
+			mkWizSprinkleConverge(s).conv = convergepos;
+			mkWizSprinkleConverge(s).chg = lchg;
+		}
+		let sx = Spawn("mkWizChargePoint",convergepos);
+		sx.alpha = lchg/90.;
+		lchg++;
+		if ( lchg > 50 ) SetState(CurState+1);
+	}
+
+	void A_FireLaser()
+	{
+		A_FaceTarget(2);
+		Vector3 spos = Vec3Angle(radius*2,angle,205.);
+		let sx = Spawn("mkWizChargePoint",spos);
+		sx.Scale *= 0.5;
+		if ( !tracer )
+		{
+			tracer = Spawn("mkWizBeam",spos);
+			tracer.target = self;
+		}
+		tracer.angle = angle;
+		tracer.pitch = lchg*0.7+90;
+		mkWizBeam(tracer).A_AdjustBeam();
+		lchg--;
+		if ( lchg <= 0 ) SetStateLabel("FinishLaser");
+	}
+
+	void A_ClearLaser()
+	{
+		if ( tracer ) tracer.SetStateLabel("Death");
+	}
+
 	Default
 	{
 		//$Title Viridescent Lord
 		//$Category Marisa/Monsters
 		Scale 3.0;
-		Health 16000;
+		Health 15000;
 		Mass int.max;
 		Radius 30;
 		Height 240;
+		MissileHeight 205;
 		DamageFactor "Fire", 0.6;
-		DamageFactor "Ice", 0.4;
-		DamageFactor "Poison", 0.3;
+		DamageFactor "Ice", 0.6;
+		DamageFactor "Poison", 0.4;
+		DamageFactor "PoisonCloud", 0.4;
+		DamageFactor "AcolyteBoom", 0.0;
+		DamageFactor "AcolyteFire", 0.0;
 		BloodColor "Purple";
 		Tag "\cdViridescent Lord\c-";
 		Obituary "%o succumbed to the Viridescent Lord.";
@@ -58,6 +292,7 @@ Class mkElderWizard : Actor
 		+BOSS;
 		+DONTMORPH;
 		+DONTTHRUST;
+		+TELESTOMP;
 		+NOTARGET;
 		+NOICEDEATH;
 		+FULLVOLACTIVE;
@@ -70,23 +305,6 @@ Class mkElderWizard : Actor
 		ActiveSound "eldrich/active";
 		PainSound "eldrich/pain";
 		DeathSound "eldrich/death";
-	}
-	override int DamageMobj( Actor inflictor, Actor source, int damage, Name mod, int flags, double angle )
-	{
-		// TODO reduce damage while attacking
-		// further reduce the holy damage
-		if ( inflictor is 'HolySpirit' ) damage /= 2;
-		return Super.DamageMobj(inflictor,source,damage,mod,flags,angle);
-	}
-	void A_DeathFlash()
-	{
-		A_PlaySound("eldrich/flash",CHAN_WEAPON,attenuation:ATTN_NONE);
-		players[consoleplayer].camera.A_SetBlend("80 FF 80",1.,10);
-	}
-	void A_TeleportFlash()
-	{
-		A_PlaySound("eldrich/tele",CHAN_WEAPON,attenuation:ATTN_NONE);
-		players[consoleplayer].camera.A_SetBlend("80 FF 80",0.5,25);
 	}
 	States
 	{
@@ -104,10 +322,96 @@ Class mkElderWizard : Actor
 		}
 		Wait;
 	See:
-		LMWZ A 2 A_FaceTarget(15);
+		LMWZ A 2 A_WizCheckMelee();
 		Wait;
+		LMWZ A 0 A_WizDecide();
+		Loop;
+	Melee:
+		LMWZ AAAAAAAAABBBBBBBBB 2 A_WizMeleePuffs();
+		LMWZ C 0
+		{
+			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+			A_PlaySound("eldrich/attack",CHAN_VOICE,attenuation:ATTN_NONE);
+		}
+		LMWZ CCCCCC 2 A_WizMeleePuffs();
+		LMWZ D 16 A_WizMelee();
+		LMWZ CBA 6;
+		Goto See;
+	CallInMooks:
+		LMWZ B 16;
+		LMWZ C 8
+		{
+			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+			A_PlaySound("eldrich/attack",CHAN_VOICE,attenuation:ATTN_NONE);
+		}
+		LMWZ D 20
+		{
+			let c = Spawn("mkMookCaller");
+			c.target = target;
+			c.master = self;
+		}
+		LMWZ CBA 8;
+		Goto See;
+	Teleport:
+		LMWZ B 20;
+		TNT1 A 120 A_TeleIn();
+		LMWZ B 20 A_TeleOut();
+		Goto See;
+	SeekingFireballs:
+		LMWZ B 8 A_FaceTarget();
+		LMWZ C 8
+		{
+			A_FaceTarget();
+			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+			A_PlaySound("eldrich/attack",CHAN_VOICE,attenuation:ATTN_NONE);
+		}
+		LMWZ DDD 8 A_FaceTarget(15);
+		LMWZ D 8 A_ShootFireball();
+		LMWZ DDD 8 A_FaceTarget(15);
+		LMWZ D 8 A_ShootFireball();
+		LMWZ DDD 8 A_FaceTarget(15);
+		LMWZ D 8 A_ShootFireball();
+		LMWZ CBA 6;
+		Goto See;
+	ChargeLaser:
+		LMWZ B 8 A_FaceTarget();
+		LMWZ C 8
+		{
+			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+			A_PlaySound("eldrich/attack",CHAN_VOICE,attenuation:ATTN_NONE);
+		}
+		LMWZ D 0 A_PlaySound("eldrich/beamst",CHAN_WEAPON,attenuation:ATTN_NONE);
+		LMWZ D 2 A_ChargeLaser();
+		Wait;
+		LMWZ D 8;
+		LMWZ D 0
+		{
+			A_PlaySound("eldrich/beam",CHAN_WEAPON,1.0,true,attenuation:ATTN_NONE);
+			A_PlaySound("eldrich/beam",CHAN_ITEM,1.0,true,attenuation:ATTN_NONE);
+			A_QuakeEx(9,9,9,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+			lchg = 100;
+		}
+	FiringLaser:
+		LMWZ D 1 A_FireLaser();
+		LMWZ D 0 A_FireLaser();
+		Goto FiringLaser;
+	FinishLaser:
+		LMWZ D 20
+		{
+			A_StopSound(CHAN_WEAPON);
+			A_StopSound(CHAN_ITEM);
+			A_ClearLaser();
+		}
+		LMWZ CBA 6;
+		Goto See;
 	Death:
-		LMWZ E 4;
+		LMWZ E 4
+		{
+			A_KillChildren();
+			A_StopSound(CHAN_WEAPON);
+			A_StopSound(CHAN_ITEM);
+			A_ClearLaser();
+		}
 		LMWZ E 4 A_DeathFlash();
 		LMWZ E 20 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
 		LMWZ E 4 A_DeathFlash();
@@ -130,6 +434,492 @@ Class mkElderWizard : Actor
 			A_QuakeEx(3,3,3,20,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
 		}
 		Goto Spawn;
+	}
+}
+
+Class mkWizAfterimage : Actor
+{
+	Default
+	{
+		Scale 3.0;
+		RenderStyle "Translucent";
+		Alpha 0.5;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+	}
+	States
+	{
+	Spawn:
+		LMWZ B 1 A_FadeOut(0.02);
+		Wait;
+	}
+}
+
+Class mkMookCaller : Actor
+{
+	Array<Actor> AcolyteSpots;
+	Array<int> AcolyteDoors, AcolyteDoorInsides;
+
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		// populate arrays
+		ActorIterator t = ActorIterator.Create(13000);
+		Actor a;
+		while ( a = t.Next() ) AcolyteSpots.Push(a);
+		SectorTagIterator s = SectorTagIterator.Create(1300);
+		int i;
+		while ( (i = s.Next()) != -1 ) AcolyteDoors.Push(i);
+		s = SectorTagIterator.Create(1301);
+		while ( (i = s.Next()) != -1 ) AcolyteDoorInsides.Push(i);
+	}
+
+	void A_WaitDoor( bool close = false )
+	{
+		for ( int i=0; i<AcolyteDoors.Size(); i++ )
+		{
+			int d = AcolyteDoors[i];
+			// if closing, crush anything that's in the way
+			if ( close )
+			{
+				for ( Actor a=level.Sectors[d].thinglist; a; a=a.snext )
+					a.DamageMobj(null,null,50,'Crush',DMG_THRUSTLESS|DMG_FORCED);
+			}
+			if ( level.Sectors[d].CeilingData ) return;
+		}
+		SetState(CurState+1);
+	}
+
+	void A_CloseDoor()
+	{
+		level.ExecuteSpecial(Door_Close,self,null,false,1300,32);
+	}
+
+	void A_OpenDoor()
+	{
+		level.ExecuteSpecial(Door_Open,self,null,false,1300,32);
+	}
+
+	void A_CallAcolytes()
+	{
+		for ( int i=0; i<AcolyteSpots.Size(); i++ )
+		{
+			let t = Spawn("mkElderAcolyte",AcolyteSpots[i].pos);
+			t.angle = AcolyteSpots[i].angle;
+			t.target = target;
+			t.vel.xy = (cos(t.angle),sin(t.angle))*15.;
+			t.master = master;
+		}
+	}
+
+	void A_ClearInside()
+	{
+		for ( int i=0; i<AcolyteDoorInsides.Size(); i++ )
+		{
+			for ( Actor a=level.Sectors[AcolyteDoorInsides[i]].thinglist; a; a=a.snext )
+			{
+				if ( a.player ) a.DamageMobj(null,null,int.max,'Crush',DMG_THRUSTLESS|DMG_FORCED);
+				else
+				{
+					a.ClearCounters();
+					a.Destroy();
+				}
+			}
+		}
+	}
+
+	Default
+	{
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+	}
+
+	States
+	{
+	Spawn:
+		TNT1 A 1 A_WaitDoor();
+		Wait;
+		TNT1 A 0 A_CloseDoor();
+		TNT1 A 1 A_WaitDoor(true);
+		Wait;
+		TNT1 A 1 A_OpenDoor();
+		TNT1 A 1 A_WaitDoor();
+		TNT1 A 120 A_CallAcolytes();
+		TNT1 A 0 A_CloseDoor();
+		TNT1 A 1 A_WaitDoor(true);
+		Wait;
+		TNT1 A 1 A_ClearInside();
+		Stop;
+	}
+}
+
+Class mkRisingMeleePoof : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Alpha 0.2;
+		Scale 2.0;
+		Radius 2;
+		Height 2;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+FORCEXYBILLBOARD;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		SetState(FindState("Spawn")+Random[EWizPoof](0,6));
+	}
+	States
+	{
+	Spawn:
+		FSFX NOPQRST 2 Bright
+		{
+			A_FadeOut(0.01);
+			vel.xy *= 0.98;
+			vel.z += 0.04;
+		}
+		Loop;
+	}
+}
+
+Class mkWizSprinkles : Actor
+{
+	int tcnt;
+	Default
+	{
+		RenderStyle "Add";
+		Translation "0:255=%[0.00,0.00,0.00]:[0.74,1.51,0.64]";
+		Radius 2;
+		Height 2;
+		Scale 1.2;
+		+MISSILE;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+THRUACTORS;
+		+DONTSPLASH;
+		+FORCEXYBILLBOARD;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		frame = Random[EWizFX](0,4);
+	}
+	States
+	{
+	Spawn:
+		TLGL # 1 BRIGHT
+		{
+			tcnt++;
+			if ( !(tcnt%3) ) frame++;
+			if ( frame > 4 ) frame = 0;
+			vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](0.1,0.2);
+			A_FadeOut(0.02);
+		}
+		Wait;
+	Death:
+		TLGL # 1
+		{
+			tcnt++;
+			if ( !(tcnt%3) ) frame++;
+			if ( frame > 4 ) frame = 0;
+			A_FadeOut(0.2);
+		}
+		Wait;
+	}
+}
+
+Class mkWizChargePoint : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Translation "0:255=%[0.00,0.00,0.00]:[0.74,1.51,0.64]";
+		Radius 2;
+		Height 2;
+		Scale 1.5;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+FORCEXYBILLBOARD;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		double ang, pt;
+		ang = FRandom[Puff](0,360);
+		pt = FRandom[Puff](-90,90);
+		vel = (cos(pt)*cos(ang),cos(pt)*sin(ang),-sin(pt))*FRandom[Puff](1.6,3.2);
+	}
+	States
+	{
+	Spawn:
+		ICPR DEFGH 3 Bright;
+		Stop;
+	}
+}
+
+Class mkWizSprinkleConverge : Actor
+{
+	int tcnt, chg;
+	Vector3 conv, spn;
+	double dst;
+	Default
+	{
+		RenderStyle "Add";
+		Translation "0:255=%[0.00,0.00,0.00]:[0.74,1.51,0.64]";
+		Alpha 0.0;
+		Radius 2;
+		Height 2;
+		Scale 1.2;
+		+MISSILE;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+THRUACTORS;
+		+DONTSPLASH;
+		+FORCEXYBILLBOARD;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		spn = pos;
+		dst = level.Vec3Diff(pos,conv).length();
+	}
+	States
+	{
+	Spawn:
+	Death:
+		TLGL # 1 BRIGHT
+		{
+			tcnt++;
+			if ( !(tcnt%3) ) frame++;
+			if ( frame > 4 ) frame = 0;
+			Vector3 dff = level.Vec3Diff(pos,conv);
+			if ( dff.length() > double.epsilon )
+				vel += dff.unit()*0.4;
+			alpha = clamp(0.5-(dff.length()/dst),0,1)*(chg/50.);
+			vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](0.1,0.2);
+			if ( dff.length() < 8 ) Destroy();
+		}
+		Wait;
+	}
+}
+
+Class mkWizMeleeBlast : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Translation "231:239=187:202";
+		Scale 2.0;
+		Radius 8;
+		Height 4;
+		Gravity 0.15;
+		Speed 10;
+		+NOBLOCKMAP;
+		+DONTSPLASH;
+		+MISSILE;
+		+STEPMISSILE;
+		+THRUACTORS;
+		+NOEXPLODEFLOOR;
+	}
+	override void Tick()
+	{
+		Super.Tick();
+		if ( level.frozen || globalfreeze ) return;
+		let b = BlockThingsIterator.Create(self,90);
+		while ( b.Next() )
+		{
+			if ( !b.Thing || !b.Thing.bSHOOTABLE || (b.Thing.Health <= 0) || (b.Thing == target) || (Distance3D(b.Thing) > 90) ) continue;
+			b.Thing.DamageMobj(self,target,8,'Melee',DMG_THRUSTLESS);
+			if ( b.Thing.Mass >= LARGE_MASS || b.Thing.bDONTTHRUST ) continue;
+			b.Thing.vel += vel*0.2;
+			b.Thing.vel.z += 2.;
+		}
+	}
+	States
+	{
+	Spawn:
+	Death:
+		SBS4 D 3 Bright;
+		SBS4 E 4 Bright;
+		SBS4 F 5 Bright;
+		SBS4 G 6 Bright;
+		SBS4 H 7 Bright;
+		Stop;
+	}
+}
+
+Class mkWizDust : Actor
+{
+	Default
+	{
+		RenderStyle "Translucent";
+		Radius 8;
+		Height 2;
+		Alpha 0.5;
+		Scale 1.5;
+		Gravity 0.5;
+		+NOBLOCKMAP;
+		+DONTSPLASH;
+		+MISSILE;
+		+STEPMISSILE;
+		+THRUACTORS;
+		+NOEXPLODEFLOOR;
+	}
+	States
+	{
+	Spawn:
+		SDST A 1
+		{
+			A_FadeOut(0.02);
+			A_SetScale(scale.x*1.01,scale.y*0.99);
+		}
+		Wait;
+	Death:
+		SDST A 1
+		{
+			A_FadeOut(0.06);
+			A_SetScale(scale.x*1.01,scale.y*0.99);
+		}
+		Wait;
+	}
+}
+
+Class mkWizBeamTracer : LineTracer
+{
+	Actor ignoreme;
+	Array<Actor> hitlist;
+
+	override ETraceStatus TraceCallback()
+	{
+		if ( Results.HitType == TRACE_HitActor )
+		{
+			if ( Results.HitActor == ignoreme ) return TRACE_Skip;
+			if ( Results.HitActor.bSHOOTABLE ) hitlist.Push(Results.HitActor);
+			return TRACE_Skip;
+		}
+		else if ( (Results.HitType == TRACE_HitWall) && (Results.Tier == TIER_Middle) )
+		{
+			if ( !Results.HitLine.sidedef[1] || (Results.HitLine.Flags&(Line.ML_BlockHitscan|Line.ML_BlockEverything)) )
+				return TRACE_Stop;
+			return TRACE_Skip;
+		}
+		return TRACE_Stop;
+	}
+}
+
+Class mkWizBeam : Actor
+{
+	transient mkWizBeamTracer t;
+	Vector3 lasthit;
+	Array<Actor> booms;
+	int bpos;
+	Default
+	{
+		RenderStyle "Add";
+		Radius 0;
+		Height 0.1;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+INTERPOLATEANGLES;
+	}
+	void A_AdjustBeam()
+	{
+		if ( !t ) t = new("mkWizBeamTracer");
+		t.ignoreme = target;
+		t.hitlist.Clear();
+		t.Trace(pos,CurSector,(cos(angle)*cos(pitch-90),sin(angle)*cos(pitch-90),-sin(pitch-90)),8000,0);
+		for ( int i=0; i<t.hitlist.Size(); i++ )
+			t.hitlist[i].DamageMobj(self,target,10,'Railgun',DMG_THRUSTLESS);
+		A_SetScale(2.,t.Results.Distance);
+		if ( level.Vec3Diff(t.Results.HitPos,lasthit).length() > 12 )
+		{
+			let s = Spawn("mkWizDelayBoom",t.Results.HitPos-t.Results.HitVector*4);
+			s.target = target;
+			lasthit = t.Results.HitPos;
+			booms.Push(s);
+		}
+	}
+	void A_DetonateBooms()
+	{
+		for ( int i=0; i<5; i++ )
+		{
+			if ( bpos >= booms.Size() )
+			{
+				Destroy();
+				return;
+			}
+			if ( i == 2 ) booms[bpos].SetStateLabel("Death");
+			else booms[bpos].Destroy();
+			bpos++;
+		}
+	}
+	States
+	{
+	Spawn:
+		PRKM A -1;
+		Stop;
+	Death:
+		PRKM A 1 A_FadeOut(0.1,0);
+		PRKM A 0 A_JumpIf(alpha<=0,1);
+		Loop;
+		TNT1 A 2 A_DetonateBooms();
+		Wait;
+	}
+}
+
+Class mkWizDelayBoom : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Translation "0:255=%[0.00,0.00,0.00]:[0.74,1.51,0.64]";
+		Scale 1.6;
+		Radius 0;
+		Height 0.1;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+FORCEYBILLBOARD;
+		+EXTREMEDEATH;
+	}
+	void A_SplodeUp( int dmg, double rad )
+	{
+		let b = BlockThingsIterator.Create(self);
+		while ( b.Next() )
+		{
+			if ( !b.Thing || !b.Thing.bSHOOTABLE || (b.Thing.Health <= 0) || (b.Thing == target) || (Distance2D(b.Thing) > rad) ) continue;
+			double dfact = 1.-(Distance2D(b.Thing)/rad);
+			b.Thing.DamageMobj(self,target,int(dmg*dfact),'Explosion',DMG_THRUSTLESS);
+			double ang = AngleTo(b.Thing);
+			if ( b.Thing.Mass >= LARGE_MASS || b.Thing.bDONTTHRUST ) continue;
+			b.Thing.vel.xy += (cos(ang),sin(ang))*8*dfact;
+			b.Thing.vel.z += 12*dfact;
+		}
+	}
+	States
+	{
+	Spawn:
+		FX13 ABCDEFGH 2 Bright;
+		TNT1 A -1;
+		Stop;
+	Death:
+		MSP1 H 3 Bright
+		{
+			A_SetScale(3.0,4.5);
+			A_PlaySound("SorcererBigBallExplode");
+			A_SetTics(Random[EWizFX](1,3));
+			A_SplodeUp(40,200);
+		}
+		MSP1 IJK 3 Bright A_SplodeUp(15,120);
+		MSP1 LMNOP 3 Bright;
+		Stop;
 	}
 }
 
