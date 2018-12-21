@@ -1,0 +1,64 @@
+// complete slot 4 weapons for all classes
+
+Class mkFullQuietus : CustomInventory
+{
+	Default
+	{
+		//$Title Full Quietus Pickup
+		//$Category Marisa/Weapons
+		Inventory.PickupSound "misc/w_pkup";
+		Inventory.ForbiddenTo "ClericPlayer", "MagePlayer";
+		Inventory.PickupMessage "QUIETUS";
+	}
+	States
+	{
+	Spawn:
+		WFRS A -1;
+		Stop;
+	Pickup:
+		TNT1 A 0 A_GiveInventory("FWeapQuietus");
+		Stop;
+	}
+}
+
+Class mkFullWraithverge : CustomInventory
+{
+	Default
+	{
+		//$Title Full Wraithverge Pickup
+		//$Category Marisa/Weapons
+		Inventory.PickupSound "misc/w_pkup";
+		Inventory.ForbiddenTo "FighterPlayer", "MagePlayer";
+		Inventory.PickupMessage "WRAITHVERGE";
+	}
+	States
+	{
+	Spawn:
+		WCHS A -1;
+		Stop;
+	Pickup:
+		TNT1 A 0 A_GiveInventory("CWeapWraithverge");
+		Stop;
+	}
+}
+
+Class mkFullBloodscourge : CustomInventory
+{
+	Default
+	{
+		//$Title Full Bloodscourge Pickup
+		//$Category Marisa/Weapons
+		Inventory.PickupSound "misc/w_pkup";
+		Inventory.ForbiddenTo "FighterPlayer", "ClericPlayer";
+		Inventory.PickupMessage "BLOODSCOURGE";
+	}
+	States
+	{
+	Spawn:
+		WMSS A -1;
+		Stop;
+	Pickup:
+		TNT1 A 0 A_GiveInventory("MWeapBloodscourge");
+		Stop;
+	}
+}

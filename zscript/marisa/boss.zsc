@@ -3,6 +3,10 @@
 // The strongest of them will appear someday... in another project.
 Class mkElderWizard : Actor
 {
+	const TELESPOT_TID = 13001;
+	const LITE_TID = 77;
+	const SKYBOX_TAG = 44;
+
 	Array<Actor> TeleSpots;
 	int last_tele;
 	int meleecharge, mcnt;
@@ -15,7 +19,7 @@ Class mkElderWizard : Actor
 
 	static void DoLightning( double str )
 	{
-		let l = ActorIterator.Create(77);
+		let l = ActorIterator.Create(LITE_TID);
 		Actor a;
 		while ( a = l.Next() )
 		{
@@ -23,7 +27,7 @@ Class mkElderWizard : Actor
 			a.args[1] = 255;
 			a.args[2] = ilerp(64,224,str);
 		}
-		let s = SectorTagIterator.Create(44);
+		let s = SectorTagIterator.Create(SKYBOX_TAG);
 		int i;
 		while ( (i = s.Next()) != -1 )
 		{
@@ -37,7 +41,7 @@ Class mkElderWizard : Actor
 	{
 		Super.PostBeginPlay();
 		// populate arrays
-		ActorIterator t = ActorIterator.Create(13001);
+		ActorIterator t = ActorIterator.Create(TELESPOT_TID);
 		Actor a;
 		while ( a = t.Next() ) TeleSpots.Push(a);
 		// set last spot to the last in the array (assuming the iterator follows map thing order)
@@ -86,7 +90,7 @@ Class mkElderWizard : Actor
 			SetStateLabel("Melee");
 		}
 		mcnt--;
-		if ( mcnt <= 0 ) SetState(CurState+1);
+		if ( (mcnt <= 0) && (meleecharge <= 0) ) SetState(CurState+1);
 	}
 
 	void A_WizMeleePuffs()
@@ -123,7 +127,8 @@ Class mkElderWizard : Actor
 	void A_WizDecide()
 	{
 		mcnt = Random[EWizDecide](60,90);
-		if ( !Random[EWizDecide](0,3) ) return;
+		if ( !target || (target.Health <= 0) || !CheckSight(target) ) return;
+		if ( Random[EWizDecide](0,1) ) return;
 		int dec = Random[EWizDecide](0,12);
 		if ( dec <= 2 )
 		{
@@ -158,8 +163,12 @@ Class mkElderWizard : Actor
 
 	void A_TeleIn()
 	{
-		int rp = Random[EWizTeleport](0,TeleSpots.Size()-2);
-		if ( rp >= last_tele ) rp++;
+		int rp = 0;
+		if ( TeleSpots.Size() > 1 )
+		{
+			rp = Random[EWizTeleport](0,TeleSpots.Size()-2);
+			if ( rp >= last_tele ) rp++;
+		}
 		last_tele = rp;
 		A_TeleportFlash();
 		bNODAMAGE = true;
@@ -172,13 +181,13 @@ Class mkElderWizard : Actor
 		bNODAMAGE = false;
 		bSOLID = true;
 		bSHOOTABLE = true;
-		TeleportMove(TeleSpots[last_tele].pos,true);
-		if ( target ) A_FaceTarget(0,0);
-		else
+		if ( TeleSpots.Size() > 0 )
 		{
-			angle = TeleSpots[last_tele].angle;
-			pitch = 0;
+			TeleportMove(TeleSpots[last_tele].pos,true);
+			if ( target ) A_FaceTarget();
+			else angle = TeleSpots[last_tele].angle;
 		}
+		else A_FaceTarget();
 		A_TeleportFlash();
 	}
 
@@ -228,7 +237,7 @@ Class mkElderWizard : Actor
 
 	void A_ChargeLaser()
 	{
-		A_FaceTarget(30);
+		A_FaceTarget(15);
 		Vector3 convergepos = Vec3Angle(radius*2,angle,205.);
 		double ang = FRandom[EWizFX](0,360);
 		double pt = FRandom[EWizFX](-90,90);
@@ -247,7 +256,7 @@ Class mkElderWizard : Actor
 
 	void A_FireLaser()
 	{
-		A_FaceTarget(2);
+		if ( lchg&1 ) A_FaceTarget(2);
 		Vector3 spos = Vec3Angle(radius*2,angle,205.);
 		let sx = Spawn("mkWizChargePoint",spos);
 		sx.Scale *= 0.5;
@@ -256,6 +265,7 @@ Class mkElderWizard : Actor
 			tracer = Spawn("mkWizBeam",spos);
 			tracer.target = self;
 		}
+		tracer.SetOrigin(spos,true);
 		tracer.angle = angle;
 		tracer.pitch = lchg*0.7+90;
 		mkWizBeam(tracer).A_AdjustBeam();
@@ -458,6 +468,10 @@ Class mkWizAfterimage : Actor
 
 Class mkMookCaller : Actor
 {
+	const SPOT_TID = 13000;
+	const DOOR_TAG = 1300;
+	const DOORIN_TAG = 1301;
+
 	Array<Actor> AcolyteSpots;
 	Array<int> AcolyteDoors, AcolyteDoorInsides;
 
@@ -465,14 +479,16 @@ Class mkMookCaller : Actor
 	{
 		Super.PostBeginPlay();
 		// populate arrays
-		ActorIterator t = ActorIterator.Create(13000);
+		ActorIterator t = ActorIterator.Create(SPOT_TID);
 		Actor a;
 		while ( a = t.Next() ) AcolyteSpots.Push(a);
-		SectorTagIterator s = SectorTagIterator.Create(1300);
+		SectorTagIterator s = SectorTagIterator.Create(DOOR_TAG);
 		int i;
 		while ( (i = s.Next()) != -1 ) AcolyteDoors.Push(i);
-		s = SectorTagIterator.Create(1301);
+		s = SectorTagIterator.Create(DOORIN_TAG);
 		while ( (i = s.Next()) != -1 ) AcolyteDoorInsides.Push(i);
+		if ( (AcolyteSpots.Size() <= 0) || (AcolyteDoors.Size() <= 0) || (AcolyteDoorInsides.Size() <= 0) )
+			Destroy();
 	}
 
 	void A_WaitDoor( bool close = false )
@@ -493,12 +509,12 @@ Class mkMookCaller : Actor
 
 	void A_CloseDoor()
 	{
-		level.ExecuteSpecial(Door_Close,self,null,false,1300,32);
+		level.ExecuteSpecial(Door_Close,self,null,false,DOOR_TAG,32);
 	}
 
 	void A_OpenDoor()
 	{
-		level.ExecuteSpecial(Door_Open,self,null,false,1300,32);
+		level.ExecuteSpecial(Door_Open,self,null,false,DOOR_TAG,32);
 	}
 
 	void A_CallAcolytes()

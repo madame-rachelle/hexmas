@@ -26,7 +26,7 @@ Class mkClericNPC : Actor
 	{
 		if ( (Health > 0) && source && source.player && bFRIENDLY )
 		{
-			A_PrintBold("Have you gone insane?");
+			source.A_Print("Have you gone insane?");
 			bFRIENDLY = false;
 		}
 		return Super.DamageMobj(inflictor,source,damage,mod,flags,angle);

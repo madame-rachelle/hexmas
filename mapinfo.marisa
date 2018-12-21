@@ -40,4 +40,7 @@ DoomEdNums
 	6424 = "mkElderWizard"
 	6430 = "mkClericNPC"
 	6431 = "mkApprenticeSighting"
+	6440 = "mkFullQuietus"
+	6441 = "mkFullWraithverge"
+	6442 = "mkFullBloodscourge"
 }
