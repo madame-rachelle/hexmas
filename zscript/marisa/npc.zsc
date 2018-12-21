@@ -51,7 +51,7 @@ Class mkClericNPC : Actor
 	States
 	{
 	Spawn:
-		CLER A 2
+		CLER ] 2
 		{
 			A_LookEx(LOF_NOJUMP);
 			if ( target && (!bFRIENDLY || !target.player) )
@@ -77,6 +77,8 @@ Class mkClericNPC : Actor
 	ChaosReturn:
 		CLER A 10;
 		CLER A 0 Teleport(SpawnPoint,SpawnAngle,TELF_SOURCEFOG|TELF_DESTFOG);
+		CLER A 5;
+		Goto Spawn;
 	Returning:
 		CLER AABBCCDD 2
 		{

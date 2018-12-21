@@ -9,6 +9,7 @@ GARGSMAL, GRGW_LWR fonts: NeuralStunner
 LMWZ* sprites: Freedoom
 ACOL* sprites: Eriance
 marisa/amb sounds: Unreal
+Cleric standing sprites: EttinGrinder
 
 C.R.U.E.L. full credits:
 
