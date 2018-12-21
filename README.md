@@ -11,7 +11,6 @@ Rachael and Marisa Kirisame<br/>
 Rachael<br/>
 Paar<br/>
 Marisa Kirisame<br/>
-fluffyshambler<br/>
 Crazy Toni<br/>
 whirledtsar<br/>
 
