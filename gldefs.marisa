@@ -525,5 +525,95 @@ flickerlight2 TELESMOKEGRN
 
 object mkGreenTeleSmoke
 {
-    frame TSMK { light TELESMOKEGRN }
+	frame TSMK { light TELESMOKEGRN }
+}
+
+object mkWizMeleeBlast
+{
+	frame SBS4D { light ACOLYTE_X1 }
+	frame SBS4E { light ACOLYTE_X2 }
+	frame SBS4F { light ACOLYTE_X2 }
+	frame SBS4G { light ACOLYTE_X3 }
+}
+
+flickerlight2 DBOOM_1
+{
+	attenuate 1
+	color 0.4 1.0 0.4
+	size 60
+	secondarysize 72
+	interval 0.1
+}
+flickerlight2 DBOOM_2
+{
+	attenuate 1
+	color 0.2 0.5 0.2
+	size 50
+	secondarysize 62
+	interval 0.1
+}
+flickerlight2 DBOOM_3
+{
+	attenuate 1
+	color 0.1 0.25 0.1
+	size 40
+	secondarysize 52
+	interval 0.1
+}
+flickerlight2 DBOOM_4
+{
+	attenuate 1
+	color 0.05 0.125 0.05
+	size 30
+	secondarysize 42
+	interval 0.1
+}
+
+flickerlight DBOOM_X1
+{
+	attenuate 1
+	color 0.5 1.0 0.5
+	offset 0 80 0
+	size 192
+	secondarysize 216
+}
+flickerlight DBOOM_X2
+{
+	attenuate 1
+	color 0.4 0.6 0.4
+	offset 0 80 0
+	size 180
+	secondarysize 208
+}
+flickerlight DBOOM_X3
+{
+	attenuate 1
+	color 0.1 0.2 0.1
+	offset 0 80 0
+	size 168
+	secondarysize 192
+}
+
+object mkWizDelayBoom
+{
+	// FX13 ABCDEFGH
+	// MSP1 HIJKLMNOP
+	// init
+	frame FX13A { light DBOOM_1 }
+	frame FX13B { light DBOOM_1 }
+	frame FX13C { light DBOOM_2 }
+	frame FX13D { light DBOOM_2 }
+	frame FX13E { light DBOOM_3 }
+	frame FX13F { light DBOOM_3 }
+	frame FX13G { light DBOOM_4 }
+	frame FX13H { light DBOOM_4 }
+	// detonate
+	frame MSP1H { light DBOOM_X1 }
+	frame MSP1I { light DBOOM_X1 }
+	frame MSP1J { light DBOOM_X2 }
+	frame MSP1K { light DBOOM_X2 }
+	frame MSP1L { light DBOOM_X2 }
+	frame MSP1M { light DBOOM_X3 }
+	frame MSP1N { light DBOOM_X3 }
+	frame MSP1O { light DBOOM_X3 }
 }

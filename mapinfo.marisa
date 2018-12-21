@@ -8,6 +8,9 @@ map MARISA "Viridescent"
 	music = "creepy"
 	sky1 = "SKYWALL2"
 	sky2 = "ARCTICSK", 0.03
+	ResetInventory
+	ResetHealth
+	ResetItems
 	doublesky
 	evenlighting
 	monsterfallingdamage

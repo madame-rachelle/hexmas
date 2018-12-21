@@ -36,7 +36,7 @@ Class mkLargeGreenFlame : FlameLarge
 	Default
 	{
 		//$Title Large Green Flame
-		//$Sprite FFLGA0
+		//$Sprite FFLGE0
 		//$Category Marisa/Decoration
 		Translation "81:121=#[192,255,192]", "122:255=#[128,255,128]";
 	}

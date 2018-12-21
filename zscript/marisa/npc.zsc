@@ -17,6 +17,7 @@ Class mkClericNPC : Actor
 		Height 64;
 		MONSTER;
 		+FRIENDLY;
+		+STANDSTILL;
 		-COUNTKILL;
 		Obituary "%o got bludgeoned by a cleric.";
 		Tag "Cleric";
@@ -65,13 +66,17 @@ Class mkClericNPC : Actor
 			if ( !target || (target.health <= 0) || (target.player && bFRIENDLY) )
 			{
 				A_ClearTarget();
+				if ( !spawnspot ) ThrowAbortException("Spawn Spot does not exist for Cleric NPC");
+				if ( Distance2D(spawnspot) > 2000. ) return ResolveState("ChaosReturn");
 				goal = spawnspot;
-				if ( !goal ) ThrowAbortException("Spawn Spot does not exist for Cleric NPC");
 				return ResolveState("Returning");
 			}
 			return ResolveState(null);
 		}
 		Loop;
+	ChaosReturn:
+		CLER A 10;
+		CLER A 0 Teleport(SpawnPoint,SpawnAngle,TELF_SOURCEFOG|TELF_DESTFOG);
 	Returning:
 		CLER AABBCCDD 2
 		{
