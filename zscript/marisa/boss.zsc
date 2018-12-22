@@ -336,7 +336,7 @@ Class mkElderWizard : Actor
 	States
 	{
 	Spawn:
-		LMWZ A 2
+		VIRL A 2
 		{
 			A_LookEx(LOF_NOJUMP,0,0,0,360);
 			if ( target )
@@ -350,82 +350,82 @@ Class mkElderWizard : Actor
 		}
 		Wait;
 	See:
-		LMWZ A 2 A_WizCheckMelee();
+		VIRL A 2 A_WizCheckMelee();
 		Wait;
-		LMWZ A 0 A_WizDecide();
+		VIRL A 0 A_WizDecide();
 		Loop;
 	Melee:
-		LMWZ AAAAAAAAABBBBBBBBB 2 A_WizMeleePuffs();
-		LMWZ C 0
+		VIRL AAAAAAAAABBBBBBBBB 2 A_WizMeleePuffs();
+		VIRL C 0
 		{
 			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
 			A_PlaySound("eldrich/attack",CHAN_VOICE,attenuation:ATTN_NONE);
 		}
-		LMWZ CCCCCCCCC 2 A_WizMeleePuffs();
-		LMWZ D 16 A_WizMelee();
-		LMWZ CBA 6;
+		VIRL CCCCCCCCC 2 A_WizMeleePuffs();
+		VIRL D 16 A_WizMelee();
+		VIRL CBA 6;
 		Goto See;
 	CallInMooks:
-		LMWZ B 16;
-		LMWZ C 8
+		VIRL B 16;
+		VIRL C 8
 		{
 			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
 			A_PlaySound("eldrich/attack",CHAN_VOICE,attenuation:ATTN_NONE);
 		}
-		LMWZ D 20
+		VIRL D 20
 		{
 			let c = Spawn("mkMookCaller");
 			c.target = target;
 			c.master = self;
 		}
-		LMWZ CBA 8;
+		VIRL CBA 8;
 		Goto See;
 	Teleport:
-		LMWZ B 0 { fires = 0; }
+		VIRL B 0 { fires = 0; }
 	Teleport2:
-		LMWZ B 20;
+		VIRL B 20;
 		TNT1 A 120 A_TeleIn();
-		LMWZ B 20 A_TeleOut();
-		LMWZ A 0 A_JumpIf(fires>=3,2);
-		LMWZ A 0 A_Jump(160,"Teleport2");
-		LMWZ A 0 A_Jump(120,"SeekingFireballs");
-		LMWZ A 0 A_Jump(90,"ChargeLaser");
+		VIRL B 20 A_TeleOut();
+		VIRL A 0 A_JumpIf(fires>=3,2);
+		VIRL A 0 A_Jump(160,"Teleport2");
+		VIRL A 0 A_Jump(120,"SeekingFireballs");
+		VIRL A 0 A_Jump(90,"ChargeLaser");
 		Goto See;
 	SeekingFireballs:
-		LMWZ B 8 A_FaceTarget();
-		LMWZ C 8
+		VIRL B 8 A_FaceTarget();
+		VIRL C 8
 		{
 			A_FaceTarget();
 			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
 			A_PlaySound("eldrich/attack",CHAN_VOICE,attenuation:ATTN_NONE);
 			fires = 0;
 		}
-		LMWZ DDD 8 A_FaceTarget(10);
-		LMWZ D 8 A_ShootFireball();
+		VIRL DDD 8 A_FaceTarget(10);
+		VIRL D 8 A_ShootFireball();
 	AnotherFireball1:
-		LMWZ DD 8 A_FaceTarget(10);
-		LMWZ D 8 A_ShootFireball();
-		LMWZ D 0 A_JumpIf(fires>=3,2);
-		LMWZ D 0 A_Jump(90,"AnotherFireball1");
+		VIRL DD 8 A_FaceTarget(10);
+		VIRL D 8 A_ShootFireball();
+		VIRL D 0 A_JumpIf(fires>=3,2);
+		VIRL D 0 A_Jump(90,"AnotherFireball1");
 	AnotherFireball2:
-		LMWZ D 8 A_FaceTarget(10);
-		LMWZ D 8 A_ShootFireball();
-		LMWZ D 0 A_JumpIf(fires>=5,2);
-		LMWZ D 0 A_Jump(60,"AnotherFireball2");
-		LMWZ DCBA 6;
+		VIRL D 8 A_FaceTarget(10);
+		VIRL D 8 A_ShootFireball();
+		VIRL D 0 A_JumpIf(fires>=5,2);
+		VIRL D 0 A_Jump(60,"AnotherFireball2");
+		VIRL DCBA 6;
 		Goto See;
 	ChargeLaser:
-		LMWZ B 8 A_FaceTarget();
-		LMWZ C 8
+		VIRL B 8 A_FaceTarget();
+		VIRL C 8
 		{
 			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
 			A_PlaySound("eldrich/attack",CHAN_VOICE,attenuation:ATTN_NONE);
 		}
-		LMWZ D 0 A_PlaySound("eldrich/beamst",CHAN_WEAPON,attenuation:ATTN_NONE);
-		LMWZ D 2 A_ChargeLaser();
+		VIRL D 0 A_PlaySound("eldrich/beamst",CHAN_WEAPON,attenuation:ATTN_NONE);
+		VIRL D 2 A_ChargeLaser();
 		Wait;
-		LMWZ D 8;
-		LMWZ D 0
+		VIRL D 8;
+		VIRL D 0
 		{
 			A_PlaySound("eldrich/beam",CHAN_WEAPON,1.0,true,attenuation:ATTN_NONE);
 			A_PlaySound("eldrich/beam",CHAN_ITEM,1.0,true,attenuation:ATTN_NONE);
@@ -433,43 +433,43 @@ Class mkElderWizard : Actor
 			lchg = 100;
 		}
 	FiringLaser:
-		LMWZ D 1 A_FireLaser();
-		LMWZ D 0 A_FireLaser();
+		VIRL D 1 A_FireLaser();
+		VIRL D 0 A_FireLaser();
 		Goto FiringLaser;
 	FinishLaser:
-		LMWZ D 20
+		VIRL D 20
 		{
 			A_StopSound(CHAN_WEAPON);
 			A_StopSound(CHAN_ITEM);
 			A_ClearLaser();
 		}
-		LMWZ CBA 6;
+		VIRL CBA 6;
 		Goto See;
 	Death:
-		LMWZ E 4
+		VIRL E 4
 		{
 			A_KillChildren();
 			A_StopSound(CHAN_WEAPON);
 			A_StopSound(CHAN_ITEM);
 			A_ClearLaser();
 		}
-		LMWZ E 4 A_DeathFlash();
-		LMWZ E 20 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
-		LMWZ E 4 A_DeathFlash();
-		LMWZ E 40 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
-		LMWZ E 4 A_DeathFlash();
-		LMWZ E 60 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
-		LMWZ F 0 A_Scream();
-		LMWZ F 20 A_QuakeEx(9,9,9,180,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
-		LMWZ GHIJK 20;
-		LMWZ L -1 A_NoBlocking();
+		VIRL E 4 A_DeathFlash();
+		VIRL E 20 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		VIRL E 4 A_DeathFlash();
+		VIRL E 40 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		VIRL E 4 A_DeathFlash();
+		VIRL E 60 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		VIRL F 0 A_Scream();
+		VIRL F 20 A_QuakeEx(9,9,9,180,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		VIRL GHIJK 20;
+		VIRL L -1 A_NoBlocking();
 		Stop;
 	InIce:
-		LMWZ E -1;
+		VIRL E -1;
 		Stop;
 	OutOfIce:
-		LMWZ E 8;
-		LMWZ E 40
+		VIRL E 8;
+		VIRL E 40
 		{
 			A_PlaySound(PainSound,CHAN_VOICE,attenuation:ATTN_NONE);
 			A_QuakeEx(3,3,3,20,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
@@ -492,7 +492,7 @@ Class mkWizAfterimage : Actor
 	States
 	{
 	Spawn:
-		LMWZ B 1 A_FadeOut(0.02);
+		VIRL B 1 A_FadeOut(0.02);
 		Wait;
 	}
 }

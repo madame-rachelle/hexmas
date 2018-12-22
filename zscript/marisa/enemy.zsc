@@ -697,50 +697,50 @@ Class mkElderAcolyte : Actor
 	States
 	{
 	Spawn:
-		ACOL A 2 A_Look();
+		ECOL A 2 A_Look();
 		Wait;
 	See:
-		ACOL A 2 A_VileChase();
-		ACOL A 2 A_AcolyteChase();
-		ACOL A 2 A_VileChase();
-		ACOL B 2 A_VileChase();
-		ACOL B 2 A_AcolyteChase();
-		ACOL B 2 A_VileChase();
-		ACOL A 0 A_AcolyteDecide();
+		ECOL A 2 A_VileChase();
+		ECOL A 2 A_AcolyteChase();
+		ECOL A 2 A_VileChase();
+		ECOL B 2 A_VileChase();
+		ECOL B 2 A_AcolyteChase();
+		ECOL B 2 A_VileChase();
+		ECOL A 0 A_AcolyteDecide();
 		Loop;
 	Heal:
-		ACOL A 2 A_PlaySound("BishopAttack");
-		ACOL DE 3 Bright;
-		ACOL F 4 Bright;
-		ACOL ED 3 Bright;
-		ACOL A 2;
+		ECOL A 2 A_PlaySound("BishopAttack");
+		ECOL DE 3 Bright;
+		ECOL F 4 Bright;
+		ECOL ED 3 Bright;
+		ECOL A 2;
 		Goto See;
 	Melee:
-		ACOL A 0 A_DecideBack();
+		ECOL A 0 A_DecideBack();
 	Missile:
-		ACOL A 0 A_PlaySound("BishopAttack");
-		ACOL A 3 A_FaceTarget();
-		ACOL DE 4 Bright A_FaceTarget();
-		ACOL FFFF 6 Bright A_AcolyteAttack();
-		ACOL ED 4 Bright;
-		ACOL A 3;
+		ECOL A 0 A_PlaySound("BishopAttack");
+		ECOL A 3 A_FaceTarget();
+		ECOL DE 4 Bright A_FaceTarget();
+		ECOL FFFF 6 Bright A_AcolyteAttack();
+		ECOL ED 4 Bright;
+		ECOL A 3;
 		Goto See;
 	Pain:
-		ACOL CCC 2
+		ECOL CCC 2
 		{
 			let s = Spawn("mkAcolyteAfterImage",pos);
 			s.angle = angle;
 			s.frame = frame;
 			s.vel = vel+(FRandom[AcolytePain](-2,2),FRandom[AcolytePain](-2,2),FRandom[AcolytePain](-1,1));
 		}
-		ACOL C 6 A_Pain();
-		ACOL C 0 A_TryMoveAway();
+		ECOL C 6 A_Pain();
+		ECOL C 0 A_TryMoveAway();
 		Goto See;
 	Death:
-		ACOL G 6;
-		ACOL H 6 Bright A_Scream();
-		ACOL I 5 Bright A_NoBlocking();
-		ACOL J 5 Bright
+		ECOL G 6;
+		ECOL H 6 Bright A_Scream();
+		ECOL I 5 Bright A_NoBlocking();
+		ECOL J 5 Bright
 		{
 			A_PlaySound("SorcererBallExplode",CHAN_WEAPON);
 			A_Explode(Random[AcolyteBoom](25,40),120);
@@ -748,31 +748,31 @@ Class mkElderAcolyte : Actor
 			a.target = self;
 			a.args[0] = 3;
 		}
-		ACOL K 5 Bright
+		ECOL K 5 Bright
 		{
 			A_Explode(Random[AcolyteBoom](20,30),90);
 			let a = Spawn("mkAcolyteBoom",Vec3Offset(0,0,45));
 			a.target = self;
 			a.args[0] = 3;
 		}
-		ACOL LM 4 Bright;
-		ACOL N 4 A_SpawnItemEx("BishopPuff",0,0,40,0,0,-0.5);
-		ACOL O 4 A_QueueCorpse();
-		ACOL P -1;
+		ECOL LM 4 Bright;
+		ECOL N 4 A_SpawnItemEx("BishopPuff",0,0,40,0,0,-0.5);
+		ECOL O 4 A_QueueCorpse();
+		ECOL P -1;
 		Stop;
 	Ice:
 		BISH X 5 A_FreezeDeath();
 		BISH X 1 A_FreezeDeathChunks();
 		Wait;
 	Strafe:
-		ACOL A 0
+		ECOL A 0
 		{
 			scnt = 0;
 			dcnt = Random[AcolyteStrafe](12,16);
 			A_FaceTarget();
 			A_PlaySound("BishopBlur",CHAN_6);
 		}
-		ACOL A 1
+		ECOL A 1
 		{
 			scnt++;
 			if ( !(scnt%2) )
@@ -788,14 +788,14 @@ Class mkElderAcolyte : Actor
 		}
 		Wait;
 	MoveBack:
-		ACOL A 0
+		ECOL A 0
 		{
 			scnt = 0;
 			dcnt = Random[AcolyteStrafe](9,12);
 			A_FaceTarget();
 			A_PlaySound("BishopBlur",CHAN_6);
 		}
-		ACOL A 1
+		ECOL A 1
 		{
 			scnt++;
 			if ( !(scnt%2) )
@@ -811,14 +811,14 @@ Class mkElderAcolyte : Actor
 		}
 		Wait;
 	MoveAway:
-		ACOL C 0
+		ECOL C 0
 		{
 			scnt = 0;
 			dcnt = Random[AcolyteStrafe](12,15);
 			A_FaceTarget();
 			A_PlaySound("BishopBlur",CHAN_6);
 		}
-		ACOL C 1
+		ECOL C 1
 		{
 			scnt++;
 			if ( !(scnt%2) )
@@ -850,7 +850,7 @@ Class mkAcolyteAfterImage : Actor
 	States
 	{
 	Spawn:
-		ACOL # 1 A_FadeOut(0.03);
+		ECOL # 1 A_FadeOut(0.03);
 		Wait;
 	}
 }

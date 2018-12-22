@@ -40,154 +40,154 @@ hardwareshader texture "ELDERFL3"
 }
 
 // acolyte
-brightmap sprite ACOLA1
+brightmap sprite ECOLA1
 {
-	map "brightmaps/ACOLA1.png"
+	map "brightmaps/ECOLA1.png"
 	disablefullbright
 }
-brightmap sprite ACOLA8A2
+brightmap sprite ECOLA8A2
 {
-	map "brightmaps/ACOLA8A2.png"
+	map "brightmaps/ECOLA8A2.png"
 	disablefullbright
 }
-brightmap sprite ACOLB1
+brightmap sprite ECOLB1
 {
-	map "brightmaps/ACOLB1.png"
+	map "brightmaps/ECOLB1.png"
 	disablefullbright
 }
-brightmap sprite ACOLB8B2
+brightmap sprite ECOLB8B2
 {
-	map "brightmaps/ACOLB8B2.png"
+	map "brightmaps/ECOLB8B2.png"
 	disablefullbright
 }
-brightmap sprite ACOLC1
+brightmap sprite ECOLC1
 {
-	map "brightmaps/ACOLC1.png"
+	map "brightmaps/ECOLC1.png"
 	disablefullbright
 }
-brightmap sprite ACOLC7C3
+brightmap sprite ECOLC7C3
 {
-	map "brightmaps/ACOLC7C3.png"
+	map "brightmaps/ECOLC7C3.png"
 	disablefullbright
 }
-brightmap sprite ACOLC8C2
+brightmap sprite ECOLC8C2
 {
-	map "brightmaps/ACOLC8C2.png"
+	map "brightmaps/ECOLC8C2.png"
 	disablefullbright
 }
-brightmap sprite ACOLD1
+brightmap sprite ECOLD1
 {
-	map "brightmaps/ACOLD1.png"
+	map "brightmaps/ECOLD1.png"
 	disablefullbright
 }
-brightmap sprite ACOLD6D4
+brightmap sprite ECOLD6D4
 {
-	map "brightmaps/ACOLD6D4.png"
+	map "brightmaps/ECOLD6D4.png"
 	disablefullbright
 }
-brightmap sprite ACOLD7D3
+brightmap sprite ECOLD7D3
 {
-	map "brightmaps/ACOLD7D3.png"
+	map "brightmaps/ECOLD7D3.png"
 	disablefullbright
 }
-brightmap sprite ACOLD8D2
+brightmap sprite ECOLD8D2
 {
-	map "brightmaps/ACOLD8D2.png"
+	map "brightmaps/ECOLD8D2.png"
 	disablefullbright
 }
-brightmap sprite ACOLE1
+brightmap sprite ECOLE1
 {
-	map "brightmaps/ACOLE1.png"
+	map "brightmaps/ECOLE1.png"
 	disablefullbright
 }
-brightmap sprite ACOLE5
+brightmap sprite ECOLE5
 {
-	map "brightmaps/ACOLE5.png"
+	map "brightmaps/ECOLE5.png"
 	disablefullbright
 }
-brightmap sprite ACOLE6E4
+brightmap sprite ECOLE6E4
 {
-	map "brightmaps/ACOLE6E4.png"
+	map "brightmaps/ECOLE6E4.png"
 	disablefullbright
 }
-brightmap sprite ACOLE7E3
+brightmap sprite ECOLE7E3
 {
-	map "brightmaps/ACOLE7E3.png"
+	map "brightmaps/ECOLE7E3.png"
 	disablefullbright
 }
-brightmap sprite ACOLE8E2
+brightmap sprite ECOLE8E2
 {
-	map "brightmaps/ACOLE8E2.png"
+	map "brightmaps/ECOLE8E2.png"
 	disablefullbright
 }
-brightmap sprite ACOLF1
+brightmap sprite ECOLF1
 {
-	map "brightmaps/ACOLF1.png"
+	map "brightmaps/ECOLF1.png"
 	disablefullbright
 }
-brightmap sprite ACOLF5
+brightmap sprite ECOLF5
 {
-	map "brightmaps/ACOLF5.png"
+	map "brightmaps/ECOLF5.png"
 	disablefullbright
 }
-brightmap sprite ACOLF6F4
+brightmap sprite ECOLF6F4
 {
-	map "brightmaps/ACOLF6F4.png"
+	map "brightmaps/ECOLF6F4.png"
 	disablefullbright
 }
-brightmap sprite ACOLF7F3
+brightmap sprite ECOLF7F3
 {
-	map "brightmaps/ACOLF7F3.png"
+	map "brightmaps/ECOLF7F3.png"
 	disablefullbright
 }
-brightmap sprite ACOLF8F2
+brightmap sprite ECOLF8F2
 {
-	map "brightmaps/ACOLF8F2.png"
+	map "brightmaps/ECOLF8F2.png"
 	disablefullbright
 }
-brightmap sprite ACOLG0
+brightmap sprite ECOLG0
 {
-	map "brightmaps/ACOLG0.png"
+	map "brightmaps/ECOLG0.png"
 	disablefullbright
 }
-brightmap sprite ACOLH0
+brightmap sprite ECOLH0
 {
-	map "brightmaps/ACOLH0.png"
+	map "brightmaps/ECOLH0.png"
 	disablefullbright
 }
-brightmap sprite ACOLI0
+brightmap sprite ECOLI0
 {
-	map "brightmaps/ACOLI0.png"
+	map "brightmaps/ECOLI0.png"
 	disablefullbright
 }
-brightmap sprite ACOLJ0
+brightmap sprite ECOLJ0
 {
-	map "brightmaps/ACOLJ0.png"
+	map "brightmaps/ECOLJ0.png"
 	disablefullbright
 }
-brightmap sprite ACOLK0
+brightmap sprite ECOLK0
 {
-	map "brightmaps/ACOLK0.png"
+	map "brightmaps/ECOLK0.png"
 	disablefullbright
 }
-brightmap sprite ACOLL0
+brightmap sprite ECOLL0
 {
-	map "brightmaps/ACOLL0.png"
+	map "brightmaps/ECOLL0.png"
 	disablefullbright
 }
-brightmap sprite ACOLM0
+brightmap sprite ECOLM0
 {
-	map "brightmaps/ACOLM0.png"
+	map "brightmaps/ECOLM0.png"
 	disablefullbright
 }
-brightmap sprite ACOLN0
+brightmap sprite ECOLN0
 {
-	map "brightmaps/ACOLN0.png"
+	map "brightmaps/ECOLN0.png"
 	disablefullbright
 }
-brightmap sprite ACOLO0
+brightmap sprite ECOLO0
 {
-	map "brightmaps/ACOLO0.png"
+	map "brightmaps/ECOLO0.png"
 	disablefullbright
 }
 
@@ -455,21 +455,21 @@ object mkAcolyteBoom
 	frame SPIRO { light REAVERBALLGRN_X3 }
 }
 
-pointlight ACOLYTEATK1
+pointlight EACOLYTEATK1
 {
 	attenuate 1
 	color 0.2 0.4 0.2
 	offset 0 40 0
 	size 90
 }
-pointlight ACOLYTEATK2
+pointlight EACOLYTEATK2
 {
 	attenuate 1
 	color 0.3 0.6 0.3
 	offset 0 40 0
 	size 120
 }
-pointlight ACOLYTEATK3
+pointlight EACOLYTEATK3
 {
 	attenuate 1
 	color 0.5 1.0 0.5
@@ -477,7 +477,7 @@ pointlight ACOLYTEATK3
 	size 150
 }
 
-flickerlight ACOLYTE_X1
+flickerlight EACOLYTE_X1
 {
 	attenuate 1
 	color 0.5 1.0 0.5
@@ -485,7 +485,7 @@ flickerlight ACOLYTE_X1
 	size 96
 	secondarysize 108
 }
-flickerlight ACOLYTE_X2
+flickerlight EACOLYTE_X2
 {
 	attenuate 1
 	color 0.4 0.6 0.4
@@ -493,7 +493,7 @@ flickerlight ACOLYTE_X2
 	size 90
 	secondarysize 104
 }
-flickerlight ACOLYTE_X3
+flickerlight EACOLYTE_X3
 {
 	attenuate 1
 	color 0.1 0.2 0.1
@@ -504,15 +504,15 @@ flickerlight ACOLYTE_X3
 
 object mkElderAcolyte
 {
-	frame ACOLD { light ACOLYTEATK1 }
-	frame ACOLE { light ACOLYTEATK2 }
-	frame ACOLF { light ACOLYTEATK3 }
-	frame ACOLH { light ACOLYTE_X3 }
-	frame ACOLI { light ACOLYTE_X2 }
-	frame ACOLJ { light ACOLYTE_X1 }
-	frame ACOLK { light ACOLYTE_X1 }
-	frame ACOLL { light ACOLYTE_X2 }
-	frame ACOLM { light ACOLYTE_X3 }
+	frame ECOLD { light EACOLYTEATK1 }
+	frame ECOLE { light EACOLYTEATK2 }
+	frame ECOLF { light EACOLYTEATK3 }
+	frame ECOLH { light EACOLYTE_X3 }
+	frame ECOLI { light EACOLYTE_X2 }
+	frame ECOLJ { light EACOLYTE_X1 }
+	frame ECOLK { light EACOLYTE_X1 }
+	frame ECOLL { light EACOLYTE_X2 }
+	frame ECOLM { light EACOLYTE_X3 }
 }
 
 flickerlight2 TELESMOKEGRN
@@ -532,10 +532,10 @@ object mkGreenTeleSmoke
 
 object mkWizMeleeBlast
 {
-	frame SBS4D { light ACOLYTE_X1 }
-	frame SBS4E { light ACOLYTE_X2 }
-	frame SBS4F { light ACOLYTE_X2 }
-	frame SBS4G { light ACOLYTE_X3 }
+	frame SBS4D { light EACOLYTE_X1 }
+	frame SBS4E { light EACOLYTE_X2 }
+	frame SBS4F { light EACOLYTE_X2 }
+	frame SBS4G { light EACOLYTE_X3 }
 }
 
 flickerlight2 DBOOM_1
