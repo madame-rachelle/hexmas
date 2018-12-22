@@ -448,9 +448,11 @@ flickerlight REAVERBALLGRN_X3
 
 object mkAcolyteBoom
 {
-	frame WRBLD { light REAVERBALLGRN_X1 }
-	frame WRBLE { light REAVERBALLGRN_X2 }
-	frame WRBLF { light REAVERBALLGRN_X3 }
+	frame SPIRK { light REAVERBALLGRN_X1 }
+	frame SPIRL { light REAVERBALLGRN_X2 }
+	frame SPIRM { light REAVERBALLGRN_X2 }
+	frame SPIRN { light REAVERBALLGRN_X3 }
+	frame SPIRO { light REAVERBALLGRN_X3 }
 }
 
 pointlight ACOLYTEATK1

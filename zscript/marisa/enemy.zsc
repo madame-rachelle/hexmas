@@ -22,7 +22,7 @@ Class mkSnowEttin : Ettin
 	double _PitchTo( Actor other )
 	{
 		if ( !other ) return 0;
-		Vector3 otherpos = Vec3To(other);
+		Vector3 otherpos = level.Vec3Diff(Vec3Angle(radius/2,angle,missileheight),other.Vec3Offset(0,0,other.height/2));
 		double dist = otherpos.length();
 		if ( dist > 0 ) return -asin(otherpos.z/dist);
 		return 0;
@@ -79,7 +79,7 @@ Class mkIceDemon : Demon2
 	double _PitchTo( Actor other )
 	{
 		if ( !other ) return 0;
-		Vector3 otherpos = Vec3To(other);
+		Vector3 otherpos = level.Vec3Diff(Vec3Offset(0,0,62),other.Vec3Offset(0,0,other.height/2));
 		double dist = otherpos.length();
 		if ( dist > 0 ) return -asin(otherpos.z/dist);
 		return 0;
@@ -249,7 +249,7 @@ Class mkElderApprentice : Actor
 			A_PlaySound("apprentice/active",CHAN_5,vol,attenuation:4.0);
 		}
 	}
-	action void A_ApprenticeAttack()
+	void A_ApprenticeAttack()
 	{
 		A_PlaySound("FireDemonAttack",CHAN_WEAPON);
 		if ( !target ) return;
@@ -264,7 +264,7 @@ Class mkElderApprentice : Actor
 			return;
 		}
 	}
-	action bool CheckDoor()
+	bool CheckDoor()
 	{
 		FLineTraceData d;
 		LineTrace(angle,radius*speed,0,TRF_THRUACTORS,50.,data:d);
@@ -276,7 +276,7 @@ Class mkElderApprentice : Actor
 		}
 		return false;
 	}
-	action bool CheckDoorMove()
+	bool CheckDoorMove()
 	{
 		FLineTraceData d;
 		LineTrace(angle,radius*speed,0,TRF_THRUACTORS,height,data:d);
@@ -383,10 +383,11 @@ Class mkSmokePoof : Actor
 
 Class mkAcolyteFire : Actor
 {
+	Vector3 InitialDir, Acceleration;
 	Default
 	{
 		Scale 0.5;
-		Speed 15;
+		Speed 9;
 		Radius 4;
 		Height 4;
 		Translation "0:255=%[0.00,0.00,0.00]:[0.80,2.00,0.80]";
@@ -395,29 +396,9 @@ Class mkAcolyteFire : Actor
 		SeeSound "DemonMissileFire";
 		DeathSound "DemonMissileExplode";
 		DamageType 'AcolyteFire';
-	}
-	States
-	{
-	Spawn:
-		DMFX AABBCC 1 Bright A_SpawnItemEx("mkSmokePoof");
-		Loop;
-	Death:
-		DMFX DEFG 3 Bright;
-		Stop;
-	}
-}
-
-Class mkAcolyteFireSeeking : mkAcolyteFire
-{
-	Vector3 InitialDir, Acceleration;
-	Default
-	{
-		Scale 1.25;
-		Speed 6;
-		DamageFunction Random[Acolyte](2,3)*4;
 		+SEEKERMISSILE;
 	}
-	void A_DTSeeker()
+	void A_DTSeeker( double f = 0.5 )
 	{
 		if ( InitialDir.length() < double.epsilon ) InitialDir = vel.unit();
 		if ( tracer && (tracer != target) )
@@ -426,11 +407,40 @@ Class mkAcolyteFireSeeking : mkAcolyteFire
 			if ( SeekingDir dot InitialDir > 0 )
 			{
 				double MagnitudeVel = Vel.length();
-				SeekingDir = (SeekingDir*0.5*MagnitudeVel+Vel).unit();
+				SeekingDir = (SeekingDir*f*MagnitudeVel+Vel).unit();
 				Vel = MagnitudeVel * SeekingDir;
 				Acceleration = 25 * SeekingDir;
 			}
 		}
+	}
+	States
+	{
+	Spawn:
+		DMFX AABBCC 1 Bright
+		{
+			A_SpawnItemEx("mkSmokePoof");
+			if ( level.time&5 ) A_DTSeeker(0.15);
+			vel += Acceleration/TICRATE;
+			vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](2,4);
+			Vector3 dir = vel.unit();
+			if ( vel.length() > 30. ) vel = dir*30.;
+			angle = atan2(dir.y,dir.x);
+			pitch = asin(-dir.z);
+		}
+		Loop;
+	Death:
+		DMFX DEFG 3 Bright;
+		Stop;
+	}
+}
+
+Class mkWizardFire : mkAcolyteFire
+{
+	Default
+	{
+		Scale 1.25;
+		Speed 6;
+		DamageFunction Random[EWizFire](2,3)*4;
 	}
 	States
 	{
@@ -448,7 +458,7 @@ Class mkAcolyteFireSeeking : mkAcolyteFire
 		}
 		Loop;
 	Death:
-		TNT1 A 0 A_Explode(Random[Acolyte](2,3)*3,80,0);
+		TNT1 A 0 A_Explode(Random[EWizFire](2,3)*3,80,0);
 		Goto Super::Death;
 	}
 }
@@ -461,6 +471,7 @@ Class mkAcolyteBoom2 : Actor
 		Translation "0:255=%[0.00,0.00,0.00]:[0.80,2.00,0.80]";
 		Radius 2;
 		Height 2;
+		Speed 1;
 		+NOBLOCKMAP;
 		+NOGRAVITY;
 		+DONTSPLASH;
@@ -474,13 +485,12 @@ Class mkAcolyteBoom2 : Actor
 		double ang, pt;
 		ang = FRandom[Puff](0,360);
 		pt = FRandom[Puff](-90,90);
-		vel = (cos(pt)*cos(ang),cos(pt)*sin(ang),-sin(pt))*FRandom[Puff](1.2,2.4);
+		vel = (cos(pt)*cos(ang),cos(pt)*sin(ang),-sin(pt))*Speed*FRandom[Puff](1.2,2.4);
 	}
 	States
 	{
 	Spawn:
-		WRBL DEF 4 Bright;
-		WRBL GHI 4;
+		SPIR KLMNO 4 Bright;
 		Stop;
 	}
 }
@@ -503,34 +513,48 @@ Class mkAcolyteBoom : Actor
 		Super.PostBeginPlay();
 		A_PlaySound("ClericFlameExplode");
 		A_PlaySound("SorcererBallExplode",CHAN_VOICE);
-		for ( int i=0; i<5; i++ ) Spawn("mkAcolyteBoom2",pos);
+		for ( int i=0; i<5; i++ )
+		{
+			let b = Spawn("mkAcolyteBoom2",pos);
+			if ( args[0] == 2 )
+			{
+				b.Scale *= 2;
+				b.Speed *= 2.5;
+			}
+		}
 		if ( !args[0] ) return;
-		int mx = (args[0]==2)?3:5;
+		int mx = (args[0]==3)?16:(args[0]==2)?4:2;
 		for ( int i=0; i<mx; i++ )
 		{
 			Actor a;
-			if ( args[0] == 2 )
+			if ( args[0] == 3 )
 			{
-				a = Spawn("mkAcolyteFireSeeking",pos);
-				a.angle = angle+FRandom[Acolyte](-60,60);
-				a.pitch = pitch+FRandom[Acolyte](-60,60);
+				a = Spawn("mkAcolyteFire",pos);
+				a.vel *= 3;
+				a.angle = FRandom[Acolyte](0,360);
+				a.pitch = FRandom[Acolyte](-60,30);
+			}
+			else if ( args[0] == 2 )
+			{
+				a = Spawn("mkWizardFire",pos);
+				a.angle = angle+FRandom[EWizFire](-60,60);
+				a.pitch = pitch+FRandom[EWizFire](-60,60);
 			}
 			else
 			{
 				a = Spawn("mkAcolyteFire",pos);
-				a.angle = angle+FRandom[Acolyte](-15,15);
-				a.pitch = pitch+FRandom[Acolyte](-10,10);
+				a.angle = angle+FRandom[Acolyte](-20,20);
+				a.pitch = pitch+FRandom[Acolyte](-15,15);
 			}
 			a.target = target;
-			if ( target ) a.tracer = target.target;
+			if ( (args[0] != 3) && target ) a.tracer = target.target;
 			a.vel = (cos(a.angle)*cos(a.pitch),sin(a.angle)*cos(a.pitch),-sin(a.pitch))*a.speed*FRandom[Acolyte](0.8,1.6);
 		}
 	}
 	States
 	{
 	Spawn:
-		WRBL DEF 4 Bright;
-		WRBL GHI 4;
+		SPIR KLMNO 4 Bright;
 		Stop;
 	}
 }
@@ -556,6 +580,7 @@ Class mkElderAcolyte : Actor
 		+NOGRAVITY;
 		+NOBLOOD;
 		+NOTARGET;
+		+DONTMORPH;
 		+QUICKTORETALIATE;
 		SeeSound "acolyte/see";
 		PainSound "acolyte/pain";
@@ -567,7 +592,7 @@ Class mkElderAcolyte : Actor
 	double _PitchTo( Actor other )
 	{
 		if ( !other ) return 0;
-		Vector3 otherpos = Vec3To(other);
+		Vector3 otherpos = level.Vec3Diff(Vec3Angle(radius,angle,45.),other.Vec3Offset(0,0,other.height/2));
 		double dist = otherpos.length();
 		if ( dist > 0 ) return -asin(otherpos.z/dist);
 		return 0;
@@ -696,7 +721,7 @@ Class mkElderAcolyte : Actor
 		ACOL A 0 A_PlaySound("BishopAttack");
 		ACOL A 3 A_FaceTarget();
 		ACOL DE 4 Bright A_FaceTarget();
-		ACOL F 10 Bright A_AcolyteAttack();
+		ACOL FFFF 6 Bright A_AcolyteAttack();
 		ACOL ED 4 Bright;
 		ACOL A 3;
 		Goto See;
@@ -719,8 +744,17 @@ Class mkElderAcolyte : Actor
 		{
 			A_PlaySound("SorcererBallExplode",CHAN_WEAPON);
 			A_Explode(Random[AcolyteBoom](25,40),120);
+			let a = Spawn("mkAcolyteBoom",Vec3Offset(0,0,45));
+			a.target = self;
+			a.args[0] = 3;
 		}
-		ACOL K 5 Bright;
+		ACOL K 5 Bright
+		{
+			A_Explode(Random[AcolyteBoom](20,30),90);
+			let a = Spawn("mkAcolyteBoom",Vec3Offset(0,0,45));
+			a.target = self;
+			a.args[0] = 3;
+		}
 		ACOL LM 4 Bright;
 		ACOL N 4 A_SpawnItemEx("BishopPuff",0,0,40,0,0,-0.5);
 		ACOL O 4 A_QueueCorpse();

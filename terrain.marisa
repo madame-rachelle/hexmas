@@ -11,12 +11,12 @@ Terrain ElderFluid
 	splash Sludge
 	footclip 16
 	liquid
-	friction 0.8
+	friction 0.85
 }
 Terrain ElderFluidDeep
 {
 	splash Sludge
 	footclip 24
 	liquid
-	friction 0.7
+	friction 0.8
 }
