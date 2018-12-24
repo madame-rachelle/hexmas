@@ -217,35 +217,32 @@ Texture "FIRE18", 64, 128
 	Patch "NW_0046", 0, 0
 }
 
-Texture "X_FLOW1", 128, 128
+Texture "X_FLOW1", 64, 128
 {
-	Patch "W_252", 0, 0
-	Patch "NW_0047", 64, 0
+	Patch "NW_0047", 0, 0
 }
 
-Texture "X_FLOW2", 128, 128
+Texture "X_FLOW2", 64, 128
 {
-	Patch "W_253", 0, 0
-	Patch "NW_0048", 64, 0
+	Patch "NW_0048", 0, 0
 }
 
-Texture "X_FLOW3", 128, 128
+Texture "X_FLOW3", 64, 128
 {
-	Patch "W_254", 0, 0
-	Patch "NW_0049", 64, 0
+	Patch "NW_0049", 0, 0
 }
 
-Texture "X_FLAME1", 128, 128
+Texture "X_FLAME1", 64, 128
 {
 	Patch "NW_0107", 0, 0
 }
 
-Texture "X_FLAME2", 128, 128
+Texture "X_FLAME2", 64, 128
 {
 	Patch "NW_0108", 0, 0
 }
 
-Texture "X_FLAME3", 256, 128
+Texture "X_FLAME3", 64, 128
 {
 	Patch "NW_0109", 0, 0
 }
