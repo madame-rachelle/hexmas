@@ -213,3 +213,46 @@ Class mkApprenticeSighting : Actor
 		Loop;
 	}
 }
+
+// remember him?
+Class mkMirrorMan : Actor
+{
+	private bool InConsoleplayerLOS()
+	{
+		double vfov = CVar.GetCVar('fov',players[consoleplayer]).GetFloat()*0.5;
+		double hfov = atan(Screen.GetAspectRatio()*tan(vfov));
+		let mo = players[consoleplayer].mo;
+		Vector3 ppos = mo.Vec2OffsetZ(0,0,mo.player.viewz);
+		Vector3 tpos = Vec3Offset(0,0,height*0.5);
+		Vector3 sc = level.SphericalCoords(ppos,tpos,(mo.angle,mo.pitch));
+		return ((abs(sc.x)<hfov)&&(abs(sc.y)<vfov));
+	}
+
+	override void Tick()
+	{
+		Super.Tick();
+		if ( InConsoleplayerLOS() ) bAMBUSH = true;
+		if ( bAMBUSH )
+		{
+			alpha = max(alpha-0.03,0.0);
+			if ( alpha <= 0.0 ) Destroy();
+		}
+		else alpha = min(alpha+0.16,1.0);
+	}
+
+	Default
+	{
+		RenderStyle "Translucent";
+		Alpha 0.0;
+		Scale 0.17;
+		-SOLID;
+		+NOGRAVITY;
+	}
+
+	States
+	{
+	Spawn:
+		MRMN A -1 Bright;
+		Stop;
+	}
+}
