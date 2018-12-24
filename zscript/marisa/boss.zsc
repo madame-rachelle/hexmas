@@ -298,7 +298,7 @@ Class mkElderWizard : Actor
 		//$Title Viridescent Lord
 		//$Category Marisa/Monsters
 		Scale 3.0;
-		Health 15000;
+		Health 12000;
 		Mass int.max;
 		Radius 30;
 		Height 240;
@@ -327,6 +327,7 @@ Class mkElderWizard : Actor
 		+LOOKALLAROUND;
 		+INTERPOLATEANGLES;
 		+NOPAIN;
+		+LAXTELEFRAGDMG;	// prevents fall damage completely (thanks, hege)
 		-ISMONSTER;	// prevents thrusting from fighter weapons (why the fuck is this a thing?)
 		SeeSound "eldrich/see";
 		ActiveSound "eldrich/active";
