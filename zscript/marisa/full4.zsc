@@ -1,0 +1,118 @@
+// complete slot 4 weapons for all classes
+
+Class mkFullQuietus : CustomInventory
+{
+	Class<Weapon> whichweapon;
+
+	Default
+	{
+		//$Title Full Quietus Pickup
+		//$Category Marisa/Weapons
+		Inventory.PickupSound "misc/w_pkup";
+		Inventory.ForbiddenTo "ClericPlayer", "MagePlayer";
+		Inventory.PickupMessage "QUIETUS";
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		if ( !(GetReplacement("FWeaponPiece1") is "WeaponPiece")
+			|| !(GetReplacement("FWeaponPiece2") is "WeaponPiece")
+			|| !(GetReplacement("FWeaponPiece3") is "WeaponPiece") )
+		{
+			// some mods replace these with other types of items, scatter the replacements around
+			A_SpawnItemEx("FWeaponPiece1",xvel:cos(0)*3.,yvel:sin(0)*3.,zvel:1.);
+			A_SpawnItemEx("FWeaponPiece2",xvel:cos(120)*3.,yvel:sin(120)*3.,zvel:1.);
+			A_SpawnItemEx("FWeaponPiece3",xvel:cos(240)*3.,yvel:sin(240)*3.,zvel:1.);
+			Destroy();
+			return;
+		}
+		whichweapon = GetDefaultByType((Class<WeaponPiece>)(GetReplacement("FWeaponPiece1"))).WeaponClass;
+	}
+	States
+	{
+	Spawn:
+		WFRS A -1;
+		Stop;
+	Pickup:
+		TNT1 A 0 A_GiveInventory(invoker.whichweapon);
+		Stop;
+	}
+}
+
+Class mkFullWraithverge : CustomInventory
+{
+	Class<Weapon> whichweapon;
+
+	Default
+	{
+		//$Title Full Wraithverge Pickup
+		//$Category Marisa/Weapons
+		Inventory.PickupSound "misc/w_pkup";
+		Inventory.ForbiddenTo "FighterPlayer", "MagePlayer";
+		Inventory.PickupMessage "WRAITHVERGE";
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		if ( !(GetReplacement("CWeaponPiece1") is "WeaponPiece")
+			|| !(GetReplacement("CWeaponPiece2") is "WeaponPiece")
+			|| !(GetReplacement("CWeaponPiece3") is "WeaponPiece") )
+		{
+			// some mods replace these with other types of items, scatter the replacements around
+			A_SpawnItemEx("CWeaponPiece1",xvel:cos(0)*3.,yvel:sin(0)*3.,zvel:1.);
+			A_SpawnItemEx("CWeaponPiece2",xvel:cos(120)*3.,yvel:sin(120)*3.,zvel:1.);
+			A_SpawnItemEx("CWeaponPiece3",xvel:cos(240)*3.,yvel:sin(240)*3.,zvel:1.);
+			Destroy();
+			return;
+		}
+		whichweapon = GetDefaultByType((Class<WeaponPiece>)(GetReplacement("CWeaponPiece1"))).WeaponClass;
+	}
+	States
+	{
+	Spawn:
+		WCHS A -1;
+		Stop;
+	Pickup:
+		TNT1 A 0 A_GiveInventory(invoker.whichweapon);
+		Stop;
+	}
+}
+
+Class mkFullBloodscourge : CustomInventory
+{
+	Class<Weapon> whichweapon;
+
+	Default
+	{
+		//$Title Full Bloodscourge Pickup
+		//$Category Marisa/Weapons
+		Inventory.PickupSound "misc/w_pkup";
+		Inventory.ForbiddenTo "FighterPlayer", "ClericPlayer";
+		Inventory.PickupMessage "BLOODSCOURGE";
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		if ( !(GetReplacement("MWeaponPiece1") is "WeaponPiece")
+			|| !(GetReplacement("MWeaponPiece2") is "WeaponPiece")
+			|| !(GetReplacement("MWeaponPiece3") is "WeaponPiece") )
+		{
+			// some mods replace these with other types of items, scatter the replacements around
+			A_SpawnItemEx("MWeaponPiece1",xvel:cos(0)*3.,yvel:sin(0)*3.,zvel:1.);
+			A_SpawnItemEx("MWeaponPiece2",xvel:cos(120)*3.,yvel:sin(120)*3.,zvel:1.);
+			A_SpawnItemEx("MWeaponPiece3",xvel:cos(240)*3.,yvel:sin(240)*3.,zvel:1.);
+			Destroy();
+			return;
+		}
+		whichweapon = GetDefaultByType((Class<WeaponPiece>)(GetReplacement("MWeaponPiece1"))).WeaponClass;
+	}
+	States
+	{
+	Spawn:
+		WMSS A -1;
+		Stop;
+	Pickup:
+		TNT1 A 0 A_GiveInventory(invoker.whichweapon);
+		Stop;
+	}
+}

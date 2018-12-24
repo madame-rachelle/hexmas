@@ -6,8 +6,8 @@ GameInfo
 map MARISA "Viridescent"
 {
 	music = "creepy"
-	sky1 = "SKYWALL2"
-	sky2 = "ARCTICSK", 0.03
+	sky1 = "ARCTICS1"
+	sky2 = "ARCTICS2", 0.03
 	ResetInventory
 	ResetHealth
 	ResetItems
@@ -40,4 +40,7 @@ DoomEdNums
 	6424 = "mkElderWizard"
 	6430 = "mkClericNPC"
 	6431 = "mkApprenticeSighting"
+	6440 = "mkFullQuietus"
+	6441 = "mkFullWraithverge"
+	6442 = "mkFullBloodscourge"
 }
