@@ -1,3 +1,22 @@
+Actor BurningLog 134
+{
+	//$category "Decoration"
+	Radius 16
+	Height 18
+	+SOLID
+	States
+	{
+		Spawn:
+			LOG2 CDE 4 Bright
+			Loop
+		Inactive:
+			LOG2 B -1
+			Stop
+		Active:
+			Goto Spawn
+	}
+}
+
 Actor Book1 : CustomInventory 132
 {
 	//$category "Puzzle Items"

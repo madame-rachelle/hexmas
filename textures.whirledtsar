@@ -1,3 +1,670 @@
+// C.R.U.E.L. texture pack
+
+Texture "HUGEBRIC", 256, 128
+{
+	Patch "EGW_336", 0, 0
+}
+
+Texture "VILL02", 128, 128
+{
+	Patch "NW_0000", 0, 0
+}
+
+Texture "PRTL08", 64, 128
+{
+	Patch "NW_0002", 0, 0
+}
+
+Texture "PRTL01", 128, 128
+{
+	Patch "NW_0003", 0, 0
+}
+
+Texture "BOOKSNO1", 64, 128
+{
+	Patch "NW_0006", 0, 0
+}
+
+Texture "FOREST13", 128, 128
+{
+	Patch "NW_0007", 0, 0
+}
+
+Texture "FOREST14", 128, 128
+{
+	Patch "NW_0008", 0, 0
+}
+
+Texture "BOOKSNO2", 64, 208
+{
+	Patch "NW_0006", 0, 0
+	Patch "NW_0006", 0, 80
+}
+
+Texture "BOOKEND2", 32, 208
+{
+	Patch "NW_0013", 0, 0
+	Patch "NW_0013", 0, 80
+}
+
+Texture "BOOKEND3", 32, 208
+{
+	Patch "NW_0013", 0, 0
+	Patch "NW_0023", 0, 80
+}
+
+Texture "BOOKS05", 128, 128
+{
+	Patch "NW_0009", 0, 0
+}
+
+Texture "BOOKS06", 128, 128
+{
+	Patch "NW_0010", 0, 0
+}
+
+Texture "BOOKS07", 128, 128
+{
+	Patch "NW_0011", 0, 0
+}
+
+Texture "BOOKS08", 128, 128
+{
+	Patch "NW_0012", 0, 0
+}
+
+Texture "BOOKS09", 128, 208
+{
+	Patch "W_052", 0, 0
+	Patch "NW_0011", 0, 17
+	Patch "NW_0011", 0, 144
+}
+
+Texture "BOOKEND", 32, 128
+{
+	Patch "NW_0013", 0, 0
+}
+
+Texture "BOOKSW1", 128, 128
+{
+	Patch "NW_0014", 0, 0
+}
+
+Texture "BOOKSW2", 128, 128
+{
+	Patch "NW_0015", 0, 0
+}
+
+Texture "ICE07", 128, 128
+{
+	Patch "NW_0016", 0, 0
+}
+
+Texture "ICE08", 128, 128
+{
+	Patch "NW_0017", 0, 0
+}
+
+Texture "ICE09", 128, 128
+{
+	Patch "NW_0018", 0, 0
+}
+
+Texture "MONK25", 128, 128
+{
+	Patch "W_047", 0, 0
+	Patch "NW_0019", 0, 18
+}
+
+Texture "MONK26", 128, 128
+{
+	Patch "W_049", 0, 0
+	Patch "NW_0020", 0, 18
+}
+
+Texture "TOMBTR1", 64, 24
+{
+	Patch "NW_0021", 0, 0
+}
+
+Texture "TOMBTR2", 64, 24
+{
+	Patch "NW_0022", 0, 0
+}
+
+Texture "WOODEND", 32, 128
+{
+	Patch "NW_0023", 0, 0
+}
+
+Texture "TOMBZ01", 128, 128
+{
+	Patch "NW_0024", 0, 0
+}
+
+Texture "TOMBT01", 64, 128
+{
+	Patch "NW_0032", 0, 0
+}
+
+Texture "TOMBT02", 64, 128
+{
+	Patch "NW_0033", 0, 0
+}
+
+Texture "TOMBT03", 64, 128
+{
+	Patch "NW_0034", 0, 0
+}
+
+Texture "TOMBT04", 64, 128
+{
+	Patch "NW_0035", 0, 0
+}
+
+Texture "TOMBT05", 64, 128
+{
+	Patch "NW_0036", 0, 0
+}
+
+Texture "TOMBT06", 64, 128
+{
+	Patch "NW_0037", 0, 0
+}
+
+Texture "TOMBT07", 64, 128
+{
+	Patch "NW_0038", 0, 0
+}
+
+Texture "TOMBT08", 64, 128
+{
+	Patch "NW_0039", 0, 0
+}
+
+Texture "TOMBT09", 128, 128
+{
+	Patch "NW_0040", 0, 0
+}
+
+Texture "TOMBT10", 128, 128
+{
+	Patch "NW_0041", 0, 0
+}
+
+Texture "TOMBT11", 64, 128
+{
+	Patch "NW_0042", 0, 0
+}
+
+Texture "TOMBT12", 64, 128
+{
+	Patch "NW_0043", 0, 0
+}
+
+Texture "TOMBT13", 64, 128
+{
+	Patch "NW_0044", 0, 0
+}
+
+Texture "TOMBT14", 64, 128
+{
+	Patch "NW_0045", 0, 0
+}
+
+Texture "FIRE18", 64, 128
+{
+	Patch "NW_0046", 0, 0
+}
+
+Texture "X_FLOW1", 128, 128
+{
+	Patch "W_252", 0, 0
+	Patch "NW_0047", 64, 0
+}
+
+Texture "X_FLOW2", 128, 128
+{
+	Patch "W_253", 0, 0
+	Patch "NW_0048", 64, 0
+}
+
+Texture "X_FLOW3", 128, 128
+{
+	Patch "W_254", 0, 0
+	Patch "NW_0049", 64, 0
+}
+
+Texture "X_FLAME1", 128, 128
+{
+	Patch "NW_0107", 0, 0
+}
+
+Texture "X_FLAME2", 128, 128
+{
+	Patch "NW_0108", 0, 0
+}
+
+Texture "X_FLAME3", 256, 128
+{
+	Patch "NW_0109", 0, 0
+}
+
+Texture "X_FLAME4", 64, 128
+{
+	Patch "NW_0110", 0, 0
+}
+
+Texture "X_FLAME5", 64, 128
+{
+	Patch "NW_0111", 0, 0
+}
+
+Texture "X_FLAME6", 64, 128
+{
+	Patch "NW_0112", 0, 0
+}
+
+Texture "ICE10", 128, 128
+{
+	Patch "NW_0058", 0, 0
+}
+
+Texture "MONK27", 128, 128
+{
+	Patch "W_077", 0, 0
+	Patch "NW_0059", 0, 0
+}
+
+Texture "MONK28", 128, 128
+{
+	Patch "W_077", 0, 0
+	Patch "NW_0060", 31, 40
+}
+
+Texture "MONK29", 128, 128
+{
+	Patch "W_077", 0, 0
+	Patch "NW_0060", 31, 40
+	Patch "NW_0059", 0, 0
+	Patch "NW_0061", 48, 0
+}
+
+Texture "MONK30", 128, 128
+{
+	Patch "W_042", 0, 0
+	Patch "NW_0062", 0, 0
+}
+
+Texture "MONK31", 128, 128
+{
+	Patch "W_042", 0, 0
+	Patch "NW_0060", 31, 40
+}
+
+Texture "MONK32", 128, 128
+{
+	Patch "W_042", 0, 0
+	Patch "NW_0062", 0, 0
+	Patch "NW_0061", 48, 0
+	Patch "NW_0060", 31, 40
+}
+
+Texture "MONK33", 64, 128
+{
+	Patch "W_132", 0, 0
+	Patch "NW_0063", 0, 0
+}
+
+Texture "UTEMPL01", 128, 128
+{
+	Patch "NW_0064", 0, 0
+}
+
+Texture "UTEMPL02", 128, 128
+{
+	Patch "NW_0065", 0, 0
+}
+
+Texture "TOMBT15", 64, 128
+{
+	Patch "NW_0069", 0, 0
+}
+
+Texture "TOMBT16", 64, 128
+{
+	Patch "NW_0069", 0, 0
+	Patch "NW_0070", 17, 33
+}
+
+Texture "TOMBT17", 128, 128
+{
+	Patch "NW_0040", 0, 0
+	Patch "NW_0071", 31, 0
+}
+
+Texture "TOMBT19", 128, 128
+{
+	Patch "NW_0041", 0, 0
+	Patch "NW_0071", 31, 0
+}
+
+Texture "CAVE13", 128, 128
+{
+	Patch "NW_0073", 0, 0
+}
+
+Texture "CASTLE12", 128, 128
+{
+	Patch "NW_0074", 0, 0
+}
+
+Texture "CASTLE13", 128, 128
+{
+	Patch "NW_0075", 0, 0
+}
+
+Texture "CASTLE14", 128, 128
+{
+	Patch "NW_0076", 0, 0
+}
+
+Texture "CASTLE15", 128, 128
+{
+	Patch "NW_0077", 0, 0
+}
+
+Texture "TOMBM01", 64, 128
+{
+	Patch "NW_0078", 0, 0
+}
+
+Texture "TOMBM02", 128, 128
+{
+	Patch "NW_0079", 0, 0
+}
+
+Texture "STEEL09", 128, 128
+{
+	Patch "NW_0080", 0, 0
+}
+
+Texture "STEEL10", 128, 128
+{
+	Patch "NW_0081", 0, 0
+}
+
+Texture "STEEL13", 128, 128
+{
+	Patch "W_062", 0, 0
+	Patch "NW_0084", 0, 22
+}
+
+Texture "STEEL14", 128, 128
+{
+	Patch "W_062", 0, 0
+	Patch "NW_0085", 54, 22
+}
+
+Texture "STEEL15", 128, 128
+{
+	Patch "W_062", 0, 0
+	Patch "NW_0086", 0, 22
+}
+
+Texture "CASTLE16", 64, 128
+{
+	Patch "NW_0087", 0, 0
+}
+
+Texture "CASTLE17", 64, 128
+{
+	Patch "NW_0087", 0, 0
+	Patch "NW_0088", 22, 16
+}
+
+Texture "CASTLE18", 64, 128
+{
+	Patch "NW_0089", 0, 0
+}
+
+Texture "CASTLE19", 64, 128
+{
+	Patch "NW_0090", 0, 0
+}
+
+Texture "STEEL16", 32, 128
+{
+	Patch "NW_0091", 0, 0
+}
+
+Texture "STEEL17", 32, 128
+{
+	Patch "NW_0092", 0, 0
+}
+
+Texture "CAVE14", 128, 128
+{
+	Patch "NW_0073", 0, 0
+	Patch "NW_0094", 29, 30
+}
+
+Texture "ICE04", 64, 128
+{
+	Patch "W_128", 0, 0
+	Patch "NW_0098", 19, 60
+}
+
+Texture "PRTL09", 64, 128
+{
+	Patch "NW_0099", 0, 0
+}
+
+Texture "PRTL10", 64, 128
+{
+	Patch "NW_0100", 0, 0
+}
+
+Texture "PRTL11", 64, 128
+{
+	Patch "NW_0101", 0, 0
+}
+
+Texture "PRTL12", 64, 128
+{
+	Patch "NW_0102", 0, 0
+}
+
+Texture "PRTL13", 64, 128
+{
+	Patch "NW_0103", 0, 0
+}
+
+Texture "PRTL14", 64, 128
+{
+	Patch "NW_0104", 0, 0
+}
+
+Texture "PRTL15", 64, 128
+{
+	Patch "NW_0105", 0, 0
+}
+
+Texture "PRTL16", 64, 128
+{
+	Patch "NW_0106", 0, 0
+}
+
+Texture "CAVE16", 128, 128
+{
+	Patch "NW_0114", 0, 0
+}
+
+Texture "PRTL17", 32, 128
+{
+	Patch "NW_0115", 0, 0
+}
+
+Texture "PRTL18", 32, 128
+{
+	Patch "NW_0116", 0, 0
+}
+
+Texture "PRTL19", 128, 128
+{
+	Patch "NW_0117", 0, 0
+}
+
+Texture "PRTL20", 64, 128
+{
+	Patch "NW_0118", 0, 0
+}
+
+Texture "PRTL21", 64, 128
+{
+	Patch "NW_0119", 0, 0
+}
+
+Texture "PRTL22", 64, 128
+{
+	Patch "NW_0120", 0, 0
+}
+
+Texture "PRTL23", 64, 128
+{
+	Patch "NW_0121", 0, 0
+}
+
+Texture "PRTL24", 64, 128
+{
+	Patch "NW_0122", 0, 0
+}
+
+Texture "PRTL25", 64, 128
+{
+	Patch "NW_0123", 0, 0
+}
+
+Texture "PRTL26", 128, 128
+{
+	Patch "W_057", 0, 0
+	Patch "NW_0124", 0, 24
+}
+
+Texture "PRTL27", 128, 128
+{
+	Patch "W_058", 0, 0
+	Patch "NW_0125", 0, 24
+}
+
+Texture "SPAWN09G", 128, 128
+{
+	Patch "NW_0126", 0, 0
+}
+
+Texture "SPAWN10G", 128, 128
+{
+	Patch "NW_0127", 0, 0
+}
+
+Texture "GRATE64", 128, 64
+{
+	Patch "NW_0143", 0, 0
+}
+
+Texture "PORTCULL", 128, 128
+{
+	Patch "NW_0144", 0, 0
+}
+
+Texture "GALLOW3", 128, 16
+{
+	Patch "NW_0168", 0, 0
+}
+
+Texture "BRICK01", 64, 128
+{
+	Patch "NW_0154", 0, 0
+}
+
+Texture "BRICK02", 64, 128
+{
+	Patch "NW_0155", 0, 0
+}
+
+Texture "BRASS8", 192, 128
+{
+	Patch "NW_0156", 0, 0
+}
+
+Texture "BRASS9", 192, 128
+{
+	Patch "NW_0156", 0, 0
+	Patch "NW_0157", 152, 0
+}
+
+Texture "BRASS10", 192, 128
+{
+	Patch "NW_0156", 0, 0
+	Patch "NW_0158", 0, 0
+}
+
+Texture "BRASS11", 192, 128
+{
+	Patch "NW_0156", 0, 0
+	Patch "NW_0159", 152, 0
+}
+
+Texture "BRASS12", 192, 128
+{
+	Patch "NW_0156", 0, 0
+	Patch "NW_0160", 0, 0
+}
+
+Texture "WOODWL01", 128, 128
+{
+	Patch "NW_0161", 0, 0
+}
+
+Texture "WOODWL02", 128, 128
+{
+	Patch "NW_0162", 0, 0
+}
+
+Texture "WOODWL03", 128, 128
+{
+	Patch "NW_0163", 0, 0
+}
+
+Texture "WOODWL04", 128, 128
+{
+	Patch "NW_0164", 0, 0
+}
+
+Texture "WOODWL05", 128, 128
+{
+	Patch "NW_0165", 0, 0
+}
+
+Texture "WOODWL06", 128, 128
+{
+	Patch "NW_0166", 0, 0
+}
+
+Texture "HUGEBRIG", 256, 128
+{
+	Patch "NW_0167", 0, 0
+}
+
+Texture "D_CAVE3", 128, 128
+{
+	Patch "W_075", 0, 0
+	Patch "W_352", 48, 56
+}
+
+// End of texture definitions
+
+
 // non-animating clock hands
 
 Texture "CLOCK01A", 128, 128
