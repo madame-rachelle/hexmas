@@ -1,1 +1,12 @@
 // TODO
+// Twin Minotaurs
+// When one is defeated, the other will pick up the dead one's mallet, becoming a stronger boss
+// Other stuff to be planned
+
+Class mkMinotaur : Actor
+{
+}
+
+Class mkMinotaurEx : Actor
+{
+}
