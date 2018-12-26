@@ -215,10 +215,13 @@ Class mkApprenticeSighting : Actor
 }
 
 // remember him?
+// he's behind everything...
 Class mkMirrorMan : Actor
 {
 	private bool InConsoleplayerLOS()
 	{
+		if ( !CheckSight(players[consoleplayer].mo) )
+			return false;
 		double vfov = CVar.GetCVar('fov',players[consoleplayer]).GetFloat()*0.5;
 		double hfov = atan(Screen.GetAspectRatio()*tan(vfov));
 		let mo = players[consoleplayer].mo;
@@ -237,16 +240,22 @@ Class mkMirrorMan : Actor
 			alpha = max(alpha-0.03,0.0);
 			if ( alpha <= 0.0 ) Destroy();
 		}
-		else alpha = min(alpha+0.16,1.0);
+		else alpha = min(alpha+0.16,1.35);
 	}
 
 	Default
 	{
+		//$Title The Mirror Man (Sighting)
+		//$Sprite MRMNB0
+		//$Category Marisa/Decoration
 		RenderStyle "Translucent";
 		Alpha 0.0;
 		Scale 0.17;
+		Radius 16;
+		Height 56;
 		-SOLID;
 		+NOGRAVITY;
+		+LOOKALLAROUND;
 	}
 
 	States

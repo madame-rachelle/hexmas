@@ -619,3 +619,15 @@ object mkWizDelayBoom
 	frame MSP1N { light DBOOM_X3 }
 	frame MSP1O { light DBOOM_X3 }
 }
+
+brightmap sprite LOMPB0
+{
+	map "brightmaps/LOMPB0.png"
+	disablefullbright
+}
+
+brightmap sprite MRMNA0
+{
+	map "brightmaps/MRMNA0.png"
+	disablefullbright
+}

@@ -38,6 +38,18 @@ Class mkElderWizard : Actor
 		}
 	}
 
+	static void KillCult()
+	{
+		let t = ThinkerIterator.Create("Actor");
+		Actor a;
+		while ( a = Actor(t.Next()) )
+		{
+			if ( (a.Health <= 0) || (!(a is 'mkElderApprentice') && !(a is 'mkElderAcolyte')) ) continue;
+			if ( a.bDORMANT ) a.Activate(null);
+			a.DamageMobj(null,null,int.max,'Silent',DMG_FORCED);
+		}
+	}
+
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();

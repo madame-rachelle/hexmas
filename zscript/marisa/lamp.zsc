@@ -1,0 +1,112 @@
+// a moth's favourite
+Class mkLamp : Inventory
+{
+	bool bActive, bBroken;
+	TextureID officon, onicon;
+	Actor lt;
+
+	Default
+	{
+		//$Title Lamp
+		//$Category Marisa/Items
+		Tag "Lamp";
+		Inventory.MaxAmount 1;
+		+INVENTORY.INVBAR;
+		Inventory.PickupMessage "Lamp";
+		Inventory.PickupSound "misc/i_pkup";
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		bActive = args[0];
+		if ( !lt ) lt = Spawn("mkLampLight");
+		lt.target = self;
+		lt.master = self;
+	}
+	override void AttachToOwner( Actor other )
+	{
+		Super.AttachToOwner(other);
+		bActive = args[0];
+		onicon = TexMan.CheckForTexture("LOMPON",TexMan.Type_Any);
+		officon = TexMan.CheckForTexture("LOMPOFF",TexMan.Type_Any);
+		Icon = bActive?onicon:officon;
+		if ( !lt ) lt = Spawn("mkLampLight");
+		lt.target = other;
+		lt.master = self;
+	}
+	override void DetachFromOwner()
+	{
+		Super.DetachFromOwner();
+		args[0] = bActive;
+		if ( !lt ) lt = Spawn("mkLampLight");
+		lt.target = self;
+		lt.master = self;
+	}
+	override bool Use( bool pickup )
+	{
+		if ( pickup ) return false;	// no autoactivate
+		if ( bBroken )
+		{
+			Owner.A_Print("Looks like it won't light up here.");
+			Owner.A_PlaySound("*puzzfail",CHAN_VOICE,local:true);
+			return false;
+		}
+		bActive = !bActive;
+		Icon = bActive?onicon:officon;
+		if ( bActive ) Owner.A_PlaySound("IgniteSmall",CHAN_ITEM);
+		return false;
+	}
+
+	States
+	{
+	Spawn:
+		LOMP A 1 A_JumpIf(args[0],1);
+		Wait;
+		LOMP B 1 Bright A_JumpIf(!args[0],"Spawn");
+		Wait;
+	}
+
+	static void ToggleBreak( Actor activator, bool val )
+	{
+		let t = ThinkerIterator.Create("mkLamp");
+		mkLamp l;
+		while ( l = mkLamp(t.Next()) )
+		{
+			if ( l.Owner != activator ) continue;
+			l.bBroken = val;
+			if ( val )
+			{
+				l.bActive = false;
+				l.Icon = l.officon;
+			}
+		}
+	}
+}
+
+Class mkLampLight : DynamicLight
+{
+	Default
+	{
+		DynamicLight.Type "RandomFlicker";
+		+DynamicLight.ATTENUATE;
+		args 64, 255, 64, 200, 204;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		specialf1 = 3;
+	}
+	override void Tick()
+	{
+		Super.Tick();
+		if ( !target || !master )
+		{
+			Destroy();
+			return;
+		}
+		if ( target.player ) SetOrigin(target.vec2OffsetZ(0,0,target.player.viewz-16),true);
+		else SetOrigin(target.vec3Offset(0,0,target.height*0.5),true);
+		bDORMANT = !mkLamp(master).bActive;
+		if ( mkLamp(target) && target.bInvisible ) bDORMANT = true;
+	}
+}

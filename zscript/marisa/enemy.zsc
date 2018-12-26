@@ -346,6 +346,13 @@ Class mkElderApprentice : Actor
 		MAGE Y 5 A_FreezeDeath();
 		MAGE Y 1 A_FreezeDeathChunks();
 		Wait;
+	Death.Silent:
+	XDeath.Silent:
+		MAGE HIJK 6;
+		MAGE L 6 A_NoBlocking();
+		MAGE M 6 A_QueueCorpse();
+		MAGE N -1;
+		Stop;
 	}
 }
 
@@ -835,6 +842,16 @@ Class mkElderAcolyte : Actor
 			else return ResolveState(null);
 		}
 		Wait;
+	Death.Silent:
+		ECOL G 6;
+		ECOL H 6 Bright;
+		ECOL I 5 Bright A_NoBlocking();
+		ECOL JK 5 Bright;
+		ECOL LM 4 Bright;
+		ECOL N 4;
+		ECOL O 4 A_QueueCorpse();
+		ECOL P -1;
+		Stop;
 	}
 }
 
