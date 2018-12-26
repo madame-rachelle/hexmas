@@ -24,17 +24,6 @@ Texture "BOOKSNO1", 64, 128
 {
 	Patch "NW_0006", 0, 0
 }
-
-Texture "FOREST13", 128, 128
-{
-	Patch "NW_0007", 0, 0
-}
-
-Texture "FOREST14", 128, 128
-{
-	Patch "NW_0008", 0, 0
-}
-
 Texture "BOOKSNO2", 64, 208
 {
 	Patch "NW_0006", 0, 0
@@ -371,16 +360,6 @@ Texture "CASTLE15", 128, 128
 	Patch "NW_0077", 0, 0
 }
 
-Texture "TOMBM01", 64, 128
-{
-	Patch "NW_0078", 0, 0
-}
-
-Texture "TOMBM02", 128, 128
-{
-	Patch "NW_0079", 0, 0
-}
-
 Texture "STEEL09", 128, 128
 {
 	Patch "NW_0080", 0, 0
@@ -435,17 +414,6 @@ Texture "STEEL16", 32, 128
 	Patch "NW_0091", 0, 0
 }
 
-Texture "STEEL17", 32, 128
-{
-	Patch "NW_0092", 0, 0
-}
-
-Texture "CAVE14", 128, 128
-{
-	Patch "NW_0073", 0, 0
-	Patch "NW_0094", 29, 30
-}
-
 Texture "ICE04", 64, 128
 {
 	Patch "W_128", 0, 0
@@ -492,11 +460,6 @@ Texture "PRTL16", 64, 128
 	Patch "NW_0106", 0, 0
 }
 
-Texture "CAVE16", 128, 128
-{
-	Patch "NW_0114", 0, 0
-}
-
 Texture "PRTL17", 32, 128
 {
 	Patch "NW_0115", 0, 0
@@ -505,21 +468,6 @@ Texture "PRTL17", 32, 128
 Texture "PRTL18", 32, 128
 {
 	Patch "NW_0116", 0, 0
-}
-
-Texture "PRTL19", 128, 128
-{
-	Patch "NW_0117", 0, 0
-}
-
-Texture "PRTL20", 64, 128
-{
-	Patch "NW_0118", 0, 0
-}
-
-Texture "PRTL21", 64, 128
-{
-	Patch "NW_0119", 0, 0
 }
 
 Texture "PRTL22", 64, 128
@@ -562,11 +510,6 @@ Texture "SPAWN09G", 128, 128
 Texture "SPAWN10G", 128, 128
 {
 	Patch "NW_0127", 0, 0
-}
-
-Texture "GRATE64", 128, 64
-{
-	Patch "NW_0143", 0, 0
 }
 
 Texture "PORTCULL", 128, 128
@@ -623,11 +566,6 @@ Texture "WOODWL01", 128, 128
 	Patch "NW_0161", 0, 0
 }
 
-Texture "WOODWL02", 128, 128
-{
-	Patch "NW_0162", 0, 0
-}
-
 Texture "WOODWL03", 128, 128
 {
 	Patch "NW_0163", 0, 0
@@ -642,12 +580,6 @@ Texture "WOODWL05", 128, 128
 {
 	Patch "NW_0165", 0, 0
 }
-
-Texture "WOODWL06", 128, 128
-{
-	Patch "NW_0166", 0, 0
-}
-
 Texture "HUGEBRIG", 256, 128
 {
 	Patch "NW_0167", 0, 0
