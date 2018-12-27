@@ -48,7 +48,6 @@ Class mkLamp : Inventory
 		if ( bBroken )
 		{
 			Owner.A_Print("Looks like it won't light up here.");
-			Owner.A_PlaySound("*puzzfail",CHAN_VOICE,local:true);
 			return false;
 		}
 		bActive = !bActive;
