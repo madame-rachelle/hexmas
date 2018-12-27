@@ -203,9 +203,8 @@ Class mkSnowMaker : Actor
 		for ( int i=0; i<num; i++ )
 		{
 			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
-			// needs 3.7
-			//if ( !level.IsPointInMap(spawnpos) )
-			//	continue;
+			if ( !level.IsPointInMap(spawnpos) )
+				continue;
 			let f = Spawn("mkSnow",spawnpos);
 			f.master = invoker;
 		}
@@ -308,9 +307,8 @@ Class mkFogMaker : Actor
 		for ( int i=0; i<num; i++ )
 		{
 			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
-			// needs 3.7
-			//if ( !level.IsPointInMap(spawnpos) )
-			//	continue;
+			if ( !level.IsPointInMap(spawnpos) )
+				continue;
 			let f = Spawn("mkFog",spawnpos);
 			f.scale *= 1.+0.1*args[4];
 			f.master = invoker;
