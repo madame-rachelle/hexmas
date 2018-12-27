@@ -12,12 +12,12 @@ Class mkSnowEttin : Ettin
 		Obituary "%o was smashed by a Snow Ettin.";
 		Scale 1.2;
 		Health 250;
-		Speed 15;
+		Speed 16;
 		Radius 30;
 		Height 80;
-		MinMissileChance 100;
+		MinMissileChance 120;
 		MissileHeight 40;
-		MeleeThreshold 120;
+		MeleeThreshold 250;
 		+MISSILEMORE;
 	}
 	double _PitchTo( Actor other )
@@ -574,6 +574,7 @@ Class mkElderAcolyte : Actor
 {
 	int scnt, dcnt, strafedir;
 	int bobstate;
+	bool ismelee;
 
 	Default
 	{
@@ -583,10 +584,11 @@ Class mkElderAcolyte : Actor
 		Health 280;
 		Radius 25;
 		Height 78;
-		Speed 10;
+		Speed 8;
 		PainChance 120;
-		MeleeRange 100;
-		MeleeThreshold 150;
+		MeleeRange 50;
+		MeleeThreshold 200;
+		MinMissileChance 240;
 		MONSTER;
 		+FLOAT;
 		+NOGRAVITY;
@@ -609,19 +611,23 @@ Class mkElderAcolyte : Actor
 		if ( dist > 0 ) return -asin(otherpos.z/dist);
 		return 0;
 	}
+	void A_SetMelee()
+	{
+		ismelee = (Distance3D(target) <= meleethreshold);
+	}
 	void A_AcolyteAttack()
 	{
 		if ( !target ) return;
 		A_FaceTarget();
 		let a = SpawnMissileXYZ(Vec3Angle(radius,angle,45.),target,"mkAcolyteBoom",false);
 		a.pitch = _PitchTo(target);
-		if ( Distance3D(target) > radius*2.4 ) a.args[0] = 1;
-		else
+		if ( !ismelee ) a.args[0] = 1;
+		else if ( CheckMeleeRange() )
 		{
-			target.DamageMobj(self,self,Random[AcolyteBoom](30,40),'AcolyteBoom');
+			target.DamageMobj(self,self,Random[AcolyteBoom](10,20),'AcolyteBoom');
 			if ( target.Mass >= LARGE_MASS || target.bDONTTHRUST ) return;
-			target.vel.xy += Vec2To(target).unit()*16;
-			target.vel.z += 6.;
+			target.vel.xy += Vec2To(target).unit()*8;
+			target.vel.z += 3.;
 		}
 	}
 	void A_AcolyteChase()
@@ -632,17 +638,20 @@ Class mkElderAcolyte : Actor
 		if ( target )
 		{
 			Vector3 pdiff = level.Vec3Diff(pos,target.pos);
-			if ( pdiff.z > 32 ) newz += 3.;
-			else if ( pdiff.z < -32 ) newz -= 3.;
+			if ( pdiff.z > 32 ) newz += 1.;
+			else if ( pdiff.z < -32 ) newz -= 1.;
 		}
 		SetOrigin(Vec2OffsetZ(0,0,newz),true);
-		A_VileChase();
+		if ( Random[AcolyteDecide](0,4) || A_CheckForResurrection() )
+			A_Chase(null,"Missile");
+		if ( (Distance3D(target) < meleethreshold) && !Random[AcolyteDecide](0,7) )
+			SetStateLabel("Melee");
 	}
 	void A_AcolyteDecide()
 	{
 		if ( !target ) return;
 		Vector3 sc = level.SphericalCoords(target.pos,pos,(target.angle,target.pitch));
-		if ( !Random[AcolyteDecide](0,3) && target.CheckSight(self) && (sc.z < 600) && (abs(sc.x) < 15) && (abs(sc.y) < 15) )
+		if ( !Random[AcolyteDecide](0,4) && target.CheckSight(self) && (sc.z < 600) && (abs(sc.x) < 15) && (abs(sc.y) < 15) )
 		{
 			double ang = AngleTo(target);
 			Vector2 dir[2];
@@ -658,9 +667,9 @@ Class mkElderAcolyte : Actor
 				ca = 0;
 				cb = 1;
 			}
-			if ( CheckMove(pos.xy+dir[ca]*speed*2) )
+			if ( CheckStrafe(dir[ca]) )
 				strafedir = sdir[ca];
-			else if ( CheckMove(pos.xy+dir[cb]*speed*2) )
+			else if ( CheckStrafe(dir[cb]) )
 				strafedir = sdir[cb];
 			if ( strafedir != 0 )
 			{
@@ -669,11 +678,25 @@ Class mkElderAcolyte : Actor
 			}
 		}
 	}
+	bool CheckStrafe( Vector2 dir )
+	{
+		dir *= speed*2;
+		Vector3 oldpos = pos;
+		bool free = true;
+		for ( int i=0; i<9; i++ )
+		{
+			if ( TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight)) ) continue;
+			free = false;
+			break;
+		}
+		SetOrigin(oldpos,false);
+		return free;
+	}
 	void A_Strafe()
 	{
 		A_FaceTarget(10);
-		Vector2 dir = RotateVector((0,strafedir),angle);
-		bool moved = TryMove(pos.xy+dir*speed*1.5,int(maxdropoffheight));
+		Vector2 dir = RotateVector((0,strafedir),angle)*speed*2;
+		bool moved = TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight));
 		if ( !moved )
 		{
 			SetStateLabel("See");
@@ -683,23 +706,39 @@ Class mkElderAcolyte : Actor
 	void A_DecideBack()
 	{
 		if ( !target ) return;
-		Vector2 dir = RotateVector((-1,0),AngleTo(target));
-		if ( CheckMove(pos.xy+dir*speed*3) )
-			SetStateLabel("MoveBack");
+		Vector2 dir = RotateVector((-1,0),AngleTo(target))*speed*3;
+		Vector3 oldpos = pos;
+		bool free = true;
+		for ( int i=0; i<9; i++ )
+		{
+			if ( TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight)) ) continue;
+			free = false;
+			break;
+		}
+		SetOrigin(oldpos,false);
+		if ( free ) SetStateLabel("MoveBack");
 	}
 	void A_TryMoveAway()
 	{
 		if ( !target ) return;
 		if ( Random[AcolyteEscape](0,1) ) return;
-		Vector2 dir = RotateVector((-1,0),AngleTo(target));
-		if ( CheckMove(pos.xy+dir*speed*3) )
-			SetStateLabel("MoveAway");
+		Vector2 dir = RotateVector((-1,0),AngleTo(target))*speed*3;
+		Vector3 oldpos = pos;
+		bool free = true;
+		for ( int i=0; i<9; i++ )
+		{
+			if ( TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight)) ) continue;
+			free = false;
+			break;
+		}
+		SetOrigin(oldpos,false);
+		if ( free ) SetStateLabel("MoveAway");
 	}
 	void A_MoveAway( bool missile = false )
 	{
 		A_FaceTarget(30);
-		Vector2 dir = RotateVector((-1,0),angle);
-		bool moved = TryMove(pos.xy+dir*speed*2.5,int(maxdropoffheight));
+		Vector2 dir = RotateVector((-1,0),angle)*speed*3;
+		bool moved = TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight));
 		if ( !moved )
 		{
 			if ( missile ) SetStateLabel("Missile");
@@ -729,6 +768,7 @@ Class mkElderAcolyte : Actor
 		ECOL A 0 A_PlaySound("BishopAttack");
 		ECOL A 3 A_FaceTarget();
 		ECOL DE 4 Bright A_FaceTarget();
+		ECOL F 0 A_SetMelee();
 		ECOL FFFF 6 Bright A_AcolyteAttack();
 		ECOL ED 4 Bright;
 		ECOL A 3;

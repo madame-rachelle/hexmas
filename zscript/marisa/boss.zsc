@@ -334,7 +334,7 @@ Class mkElderWizard : Actor
 		//$Title Viridescent Lord
 		//$Category Marisa/Monsters
 		Scale 3.0;
-		Health 12000;
+		Health 10000;
 		Mass int.max;
 		Radius 30;
 		Height 240;
