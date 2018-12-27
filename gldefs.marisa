@@ -631,3 +631,29 @@ brightmap sprite MRMNA0
 	map "brightmaps/MRMNA0.png"
 	disablefullbright
 }
+
+brightmap sprite NLRDH0
+{
+	map "brightmaps/NLRDH0.png"
+	disablefullbright
+}
+brightmap sprite NLRDI0
+{
+	map "brightmaps/NLRDI0.png"
+	disablefullbright
+}
+brightmap sprite NLRDJ0
+{
+	map "brightmaps/NLRDJ0.png"
+	disablefullbright
+}
+brightmap sprite NLRDK0
+{
+	map "brightmaps/NLRDK0.png"
+	disablefullbright
+}
+brightmap sprite NLRDL0
+{
+	map "brightmaps/NLRDL0.png"
+	disablefullbright
+}

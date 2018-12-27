@@ -99,3 +99,12 @@ $pitchshift eldrich/beam 0
 
 eldrich/icebreak icebrk2
 $pitchshift eldrich/icebreak 0
+
+nightmarelord/see DEESACT3
+nightmarelord/appear SORRISE
+nightmarelord/disappear BISHAPP
+nightmarelord/stomp STHMP1
+$pitchshift nightmarelord/see 0
+$pitchshift nightmarelord/appear 0
+$pitchshift nightmarelord/disappear 0
+$pitchshift nightmarelord/stomp 0

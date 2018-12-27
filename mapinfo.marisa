@@ -41,6 +41,7 @@ DoomEdNums
 	6430 = "mkClericNPC"
 	6431 = "mkApprenticeSighting"
 	6432 = "mkMirrorMan"
+	6433 = "mkNightmareLordSighting"
 	6440 = "mkFullQuietus"
 	6441 = "mkFullWraithverge"
 	6442 = "mkFullBloodscourge"
