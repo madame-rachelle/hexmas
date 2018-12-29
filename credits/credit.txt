@@ -5,10 +5,12 @@ NW*, W_*, F*, NF* textures: C.R.U.E.L. pack by Ettingrinder
 SNOW* skybox: Kothic Skyboxes pack by Kell
 TRE* sprites: Necrodome
 creepy, horror, drone, bossbttl, shoggoth, temple tracks: Taken from Frackin' Universe (original credits unknown)
+dungeon6: Taken from Fantasy Soundtrack Project by AceeQ (Skyrim mod. Seems to be gone forever from the nexus, along with the author, apparently)
 exboss track: another dummied out Dark Souls 3 track
 GARGSMAL, GRGW_LWR fonts: NeuralStunner
-LMWZ* sprites: Freedoom
-ACOL* sprites: Eriance
+VIRL* sprites: Freedoom
+ECOL* sprites: Eriance
+SAGE* sprites: Shadowcaster by Raven Software
 marisa/amb sounds: Unreal
 Cleric standing sprites: EttinGrinder
 
