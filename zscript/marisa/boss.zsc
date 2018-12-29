@@ -329,6 +329,12 @@ Class mkElderWizard : Actor
 		return false;
 	}
 
+	override void Tick()
+	{
+		vel *= 0;	// don't get pushed
+		Super.Tick();
+	}
+
 	Default
 	{
 		//$Title Viridescent Lord
@@ -364,7 +370,6 @@ Class mkElderWizard : Actor
 		+INTERPOLATEANGLES;
 		+NOPAIN;
 		+LAXTELEFRAGDMG;	// prevents fall damage completely (thanks, hege)
-		-ISMONSTER;	// prevents thrusting from fighter weapons (why the fuck is this a thing?)
 		SeeSound "eldrich/see";
 		ActiveSound "eldrich/active";
 		PainSound "eldrich/pain";
