@@ -1,6 +1,66 @@
 // for dialogue advance
-Class mkBossClearedToken : Inventory {}
-Class mkExBossClearedToken : Inventory {}
+Class mkBossClearedToken : Inventory
+{
+	Default
+	{
+		+INVENTORY.UNDROPPABLE;
+		+INVENTORY.UNTOSSABLE;
+	}
+}
+Class mkExBossClearedToken : Inventory
+{
+	Default
+	{
+		+INVENTORY.UNDROPPABLE;
+		+INVENTORY.UNTOSSABLE;
+	}
+}
+
+Class mkClericKeyDrops : Actor
+{
+	void A_TossKeyItems()
+	{
+		bool haskey1 = false, haskey2 = false, haspiece = false;
+		for ( int i=0; i<MAXPLAYERS; i++ )
+		{
+			if ( !playeringame[i] ) continue;
+			if ( players[i].mo.FindInventory("KeyDungeon") ) haskey1 = true;
+			if ( players[i].mo.FindInventory("KeySteel") ) haskey2 = true;
+			if ( players[i].mo.FindInventory("mkHubGemAether") ) haspiece = true;
+		}
+		if ( !haskey1 )
+		{
+			let a = A_DropItem("KeyDungeon");
+			a.TossItem();
+		}
+		if ( !haskey2 )
+		{
+			let a = A_DropItem("KeySteel");
+			a.TossItem();
+		}
+		if ( !haspiece )
+		{
+			let a = A_DropItem("mkHubGemAether");
+			a.TossItem();
+		}
+	}
+
+	Default
+	{
+		+NOGRAVITY;
+		+NOBLOCKMAP;
+		+DONTSPLASH;
+	}
+
+	States
+	{
+	Spawn:
+		TNT1 A 10;
+		TNT1 A 35 A_TossKeyItems();
+		TNT1 A 1 A_PrintBold("Congratulations! You completed this map in the dirtiest way possible.\n\nBut was it worth it?");
+		Stop;
+	}
+}
 
 Class mkClericNPC : Actor
 {
@@ -14,17 +74,20 @@ Class mkClericNPC : Actor
 		Health 100;
 		PainChance 255;
 		Speed 10;
-		Radius 16;
-		Height 64;
+		Radius 12;
+		Height 56;
 		MONSTER;
 		+FRIENDLY;
 		+STANDSTILL;
 		-COUNTKILL;
 		Obituary "%o got bludgeoned by a cleric.";
 		Tag "Cleric";
+		DropItem "mkClericKeyDrops";
 	}
 	override int DamageMobj( Actor inflictor, Actor source, int damage, Name mod, int flags, double angle )
 	{
+		Inventory h = FindInventory("ArtiHealth");
+		while ( h && (h.amount > 0) && ((health-damage) <= 0) ) UseInventory(h);
 		if ( (Health > 0) && source && source.player && bFRIENDLY )
 		{
 			source.A_Print("Have you gone insane?");
@@ -32,7 +95,7 @@ Class mkClericNPC : Actor
 		}
 		return Super.DamageMobj(inflictor,source,damage,mod,flags,angle);
 	}
-	action void A_MaceAttack()
+	void A_MaceAttack()
 	{
 		if ( !target ) return;
 		if ( CheckMeleeRange() )
@@ -47,7 +110,10 @@ Class mkClericNPC : Actor
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
-		spawnspot = Spawn("MapSpot",SpawnPoint);
+		GiveInventory("ArtiHealth",10);
+		spawnspot = Spawn("PatrolPoint",SpawnPoint);
+		spawnspot.angle = SpawnAngle;
+		spawnspot.ChangeTid(args[0]);
 	}
 	States
 	{
@@ -68,7 +134,6 @@ Class mkClericNPC : Actor
 			{
 				A_ClearTarget();
 				if ( !spawnspot ) ThrowAbortException("Spawn Spot does not exist for Cleric NPC");
-				if ( Distance2D(spawnspot) > 2000. ) return ResolveState("ChaosReturn");
 				goal = spawnspot;
 				return ResolveState("Returning");
 			}
@@ -77,17 +142,19 @@ Class mkClericNPC : Actor
 		Loop;
 	ChaosReturn:
 		CLER A 10;
-		CLER A 0 Teleport(SpawnPoint,SpawnAngle,TELF_SOURCEFOG|TELF_DESTFOG);
+		CLER A 0 Teleport(spawnspot.pos,spawnspot.angle,TELF_SOURCEFOG|TELF_DESTFOG);
 		CLER A 5;
 		Goto Spawn;
 	Returning:
 		CLER AABBCCDD 2
 		{
 			A_Chase(null,null);
-			if ( Distance3D(spawnspot) < speed )
+			double dist = Distance2D(spawnspot);
+			if ( dist > 2000. ) return ResolveState("ChaosReturn");
+			if ( (dist < speed) || !goal )
 			{
-				SetOrigin(SpawnPoint,true);
-				angle = SpawnAngle;
+				SetOrigin(spawnspot.pos,true);
+				angle = spawnspot.angle;
 				A_ClearTarget();
 				A_ResetHealth();
 				bFRIENDLY = true;
@@ -121,14 +188,12 @@ Class mkClericNPC : Actor
 		CLER [ -1;
 		Stop;
 	Ice:
-		TNT1 A 0 { Translation = 0; }
 		CLER \ 5 A_FreezeDeath();
 		CLER \ 1 A_FreezeDeathChunks();
 		Wait;
 	Burn:
 		FDTH C 5 Bright A_PlaySound("PlayerClericBurnDeath");
 		FDTH D 4 Bright;
-		TNT1 A 0 { Translation = 0; }
 		FDTH G 5 Bright;
 		FDTH H 4 Bright A_PlaySound("PlayerClericCrazyDeath");
 		FDTH I 5 Bright;

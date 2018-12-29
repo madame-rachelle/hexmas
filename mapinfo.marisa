@@ -1,16 +1,26 @@
 GameInfo
 {
-	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler"
+	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler", "mkInventoryResetHandler"
+}
+
+clearepisodes
+episode FROSTBITE
+{
+	name = "HeXmas Community Map Project"
+	key = x
+}
+
+cluster 1
+{
+	hub
 }
 
 map MARISA "Viridescent"
 {
+	cluster = 1
 	music = "creepy"
 	sky1 = "ARCTICS1"
 	sky2 = "ARCTICS2", 0.03
-	ResetInventory
-	ResetHealth
-	ResetItems
 	doublesky
 	evenlighting
 	monsterfallingdamage
@@ -42,8 +52,14 @@ DoomEdNums
 	6431 = "mkApprenticeSighting"
 	6432 = "mkMirrorMan"
 	6433 = "mkNightmareLordSighting"
+	6434 = "mkSageNPC"
 	6440 = "mkFullQuietus"
 	6441 = "mkFullWraithverge"
 	6442 = "mkFullBloodscourge"
 	6443 = "mkLamp"
+	6444 = "mkHubGemFire"
+	6445 = "mkHubGemWater"
+	6446 = "mkHubGemEarth"
+	6447 = "mkHubGemAir"
+	6448 = "mkHubGemAether"
 }
