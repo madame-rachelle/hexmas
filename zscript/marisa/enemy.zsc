@@ -912,3 +912,50 @@ Class mkAcolyteAfterImage : Actor
 		Wait;
 	}
 }
+
+Class mkSkeleton : Actor
+{
+	Default
+	{
+		//$Title Skeleton
+		//$Category Marisa/Monsters
+		HitObituary "%o's funny bone was tickled by a skeleton.";
+		Health 80;
+		PainChance 180;
+		Speed 10;
+		Radius 24;
+		Height 56;
+		Scale 0.9;
+		SeeSound "skelsit";
+		PainSound "skelpai";
+		DeathSound "skeldth";
+		MONSTER;
+		+NOBLOOD;
+	}
+	states
+	{
+	Spawn:
+		SKLT R 10 A_Look();
+		Wait;
+	See:
+		SKLT AABBCCDDEEFF 2 A_Chase();
+		Loop;
+	Melee:
+		SKLT GH 4 A_FaceTarget();
+		SKLT I 4 A_PlaySound("skelatt",CHAN_AUTO);
+		SKLT J 4 A_CustomMeleeAttack(Random[Bone](1,6)*4,"swordhit","");
+		SKLT K 4 A_FaceTarget();
+		Goto See;
+	Pain:
+		SKLT L 2;
+		SKLT L 2 A_Pain;
+		Goto See;
+	Death:
+		SKLT M 4 A_Scream();
+		SKLT N 4 A_Fall();
+		SKLT O 8 A_NoBlocking();
+		SKLT P 12;
+		SKLT Q -1;
+		Stop;
+	}
+}

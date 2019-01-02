@@ -51,6 +51,28 @@ Class mkGradingHandler : EventHandler
 			hnd.gvars_out.gradevalmul = 1.08;
 			hnd.gvars_out.gradevalpow = 1.51;
 			break;
+		case 3:
+			// stronghold preset
+			hnd.gvars_out.grademul = (1.09,1.08,0.91);
+			hnd.gvars_out.gradepow = (0.91,1.06,0.99);
+			hnd.gvars_out.gradecol = (-0.5,-0.26,-0.15);
+			hnd.gvars_out.gradecolfact = -0.29;
+			hnd.gvars_out.gradesatmul = 0.97;
+			hnd.gvars_out.gradesatpow = 1.23;
+			hnd.gvars_out.gradevalmul = 0.96;
+			hnd.gvars_out.gradevalpow = 1.47;
+			break;
+		case 4:
+			// minotaur preset
+			hnd.gvars_out.grademul = (1.12,0.95,0.87);
+			hnd.gvars_out.gradepow = (0.91,1.04,1.13);
+			hnd.gvars_out.gradecol = (-0.79,-0.22,0.22);
+			hnd.gvars_out.gradecolfact = -0.56;
+			hnd.gvars_out.gradesatmul = 0.86;
+			hnd.gvars_out.gradesatpow = 0.91;
+			hnd.gvars_out.gradevalmul = 0.89;
+			hnd.gvars_out.gradevalpow = 1.78;
+			break;
 		}
 		hnd.genabled = true;
 		hnd.gphase = 0;
@@ -357,6 +379,32 @@ Class mkBreakGlass : Actor
 	}
 }
 
+Class mkBreakGlassNormal : Actor
+{
+	Default
+	{
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		for ( int i=0; i<64; i++ )
+		{
+			Vector3 shardpos = Vec3Angle(FRandom[Glass](-25,25),angle+90,FRandom[Glass](-50,50));
+			String scls = String.Format("SGShard%d",Random[Glass](0,9));
+			let s = Spawn(scls,shardpos);
+			s.bNOGRAVITY = false;
+			s.Gravity = 0.04;
+			double ang = angle+FRandom[Glass](-15,15);
+			s.vel.xy = (cos(ang),sin(ang))*FRandom[Glass](0.8,3.2);
+			s.vel.z = FRandom[Glass](0.2,0.8);
+		}
+		Destroy();
+	}
+}
+
 Class mkWarpPipe : Actor
 {
 	int cnt;
@@ -417,3 +465,143 @@ Class mkIceIceBaby : Actor
 		Destroy();
 	}
 }
+
+Class mkUtility abstract
+{
+	static play void SpawnProjectile( String cls, int spot, int speed = -1 )
+	{
+		Actor src = ActorIterator.Create(spot).Next();
+		let p = Actor.Spawn(cls,src.pos);
+		p.angle = src.angle;
+		p.pitch = src.pitch;
+		p.vel = (cos(p.angle)*cos(p.pitch),sin(p.angle)*cos(p.pitch),-sin(p.pitch))*((speed!=-1)?speed:p.speed);
+	}
+
+	static play void SpawnProjectileAimed( String cls, int spot, int target, int spread = 0, int speed = -1 )
+	{
+		Actor src = ActorIterator.Create(spot).Next();
+		Actor dst = ActorIterator.Create(target).Next();
+		let p = Actor.Spawn(cls,src.pos);
+		Vector3 dir = level.Vec3Diff(src.pos,dst.pos);
+		dir = dir.unit();
+		p.angle = atan2(dir.y,dir.x)+FRandom[mkutilrng](-spread,spread);
+		p.pitch = asin(-dir.z)+FRandom[mkutilrng](-spread,spread);
+		p.vel = (cos(p.angle)*cos(p.pitch),sin(p.angle)*cos(p.pitch),-sin(p.pitch))*((speed!=-1)?speed:p.speed);
+	}
+
+	static play void SetSectorFloorLight( int tag, int val )
+	{
+		let s = SectorTagIterator.Create(tag);
+		int i;
+		while ( (i = s.Next()) != -1 ) level.Sectors[i].SetPlaneLight(0,val);
+	}
+}
+
+Class mkMovingFloorTrap : Actor abstract
+{
+	enum EDir
+	{
+		DIR_EAST,
+		DIR_NORTH,
+		DIR_WEST,
+		DIR_SOUTH,
+	}
+
+	int mdir;
+	int dcnt, hcnt;
+
+	property Dir: mdir;
+
+	bool MoveDown()
+	{
+		SetOrigin(Vec3Offset(0,0,-2),true);
+		return (++dcnt>=4);
+	}
+	bool MoveDir()
+	{
+		SetOrigin(Vec3Offset(cos(mdir*90)*6,sin(mdir*90)*6,0),true);
+		return (++hcnt>=20);
+	}
+
+	override void Activate( Actor activator )
+	{
+		if ( !InStateSequence(CurState,FindState("Spawn")) ) return;
+		SetStateLabel("Activated");
+	}
+
+	void StartSq()
+	{
+		StartSoundSequence('Platform',0);
+	}
+
+	void StopSq()
+	{
+		StopSoundSequence();
+	}
+
+	Default
+	{
+		+SOLID;
+		+SHOOTABLE;
+		+NODAMAGE;
+		+NOBLOOD;
+		+ACTLIKEBRIDGE;
+		+NOGRAVITY;
+		Radius 64;
+		Height 16;
+	}
+	States
+	{
+	Spawn:
+		PRKM A -1;
+		Stop;
+	Activated:
+		PRKM A 0 StartSq();
+		PRKM A 1 A_JumpIf(MoveDown(),1);
+		Wait;
+		PRKM A 30 StopSq();
+		PRKM A 0 StartSq();
+		PRKM A 1 A_JumpIf(MoveDir(),1);
+		Wait;
+		PRKM A -1 StopSq();
+		Stop;
+	}
+}
+
+Class mkMovingFloorTrapE : mkMovingFloorTrap
+{
+	Default
+	{
+		//$Title Moving Floor Trap (East)
+		//$Category Marisa/FX
+		mkMovingFloorTrap.Dir DIR_EAST;
+	}
+}
+Class mkMovingFloorTrapN : mkMovingFloorTrap
+{
+	Default
+	{
+		//$Title Moving Floor Trap (North)
+		//$Category Marisa/FX
+		mkMovingFloorTrap.Dir DIR_NORTH;
+	}
+}
+Class mkMovingFloorTrapW : mkMovingFloorTrap
+{
+	Default
+	{
+		//$Title Moving Floor Trap (West)
+		//$Category Marisa/FX
+		mkMovingFloorTrap.Dir DIR_WEST;
+	}
+}
+Class mkMovingFloorTrapS : mkMovingFloorTrap
+{
+	Default
+	{
+		//$Title Moving Floor Trap (South)
+		//$Category Marisa/FX
+		mkMovingFloorTrap.Dir DIR_SOUTH;
+	}
+}
+

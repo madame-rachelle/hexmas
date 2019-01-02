@@ -4,6 +4,9 @@ timallen/grunt TIMGRUNT
 IgniteSmall DSZIP
 Tinky Default
 
+$alias FireDemonAttack2 FireDemonAttack
+$limit FireDemonAttack 32
+
 world/amb11	AMB11
 world/amb4	AMB4
 world/amb8	AMB8
@@ -108,3 +111,38 @@ $pitchshift nightmarelord/see 0
 $pitchshift nightmarelord/appear 0
 $pitchshift nightmarelord/disappear 0
 $pitchshift nightmarelord/stomp 0
+
+$random skelsit { raiseske sklsrs1 sklsrs2 }
+raiseske	raiseske
+sklsrs1		sklsrs1
+sklsrs2		sklsrs2
+$random skelpai { sgethit1 sgethit2 sgethit3 sgethit4 sgethit5 sgethit6 sgethit7 }
+sgethit1 	sgethit1
+sgethit2	sgethit2
+sgethit3 	sgethit3
+sgethit4 	sgethit4
+sgethit5 	sgethit5
+sgethit6	sgethit6
+sgethit7	sgethit7
+$random skelatt { sattack1 sattack2 sattack3 sattack4 sattack5 sattack6 }
+sattack1		sattack1
+sattack2		sattack2
+sattack3		sattack3
+sattack4		sattack4
+sattack5		sattack5
+sattack6		sattack6
+$random skeldth { sdeath1 sdeath2 sdeath3 sdeath4 sdeath5 sklsrd1 sklsrd2 }
+sdeath1 	sdeath1
+sdeath2		sdeath2
+sdeath3		sdeath3
+sdeath4		sdeath4
+sdeath5		sdeath5
+sklsrd1		sklsrd1
+sklsrd2		sklsrd2
+$random swordhit { ssword1 ssword2 ssword3 ssword4 ssword5 ssword6 }
+ssword1		ssword1
+ssword2		ssword2
+ssword3		ssword3
+ssword4		ssword4
+ssword5		ssword5
+ssword6		ssword6

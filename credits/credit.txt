@@ -13,6 +13,7 @@ ECOL* sprites: Eriance
 SAGE* sprites: Shadowcaster by Raven Software
 marisa/amb sounds: Unreal
 Cleric standing sprites: EttinGrinder
+Skeleton monster: Virtue, sounds from Diablo, sprites from Dungeon Keeper
 
 C.R.U.E.L. full credits:
 
