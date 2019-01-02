@@ -470,23 +470,31 @@ Class mkUtility abstract
 {
 	static play void SpawnProjectile( String cls, int spot, int speed = -1 )
 	{
-		Actor src = ActorIterator.Create(spot).Next();
-		let p = Actor.Spawn(cls,src.pos);
-		p.angle = src.angle;
-		p.pitch = src.pitch;
-		p.vel = (cos(p.angle)*cos(p.pitch),sin(p.angle)*cos(p.pitch),-sin(p.pitch))*((speed!=-1)?speed:p.speed);
+		Actor src;
+		let ai = ActorIterator.Create(spot);
+		while ( src = ai.Next() )
+		{
+			let p = Actor.Spawn(cls,src.pos);
+			p.angle = src.angle;
+			p.pitch = src.pitch;
+			p.vel = (cos(p.angle)*cos(p.pitch),sin(p.angle)*cos(p.pitch),-sin(p.pitch))*((speed!=-1)?speed:p.speed);
+		}
 	}
 
 	static play void SpawnProjectileAimed( String cls, int spot, int target, int spread = 0, int speed = -1 )
 	{
-		Actor src = ActorIterator.Create(spot).Next();
-		Actor dst = ActorIterator.Create(target).Next();
-		let p = Actor.Spawn(cls,src.pos);
-		Vector3 dir = level.Vec3Diff(src.pos,dst.pos);
-		dir = dir.unit();
-		p.angle = atan2(dir.y,dir.x)+FRandom[mkutilrng](-spread,spread);
-		p.pitch = asin(-dir.z)+FRandom[mkutilrng](-spread,spread);
-		p.vel = (cos(p.angle)*cos(p.pitch),sin(p.angle)*cos(p.pitch),-sin(p.pitch))*((speed!=-1)?speed:p.speed);
+		Actor src;
+		let ai = ActorIterator.Create(spot);
+		while ( src = ai.Next() )
+		{
+			Actor dst = ActorIterator.Create(target).Next();
+			let p = Actor.Spawn(cls,src.pos);
+			Vector3 dir = level.Vec3Diff(src.pos,dst.pos);
+			dir = dir.unit();
+			p.angle = atan2(dir.y,dir.x)+FRandom[mkutilrng](-spread,spread);
+			p.pitch = asin(-dir.z)+FRandom[mkutilrng](-spread,spread);
+			p.vel = (cos(p.angle)*cos(p.pitch),sin(p.angle)*cos(p.pitch),-sin(p.pitch))*((speed!=-1)?speed:p.speed);
+		}
 	}
 
 	static play void SetSectorFloorLight( int tag, int val )
