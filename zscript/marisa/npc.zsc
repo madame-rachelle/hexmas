@@ -332,6 +332,8 @@ Class mkMirrorMan : Actor
 	Spawn:
 		MRMN A -1 Bright;
 		Stop;
+		TNT1 A -1;	// Dummy
+		Stop;
 	}
 }
 

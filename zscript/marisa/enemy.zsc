@@ -400,7 +400,7 @@ Class mkAcolyteFire : Actor
 		Radius 4;
 		Height 4;
 		Translation "0:255=%[0.00,0.00,0.00]:[0.80,2.00,0.80]";
-		DamageFunction Random[Acolyte](2,3)*2;
+		DamageFunction Random[Acolyte](3,5);
 		PROJECTILE;
 		SeeSound "DemonMissileFire";
 		DeathSound "DemonMissileExplode";
@@ -613,7 +613,7 @@ Class mkElderAcolyte : Actor
 	}
 	void A_SetMelee()
 	{
-		ismelee = (Distance3D(target) <= meleethreshold);
+		ismelee = CheckMeleeRange();
 	}
 	void A_AcolyteAttack()
 	{
@@ -924,13 +924,14 @@ Class mkSkeleton : Actor
 		PainChance 180;
 		Speed 10;
 		Radius 24;
-		Height 56;
-		Scale 0.9;
+		Height 64;
+		Scale 1.2;
 		SeeSound "skelsit";
 		PainSound "skelpai";
 		DeathSound "skeldth";
 		MONSTER;
 		+NOBLOOD;
+		Tag "Skeleton";
 	}
 	states
 	{
@@ -943,7 +944,7 @@ Class mkSkeleton : Actor
 	Melee:
 		SKLT GH 4 A_FaceTarget();
 		SKLT I 4 A_PlaySound("skelatt",CHAN_AUTO);
-		SKLT J 4 A_CustomMeleeAttack(Random[Bone](1,6)*4,"swordhit","");
+		SKLT J 4 A_CustomMeleeAttack(Random[Bone](2,4)*3,"swordhit","");
 		SKLT K 4 A_FaceTarget();
 		Goto See;
 	Pain:
