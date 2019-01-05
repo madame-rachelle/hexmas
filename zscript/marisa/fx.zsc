@@ -53,10 +53,10 @@ Class mkGradingHandler : EventHandler
 			break;
 		case 3:
 			// stronghold preset
-			hnd.gvars_out.grademul = (1.09,1.08,0.91);
-			hnd.gvars_out.gradepow = (0.91,1.06,0.99);
+			hnd.gvars_out.grademul = (1.08,1.06,0.92);
+			hnd.gvars_out.gradepow = (0.93,1.05,0.99);
 			hnd.gvars_out.gradecol = (-0.5,-0.26,-0.15);
-			hnd.gvars_out.gradecolfact = -0.29;
+			hnd.gvars_out.gradecolfact = -0.19;
 			hnd.gvars_out.gradesatmul = 0.97;
 			hnd.gvars_out.gradesatpow = 1.23;
 			hnd.gvars_out.gradevalmul = 0.96;
