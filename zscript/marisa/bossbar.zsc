@@ -12,7 +12,7 @@ const MKHBAR_POSITION = 1;	// 0: top, 1: bottom
 const MKHBAR_ALIGN = -1;	// -1: left, 0: center, 1: right
 const MKHBAR_XMARGIN = 2;	// horizontal text margin (ignored for center align)
 const MKHBAR_YMARGIN = 4;	// vertical text margin
-const MKHBAR_SEPARATION = 32;	// extra gap between healthbars
+const MKHBAR_SEPARATION = 24;	// extra gap between healthbars
 const MKHBAR_GAP = 32;		// extra gap between first healthbar and border
 
 Class mkBossHealthBar : HUDMessageBase
@@ -134,10 +134,11 @@ Class mkBossHealthbarHandler : EventHandler
 	{
 		let hnd = mkBossHealthbarHandler(EventHandler.Find("mkBossHealthbarHandler"));
 		if ( !hnd ) return;
-		if ( !hnd.bossenemy[0] ) hnd.bossenemy[0] = ActorIterator.Create(tid).Next();
-		else if ( !hnd.bossenemy[1] ) hnd.bossenemy[1] = ActorIterator.Create(tid).Next();
-		else if ( !hnd.bossenemy[2] ) hnd.bossenemy[2] = ActorIterator.Create(tid).Next();
-		else ThrowAbortException("Attempted to set more than 3 bosses at a time");
+		ClearBoss();
+		let ai = ActorIterator.Create(tid);
+		if ( !hnd.bossenemy[0] ) hnd.bossenemy[0] = ai.Next();
+		if ( !hnd.bossenemy[1] ) hnd.bossenemy[1] = ai.Next();
+		if ( !hnd.bossenemy[2] ) hnd.bossenemy[2] = ai.Next();
 	}
 
 	static void ClearBoss()

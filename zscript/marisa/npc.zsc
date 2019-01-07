@@ -427,3 +427,58 @@ Class mkSmoothLookTo : Thinker
 			Destroy();
 	}
 }
+
+// cheerin' on
+Class mkEttinSpectator : Actor
+{
+	Default
+	{
+		//$Title Ettin Spectator
+		//$Category Marisa/Decoration
+		Radius 25;
+		Height 68;
+		Mass 175;
+		Speed 13;
+		MONSTER;
+		+NODAMAGE;
+		+NEVERTARGET;
+		-SHOOTABLE;
+		-COUNTKILL;
+	}
+	States
+	{
+	Spawn:
+		ETTN A 30
+		{
+			if ( Random[EttinSpectator]() < 6 )
+				A_PlaySound("EttinActive");
+		}
+		Wait;
+	Cheer:
+		ETTN A 10 A_SetTics(Random[EttinSpectator](4,16));
+		ETTN A 0 A_PlaySound("EttinSight");
+		ETTN FE 5;
+		ETTN FE 4;
+		ETTN FEF 3;
+		ETTN EF 4;
+		ETTN EF 5;
+		ETTN A 8;
+		Goto Spawn;
+	Flinch:
+		ETTN A 10 A_SetTics(Random[EttinSpectator](4,16));
+		ETTN H 7 A_PlaySound("PuppyBeat");
+		Goto Spawn;
+	Flinch2:
+		ETTN A 10 A_SetTics(Random[EttinSpectator](4,16));
+		ETTN H 11 A_PlaySound("PuppyBeat");
+		ETTN A 3
+		{
+			A_ClearTarget();
+			goal = ActorIterator.Create(args[0]).Next();
+		}
+		Goto Leave;
+	Leave:
+		ETTN ABCD 3 A_Chase();
+		Goto Loop;
+	}
+}

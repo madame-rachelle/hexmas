@@ -5,8 +5,78 @@
 
 Class mkMinotaur : Actor
 {
+	Default
+	{
+		//$Title Twin Minotaur
+		//$Category Marisa/Monsters
+		Health 5000;
+		Scale 1.5;
+		Radius 40;
+		Height 150;
+		Mass 1500;
+		Speed 20;
+		Painchance 25;
+		DamageFactor "Fire", 0.5;
+		DamageFactor "Ice", 0.7;
+		DamageFactor "Falling", 0.0;
+		Monster;
+		+DROPOFF;
+		+FLOORCLIP;
+		+BOSS;
+		+NORADIUSDMG;
+		+DONTMORPH;
+		+TELESTOMP;
+		+NOTARGET;
+		+NOTELEFRAG;
+		+NOICEDEATH;
+		+LAXTELEFRAGDMG;
+		Tag "\cfTwin Minotaur\c-";
+		Obituary "%o was blown into a thousand pieces by the Twin Minotaurs.";
+		HitObituary "%o got too close to the Twin Minotaurs.";
+	}
+	States
+	{
+	Spawn:
+		MINO X -1;
+		Stop;
+	}
 }
 
 Class mkMinotaurEx : Actor
 {
+	Default
+	{
+		//$Title Twin Minotaur (EX form)
+		//$Category Marisa/Monsters
+		Scale 2.0;
+		Health 12000;
+		Radius 56;
+		Height 200;
+		Mass 3000;
+		Speed 24;
+		Painchance 25;
+		DamageFactor "Fire", 0.3;
+		DamageFactor "Ice", 0.8;
+		DamageFactor "Falling", 0.0;
+		Monster;
+		+DROPOFF;
+		+FLOORCLIP;
+		+BOSS;
+		+NORADIUSDMG;
+		+DONTMORPH;
+		+TELESTOMP;
+		+NOTARGET;
+		+NOTELEFRAG;
+		+NOICEDEATH;
+		+LAXTELEFRAGDMG;
+		Tag "\cmHellsmith\c-";
+		Obituary "%o was burned to ashes by the Hellsmith.";
+		HitObituary "%o was crushed by the Hellsmith.";
+	}
+	States
+	{
+	Spawn:
+		MIN2 G -1;
+		Stop;
+	}
 }
