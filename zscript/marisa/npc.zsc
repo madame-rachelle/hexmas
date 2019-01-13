@@ -448,37 +448,31 @@ Class mkEttinSpectator : Actor
 	States
 	{
 	Spawn:
-		ETTN A 30
-		{
-			if ( Random[EttinSpectator]() < 6 )
-				A_PlaySound("EttinActive");
-		}
+		ETTN A 1;
 		Wait;
 	Cheer:
 		ETTN A 10 A_SetTics(Random[EttinSpectator](4,16));
-		ETTN A 0 A_PlaySound("EttinSight");
-		ETTN FE 5;
-		ETTN FE 4;
-		ETTN FEF 3;
-		ETTN EF 4;
-		ETTN EF 5;
+		ETTN BE 5;
+		ETTN F 20 A_PlaySound("EttinSight",attenuation:2.5);
+		ETTN EB 5;
 		ETTN A 8;
 		Goto Spawn;
 	Flinch:
-		ETTN A 10 A_SetTics(Random[EttinSpectator](4,16));
-		ETTN H 7 A_PlaySound("PuppyBeat");
+		ETTN A 10 A_SetTics(Random[EttinSpectator](16,32));
+		ETTN H 7 A_PlaySound("PuppyBeat",attenuation:2.5);
 		Goto Spawn;
 	Flinch2:
-		ETTN A 10 A_SetTics(Random[EttinSpectator](4,16));
-		ETTN H 11 A_PlaySound("PuppyBeat");
+		ETTN A 10 A_SetTics(Random[EttinSpectator](4,8));
+		ETTN H 11 A_PlaySound("PuppyBeat",attenuation:2.5);
 		ETTN A 3
 		{
 			A_ClearTarget();
+			bCHASEGOAL = true;
 			goal = ActorIterator.Create(args[0]).Next();
 		}
 		Goto Leave;
 	Leave:
-		ETTN ABCD 3 A_Chase();
-		Goto Loop;
+		ETTN ABCD 3 A_Chase(null,null);
+		Loop;
 	}
 }

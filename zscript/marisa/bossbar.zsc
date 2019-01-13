@@ -134,17 +134,26 @@ Class mkBossHealthbarHandler : EventHandler
 	{
 		let hnd = mkBossHealthbarHandler(EventHandler.Find("mkBossHealthbarHandler"));
 		if ( !hnd ) return;
-		ClearBoss();
 		let ai = ActorIterator.Create(tid);
-		if ( !hnd.bossenemy[0] ) hnd.bossenemy[0] = ai.Next();
-		if ( !hnd.bossenemy[1] ) hnd.bossenemy[1] = ai.Next();
-		if ( !hnd.bossenemy[2] ) hnd.bossenemy[2] = ai.Next();
+		for ( int i=0; i<3; i++ )
+		{
+			if ( !hnd.bossenemy[i] )
+			{
+				Actor a = ai.Next();
+				if ( a ) hnd.bossenemy[i] = a;
+				else break;
+			}
+		}
 	}
 
-	static void ClearBoss()
+	static void ClearBoss( int tid = 0 )
 	{
 		let hnd = mkBossHealthbarHandler(EventHandler.Find("mkBossHealthbarHandler"));
 		if ( !hnd ) return;
-		for ( int i=0; i<3; i++ ) hnd.bossenemy[i] = null;
+		for ( int i=0; i<3; i++ )
+		{
+			if ( !tid || (hnd.bossenemy[i] && (hnd.bossenemy[i].tid == tid)) )
+				hnd.bossenemy[i] = null;
+		}
 	}
 }
