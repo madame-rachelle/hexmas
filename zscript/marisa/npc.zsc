@@ -431,6 +431,12 @@ Class mkSmoothLookTo : Thinker
 // cheerin' on
 Class mkEttinSpectator : Actor
 {
+	static void DeleteMe( Actor ettinactor )
+	{
+		if ( !(ettinactor is 'mkEttinSpectator') ) return;
+		ettinactor.Destroy();
+	}
+
 	Default
 	{
 		//$Title Ettin Spectator
