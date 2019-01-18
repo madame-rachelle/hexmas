@@ -23,6 +23,11 @@ Class mkMinotaur : Actor
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
+		// inflate health
+		int nplayers = 0;
+		for ( int i=0; i<MAXPLAYERS; i++ ) if ( playeringame[i] ) nplayers++;
+		Health += (G_SkillPropertyInt(SKILLP_ACSReturn)-2)*500;
+		Health += 100*(nplayers-1)*G_SkillPropertyInt(SKILLP_ACSReturn);
 		// find brother
 		// this will be used to notify of death in order to start phase 2
 		let ai = ActorIterator.Create(tid);
@@ -309,7 +314,7 @@ Class mkMinotaur : Actor
 	{
 		//$Title Twin Minotaur
 		//$Category Marisa/Monsters
-		Health 5000;
+		Health 4000;
 		Scale 1.5;
 		Radius 40;
 		Height 150;
@@ -318,8 +323,6 @@ Class mkMinotaur : Actor
 		Painchance 25;
 		MeleeRange 80;
 		MissileHeight 120;
-		DamageFactor "Fire", 0.5;
-		DamageFactor "Ice", 0.7;
 		DamageFactor "Falling", 0.0;
 		Monster;
 		+DROPOFF;
@@ -353,7 +356,7 @@ Class mkMinotaur : Actor
 		MINO A 2 A_Look();
 		Loop;
 	See:
-		MINO ABCD 5
+		MINO ABCD 4
 		{
 			if ( brother && brother.bKILLED ) A_ChaseBrother();
 			else A_Chase();
@@ -464,6 +467,15 @@ Class mkMinotaurEx : Actor
 	double lungepitch, bstr;
 	bool wasinair;
 
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		// inflate health
+		int nplayers = 0;
+		for ( int i=0; i<MAXPLAYERS; i++ ) if ( playeringame[i] ) nplayers++;
+		Health += (G_SkillPropertyInt(SKILLP_ACSReturn)-2)*2000;
+		Health += 250*(nplayers-1)*G_SkillPropertyInt(SKILLP_ACSReturn);
+	}
 	override String GetObituary( Actor victim, Actor inflictor, Name mod, bool playerattack )
 	{
 		if ( mod == 'Slam' ) return "%o couldn't dodge the Hellsmith.";
@@ -476,16 +488,14 @@ Class mkMinotaurEx : Actor
 		//$Category Marisa/Monsters
 		Scale 2.0;
 		Health 12000;
-		Radius 56;
+		Radius 50;
 		Height 200;
 		Mass 3000;
-		Speed 24;
-		Painchance 25;
+		Speed 25;
+		Painchance 20;
 		MeleeRange 100;
 		MeleeThreshold 250;
 		MissileHeight 150;
-		DamageFactor "Fire", 0.3;
-		DamageFactor "Ice", 0.8;
 		DamageFactor "Falling", 0.0;
 		Monster;
 		+DROPOFF;

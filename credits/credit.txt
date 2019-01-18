@@ -4,7 +4,7 @@ H2TX* textures: Hexen 2, compiled by Ceeb
 NW*, W_*, F*, NF* textures: C.R.U.E.L. pack by Ettingrinder
 SNOW* skybox: Kothic Skyboxes pack by Kell
 TRE* sprites: Necrodome
-creepy, horror, drone, bossbttl, shoggoth, temple tracks: Taken from Frackin' Universe (original credits unknown)
+creepy, horror, drone, bossbttl, shoggoth, temple, violin1 tracks: Taken from Frackin' Universe (original credits unknown)
 dungeon6, combat7, combat8: Taken from Fantasy Soundtrack Project by AceeQ (Skyrim mod. Seems to be gone forever from the nexus, along with the author, apparently)
 GARGSMAL, GRGW_LWR fonts: NeuralStunner
 VIRL* sprites: Freedoom

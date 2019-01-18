@@ -78,7 +78,7 @@ Class mkHubGem : Inventory abstract
 		{
 			if ( i is 'mkHubGem' ) numpieces++;
 		}
-		if ( numpieces < totalpieces ) Owner.A_Print("%d more Gems left to find.",totalpieces-numpieces);
+		if ( numpieces < totalpieces ) Owner.A_Print(String.Format("%d more Gems left to find.",totalpieces-numpieces));
 		else Owner.A_Print("You have all the Elemental Gems.");
 		return false;
 	}

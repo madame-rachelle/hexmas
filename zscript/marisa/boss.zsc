@@ -345,10 +345,6 @@ Class mkElderWizard : Actor
 		Radius 30;
 		Height 240;
 		MissileHeight 205;
-		DamageFactor "Fire", 0.6;
-		DamageFactor "Ice", 0.6;
-		DamageFactor "Poison", 0.4;
-		DamageFactor "PoisonCloud", 0.4;
 		DamageFactor "AcolyteBoom", 0.0;
 		DamageFactor "AcolyteFire", 0.0;
 		DamageFactor "Falling", 0.0;

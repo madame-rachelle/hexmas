@@ -321,8 +321,9 @@ Class mkMirrorMan : Actor
 		RenderStyle "Translucent";
 		Alpha 0.0;
 		Scale 0.17;
-		Radius 16;
-		Height 56;
+		Radius 24;
+		Height 80;
+		+SOLID;
 		+NOGRAVITY;
 		+LOOKALLAROUND;
 	}
