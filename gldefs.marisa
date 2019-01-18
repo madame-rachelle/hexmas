@@ -657,3 +657,37 @@ brightmap sprite NLRDL0
 	map "brightmaps/NLRDL0.png"
 	disablefullbright
 }
+
+object mkMinotaurExSwirl
+{
+	frame CFCFQ { light DRAGONBALL_X1 }
+	frame CFCFR { light DRAGONBALL_X2 }
+	frame CFCFS { light DRAGONBALL_X2 }
+	frame CFCFT { light DRAGONBALL_X2 }
+	frame CFCFU { light DRAGONBALL_X3 }
+	frame CFCFV { light DRAGONBALL_X3 }
+	frame CFCFW { light DRAGONBALL_X4 }
+}
+
+object mkMinotaurExPillarFire
+{
+	frame CFFXB { light CFLAME1 }
+	frame CFFXC { light CFLAME2 }
+	frame CFFXD { light CFLAME2 }
+	frame CFFXE { light CFLAME2 }
+	frame CFFXF { light CFLAME2 }
+	frame CFFXG { light CFLAME2 }
+	frame CFFXH { light CFLAME2 }
+	frame CFFXI { light CFLAME2 }
+	frame CFFXJ { light CFLAME3 }
+	frame CFFXK { light CFLAME4 }
+	frame CFFXL { light CFLAME5 }
+}
+
+object mkMinotaurExFirePellet
+{
+	frame FDMBA { light FGARG }
+	frame FDMBB { light FGARGBALL_X1 }
+	frame FDMBC { light FGARGBALL_X2 }
+	frame FDMBD { light FGARGBALL_X3 }
+}

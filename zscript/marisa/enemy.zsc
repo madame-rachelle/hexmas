@@ -428,7 +428,7 @@ Class mkAcolyteFire : Actor
 		DMFX AABBCC 1 Bright
 		{
 			A_SpawnItemEx("mkSmokePoof");
-			if ( level.time&5 ) A_DTSeeker(0.15);
+			if ( !(GetAge()%5) ) A_DTSeeker(0.15);
 			vel += Acceleration/TICRATE;
 			vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](2,4);
 			Vector3 dir = vel.unit();
@@ -458,7 +458,7 @@ Class mkWizardFire : mkAcolyteFire
 		DMFX AABBCC 1 Bright
 		{
 			A_SpawnItemEx("mkSmokePoof");
-			if ( level.time&3 ) A_DTSeeker();
+			if ( !(GetAge()%3) ) A_DTSeeker();
 			vel += Acceleration/TICRATE;
 			vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](1,2);
 			Vector3 dir = vel.unit();

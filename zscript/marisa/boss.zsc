@@ -763,7 +763,6 @@ Class mkWizMeleeBlast : Actor
 		Scale 2.0;
 		Radius 8;
 		Height 4;
-		Gravity 0.15;
 		Speed 10;
 		+NOBLOCKMAP;
 		+DONTSPLASH;
@@ -776,6 +775,7 @@ Class mkWizMeleeBlast : Actor
 	{
 		Super.Tick();
 		if ( level.frozen || globalfreeze ) return;
+		SetZ(floorz);
 		let b = BlockThingsIterator.Create(self,90);
 		while ( b.Next() )
 		{
@@ -808,7 +808,6 @@ Class mkWizDust : Actor
 		Height 2;
 		Alpha 0.5;
 		Scale 1.5;
-		Gravity 0.5;
 		+NOBLOCKMAP;
 		+DONTSPLASH;
 		+MISSILE;
@@ -821,6 +820,7 @@ Class mkWizDust : Actor
 	Spawn:
 		SDST A 1
 		{
+			SetZ(floorz);
 			A_FadeOut(0.02);
 			A_SetScale(scale.x*1.01,scale.y*0.99);
 		}
@@ -828,6 +828,7 @@ Class mkWizDust : Actor
 	Death:
 		SDST A 1
 		{
+			SetZ(floorz);
 			A_FadeOut(0.06);
 			A_SetScale(scale.x*1.01,scale.y*0.99);
 		}

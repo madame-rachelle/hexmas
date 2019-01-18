@@ -149,18 +149,11 @@ ssword6		ssword6
 
 minotaur/swing HAMSWING
 
-hellsmith/see		hs_see
-hellsmith/die		hs_die
-hellsmith/active1	hs_act1
-hellsmith/active2	hs_act2
-hellsmith/active3	hs_act3
-hellsmith/active4	hs_act4
-$random hellsmith/active { hellsmith/active1 hellsmith/active2 hellsmith/active3 hellsmith/active4 }
-hellsmith/pain1		hs_pain1
-hellsmith/pain2		hs_pain2
-hellsmith/pain3		hs_pain3
-hellsmith/pain4		hs_pain4
-$random hellsmith/pain { hellsmith/pain1 hellsmith/pain2 hellsmith/pain3 hellsmith/pain4 }
+hellsmith/see		HLSSIT
+hellsmith/die		HLSDTH
+hellsmith/active	HLSACT
+hellsmith/pain		HLSPAIN
+hellsmith/charge	HLSCHRG
 hellsmith/step1		hs_step1
 hellsmith/step2		hs_step2
 hellsmith/step3		hs_step3
@@ -168,4 +161,3 @@ hellsmith/step4		hs_step4
 $random hellsmith/step { hellsmith/step1 hellsmith/step2 hellsmith/step3 hellsmith/step4 }
 hellsmith/swing		THROW9
 hellsmith/skid		skid
-hellsmith/charge	hs_charg

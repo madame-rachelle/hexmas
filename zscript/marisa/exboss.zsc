@@ -223,10 +223,11 @@ Class mkMinotaur : Actor
 
 	void A_MinotaurFireBurst()
 	{
-		let a = SpawnMissileXYZ(Vec3Angle(radius,angle,missileheight),target,"MinotaurFX1",false);
+		double ang = (special1*10)-30;
+		let a = SpawnMissileXYZ(Vec3Angle(radius,angle+ang,missileheight),target,"MinotaurFX1",false);
 		a.bTHRUSPECIES = true;
 		a.Species = "Minotaur";
-		a.angle += (special1*10)-30;
+		a.angle += ang*0.3;
 		a.pitch = _PitchTo(target);
 		a.angle += FRandom[MinotaurBurst](-5,5);
 		a.pitch += FRandom[MinotaurBurst](-5,5);
@@ -481,6 +482,8 @@ Class mkMinotaurEx : Actor
 		Speed 24;
 		Painchance 25;
 		MeleeRange 100;
+		MeleeThreshold 250;
+		MissileHeight 150;
 		DamageFactor "Fire", 0.3;
 		DamageFactor "Ice", 0.8;
 		DamageFactor "Falling", 0.0;
@@ -499,7 +502,7 @@ Class mkMinotaurEx : Actor
 		+EXTREMEDEATH;
 		+NOINFIGHTSPECIES;
 		+DONTHARMSPECIES;
-		+FULLVOLACTIVE;
+		+MISSILEMORE;
 		Species "Minotaur";
 		Tag "\cmHellsmith\c-";
 		Obituary "%o was blown to pieces by the Hellsmith.";
@@ -548,12 +551,18 @@ Class mkMinotaurEx : Actor
 	void A_DecideDash()
 	{
 		if ( !target || (target.Health <= 0) ) return;
-		if ( !Random[MinotaurExDecide](0,6) && IsVisible(target,true) && A_Lunge(true) )
+		if ( !Random[MinotaurExDecide](0,10) && IsVisible(target,true) && A_Lunge(true) )
 		{
 			SetStateLabel("Lunge");
 			return;
 		}
-		if ( Random[MinotaurExDecide](0,25) || (Distance2D(target) < 400) ) return;
+		if ( special2 > 0 )
+		{
+			special2--;
+			return;
+		}
+		if ( Random[MinotaurExDecide](0,30) || (Distance2D(target) < 400) ) return;
+		special2 = 80;
 		// simulate dash in a straight line
 		Vector2 dir = RotateVector((speed*3,0),AngleTo(target));	// he fast
 		Vector3 oldpos = pos;
@@ -760,6 +769,8 @@ Class mkMinotaurEx : Actor
 			if ( !a || (a.species == species) || !a.bSHOOTABLE || (Distance2D(a) > meleerange*1.3+a.radius) ) continue;
 			Vector3 diff = level.Vec3Diff(pos,a.pos);
 			if ( (diff.z > height) || (diff.z < -a.height) ) continue;
+			if ( ground && (diff.z > height*0.4) ) continue;
+			else if ( !ground && (diff.z < height*0.3) ) continue;
 			Vector3 sc = level.SphericalCoords(pos,a.pos,(angle,0));
 			if ( abs(sc.x) > 50 ) continue;
 			int dmg = Random[MinotaurMelee](25,30);
@@ -784,34 +795,75 @@ Class mkMinotaurEx : Actor
 			}
 		}
 	}
-	void A_HellsmithFireSwirl()
+	void A_DecideMissile()
 	{
-		// replicates something I coded in DS2
-		// strike down on the earth and burst out 3 trails of fire on the ground that curve clockwise
+		if ( !target || (target.Health <= 0) ) return;
+		A_FaceTarget();
+		double d = Distance3D(target);
+		if ( !Random[MinotaurExMissile](0,3) )
+			SetStateLabel("Missile1");
+		else if ( !Random[MinotaurExMissile](0,4) && (d < 600) )
+			SetStateLabel("Missile2");
+		else if ( !Random[MinotaurExMissile](0,2) )
+			SetStateLabel("Missile3");
+		else SetStateLabel("Missile4");
+	}
+	void A_HellsmithFireSwirl( bool alt = false )
+	{
+		for ( int i=-20; i<=20; i+=20 )
+		{
+			let p = Spawn("mkMinotaurExSwirl",Vec3Angle(meleerange,angle+(alt?5:-5)));
+			p.target = self;
+			p.angle = angle+i;
+			p.vel.xy = (cos(p.angle),sin(p.angle))*p.speed;
+		}
 	}
 	void A_HellsmithFirePillar()
 	{
-		// fire pillar bursting out the ground at a random spot around the minotaur
-		// akin to the ones in dark souls
+		double iang = FRandom[MinotaurExMissile](0,360);
+		special1++;
+		double idist = 80+special1*30+FRandom[MinotaurExMissile](-10,10);
+		Vector3 spawnspot;
+		for ( int i=0; i<360; i+=15 )
+		{
+			spawnspot = Vec3Angle(idist,iang+i,height/2);
+			if ( !level.IsPointInMap(spawnspot) ) continue;
+			let p = Spawn("mkMinotaurExFirePillar",spawnspot);
+			p.target = self;
+			break;
+		}
 	}
-	void A_HellsmithShockwave()
+	void A_HellsmithShockwave( bool alt = false )
 	{
-		// strike the earth and cause a shockwave in an arc that travels along the ground
-		// targets hit by the shockwave are sent up into the air
-		// can be avoided by a well timed jump or hiding behind an obstacle
+		for ( int i=-30; i<30; i+=5 )
+		{
+			let p = Spawn("mkMinotaurExShockwave",Vec3Angle(meleerange,angle+(alt?5:-5)));
+			p.target = self;
+			p.angle = angle+i;
+			p.vel.xy = (cos(angle+i),sin(angle+i))*p.speed;
+			p.alpha *= (30-abs(i*0.75))/30.;
+		}
 	}
-	void A_HellsmithFirePellet()
+	void A_HellsmithFirePellet( bool alt = false )
 	{
-		// like the standard minotaur attack, but has slight homing and is faster
+		double ang = 0;
+		if ( alt ) ang -= (special1*20)-60;
+		else ang += (special1*20)-60;
+		let a = Spawn("mkMinotaurExFirePellet",Vec3Angle(meleerange,angle+ang,missileheight+FRandom[MinotaurExBurst](-30,30)));
+		a.angle = angle+ang*0.2;
+		a.target = self;
+		a.tracer = target;
+		a.angle += FRandom[MinotaurExBurst](-5,5);
+		a.pitch += FRandom[MinotaurExBurst](-5,5);
+		special1++;
 	}
-	void A_HellsmithPoisonCloud()
+	void A_IgnorePain()
 	{
-		// localized poison fart spreading out in front of the caster
-		// this one's also copied from something I scripted for DS2
+		bNOPAIN = true;
 	}
-	void A_HellsmithFireTarget()
+	void A_ResetPain()
 	{
-		// like the fire swirl, but the trails spawn around the target and move inwards until they converge in an explosion
+		bNOPAIN = false;
 	}
 	States
 	{
@@ -823,7 +875,7 @@ Class mkMinotaurEx : Actor
 		Wait;
 	See:
 		MIN2 A 0 { scnt = 2; }
-		MIN2 AABBCCDD 5
+		MIN2 AABBCCDD 4
 		{
 			scnt++;
 			if ( wasinair ) return ResolveState("Fall");
@@ -848,9 +900,9 @@ Class mkMinotaurEx : Actor
 		MIN2 K 1 A_JumpIf(!wasinair,"Melee2_");
 		Wait;
 	Dash:
-		MIN2 A 0 { A_FaceTarget(); scnt = 1; ccnt = 0; }
-		MIN2 A 8 A_PlaySound("hellsmith/charge",CHAN_VOICE,attenuation:ATTN_NONE);
-		MIN2 ABCDABCDABCD 4
+		MIN2 A 0 { A_FaceTarget(); A_IgnorePain(); scnt = 1; ccnt = 0; }
+		MIN2 A 8 A_PlaySound("hellsmith/charge",CHAN_VOICE);
+		MIN2 ABCDABCD 5
 		{
 			scnt++;
 			if ( !(scnt%2) )
@@ -859,17 +911,21 @@ Class mkMinotaurEx : Actor
 				A_PlaySound("hellsmith/step",(scnt%8)?CHAN_6:CHAN_5);	// prevent overwrite
 			}
 			ccnt++;
-			tics = max(1,5-ccnt/4);
+			tics = max(1,6-ccnt/3);
 			A_FaceTarget(20);
 		}
 		MIN2 O 0 A_PlaySound("BishopAttack",CHAN_7);
 		MIN2 O 1 A_DashThink();
 		Wait;
 	DashHit:
-		MIN2 O 12;
+		MIN2 O 12 A_ResetPain();
 		Goto See;
 	DashMiss:
-		MIN2 A 0 A_StartBrake();
+		MIN2 A 0
+		{
+			A_StartBrake();
+			A_ResetPain();
+		}
 		MIN2 A 0 A_Jump(128,3);
 		MIN2 I 1 A_BrakeThink();
 		Wait;
@@ -881,7 +937,7 @@ Class mkMinotaurEx : Actor
 		Goto See;
 	Lunge:
 		MIN2 A 0 A_Lunge();
-		MIN2 A 3 A_PlaySound("hellsmith/charge",CHAN_VOICE,attenuation:ATTN_NONE);
+		MIN2 A 3 A_PlaySound("hellsmith/charge",CHAN_VOICE);
 		MIN2 A 0 A_Jump(128,3);
 		MIN2 E 2 A_DoLunge();
 		MIN2 # 1 A_LungeThink();
@@ -889,12 +945,101 @@ Class mkMinotaurEx : Actor
 		MIN2 J 2 A_DoLunge();
 		MIN2 # 1 A_LungeThink(true);
 		Wait;
-	/*Missile:
+	Missile:
+		MIN2 A 1 A_DecideMissile();
+		Goto See;
+	Missile1:
+		MIN2 A 0 A_Jump(128,"Missile1L");
+	Missile1R:
+		MIN2 E 0 A_FaceTarget();
+		MIN2 EE 4 A_FaceTarget(20);
+		MIN2 F 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
+		MIN2 FF 4 A_FaceTarget(20);
+		MIN2 G 0 A_HellsmithMelee(true);
+		MIN2 G 20 A_HellsmithFireSwirl();
+		MIN2 A 0 A_JumpIf(!target||(target.Health<=0)||!IsVisible(target,false),"See");
+		MIN2 A 0 A_Jump(80,"Missile1L");
+		Goto See;
+	Missile1L:
+		MIN2 J 0 A_FaceTarget();
+		MIN2 JJ 4 A_FaceTarget(20);
+		MIN2 K 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
+		MIN2 KK 4 A_FaceTarget(20);
+		MIN2 L 0 A_HellsmithMelee(true,true);
+		MIN2 L 20 A_HellsmithFireSwirl();
+		MIN2 A 0 A_JumpIf(!target||(target.Health<=0)||!IsVisible(target,false),"See");
+		MIN2 A 0 A_Jump(80,"Missile1R");
+		Goto See;
 	Missile2:
+		MIN2 A 0 A_Jump(128,"Missile2L");
+	Missile2R:
+		MIN2 E 0 A_FaceTarget();
+		MIN2 EE 4 A_FaceTarget(20);
+		MIN2 F 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
+		MIN2 FF 4 A_FaceTarget(20);
+		MIN2 G 0 A_HellsmithMelee(true);
+		MIN2 G 0 A_IgnorePain();
+		MIN2 GGGGGGGGGG 4 A_HellsmithFirePillar();
+		MIN2 G 30;
+		MIN2 G 0 A_ResetPain();
+		Goto See;
+	Missile2L:
+		MIN2 J 0 A_FaceTarget();
+		MIN2 JJ 4 A_FaceTarget(20);
+		MIN2 K 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
+		MIN2 KK 4 A_FaceTarget(20);
+		MIN2 L 0 A_HellsmithMelee(true,true);
+		MIN2 L 0 A_IgnorePain();
+		MIN2 LLLLLLLLLL 4 A_HellsmithFirePillar();
+		MIN2 L 30;
+		MIN2 L 0 A_ResetPain();
+		Goto See;
 	Missile3:
+		MIN2 A 0 A_Jump(128,"Missile3L");
+	Missile3R:
+		MIN2 E 0 A_FaceTarget();
+		MIN2 EE 4 A_FaceTarget(20);
+		MIN2 F 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
+		MIN2 FF 4 A_FaceTarget(20);
+		MIN2 G 0 A_HellsmithMelee(true);
+		MIN2 G 20 A_HellsmithShockwave();
+		MIN2 A 0 A_JumpIf(!target||(target.Health<=0)||!IsVisible(target,false),"See");
+		MIN2 A 0 A_Jump(120,"Missile3L");
+		Goto See;
+	Missile3L:
+		MIN2 J 0 A_FaceTarget();
+		MIN2 JJ 4 A_FaceTarget(20);
+		MIN2 K 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
+		MIN2 KK 4 A_FaceTarget(20);
+		MIN2 L 0 A_HellsmithMelee(true,true);
+		MIN2 L 20 A_HellsmithShockwave(true);
+		MIN2 A 0 A_JumpIf(!target||(target.Health<=0)||!IsVisible(target,false),"See");
+		MIN2 A 0 A_Jump(120,"Missile3R");
+		Goto See;
 	Missile4:
-		MIN2 A 1;
-		Goto See;*/
+		Min2 A 0 A_Jump(128,"Missile4L");
+	Missile4R:
+		MIN2 E 0 A_FaceTarget();
+		MIN2 EE 4 A_FaceTarget(20);
+		MIN2 H 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
+		MIN2 HH 4 A_FaceTarget(20);
+		MIN2 I 0 A_HellsmithMelee();
+		MIN2 IIIIIIIIII 3 A_HellsmithFirePellet();
+		MIN2 I 10;
+		MIN2 A 0 A_JumpIf(!target||(target.Health<=0)||!IsVisible(target,false),"See");
+		MIN2 A 0 A_Jump(80,"Missile4L");
+		Goto See;
+	Missile4L:
+		MIN2 J 0 A_FaceTarget();
+		MIN2 JJ 4 A_FaceTarget(20);
+		MIN2 M 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
+		MIN2 MM 4 A_FaceTarget(20);
+		MIN2 N 0 A_HellsmithMelee();
+		MIN2 NNNNNNNNNN 3 A_HellsmithFirePellet(true);
+		MIN2 N 10;
+		MIN2 A 0 A_JumpIf(!target||(target.Health<=0)||!IsVisible(target,false),"See");
+		MIN2 A 0 A_Jump(80,"Missile4R");
+		Goto See;
 	Melee:
 		MIN2 A 0 A_FaceTarget();
 		MIN2 A 0 A_JumpIf(target&&(target.pos.z > pos.z+height*0.4),"MeleeHigh");
@@ -932,11 +1077,15 @@ Class mkMinotaurEx : Actor
 		MIN2 A 0 A_JumpIf(CheckMeleeRange()&&target&&(target.Health>0),"MeleeHigh1");
 		Goto See;
 	Pain:
-		MIN2 P 4;
-		MIN2 P 4 A_PlaySound(PainSound,CHAN_VOICE,attenuation:ATTN_NONE);
+		MIN2 P 4 A_ResetPain();
+		MIN2 P 4 A_Pain();
 		Goto See;
 	Death:
-		MINX A 5 A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		MINX A 5
+		{
+			A_ResetPain();
+			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+		}
 		MINX B 6 A_Scream();
 		MINX C 5;
 		MINX D 6;
@@ -951,6 +1100,354 @@ Class mkMinotaurEx : Actor
 		MINX M 5;
 		MINX N 6;
 		MINX O -1;
+		Stop;
+	}
+}
+
+Class mkMinotaurExFloorTrailLight : DynamicLight
+{
+	Default
+	{
+		DynamicLight.Type "RandomFlicker";
+		+DYNAMICLIGHT.ATTENUATE;
+		args 255, 204, 0, 100, 104;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		specialf1 = 3;
+	}
+	override void Tick()
+	{
+		Super.Tick();
+		if ( !target )
+		{
+			Destroy();
+			return;
+		}
+		args[0] = int(255*target.alpha);
+		args[1] = int(204*target.alpha);
+		args[3] = int(100*target.alpha);
+		args[4] = int(100*target.alpha)+4;
+	}
+}
+
+Class mkMinotaurExFloorTrail : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Scale 1.8;
+		DamageType 'Fire';
+		+NOGRAVITY;
+		+NOBLOCKMAP;
+		+DONTSPLASH;
+		+NOBLOOD;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		if ( special1 ) return;
+		let l = Spawn("mkMinotaurExFloorTrailLight",pos);
+		l.target = self;
+	}
+	States
+	{
+	Spawn:
+		FFLG ABCD 2 Bright
+		{
+			if ( GetAge()%8 < 2 ) A_Explode(5,30,0,false,20);
+		}
+		Goto Death;
+	Death:
+		FFLG EFGHIJKLMNOPQ 2 Bright
+		{
+			A_FadeOut(0.04);
+			A_SetScale(scale.x*0.96);
+			if ( GetAge()%8 < 2 ) A_Explode(5,int(30*alpha),0,false,int(20*alpha));
+		}
+		Loop;
+	}
+}
+
+Class mkMinotaurExSwirl : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Radius 5;
+		Height 12;
+		Speed 6;
+		ReactionTime 90;
+		Damage 5;
+		DamageType 'Fire';
+		Projectile;
+		+DONTSPLASH;
+		+STEPMISSILE;
+		+NOEXPLODEFLOOR;
+		DeathSound "ClericFlameExplode";
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		special1 = RandomPick[MinotaurExSwirl](-1,1);
+		A_PlaySound("ClericFlameFire");
+	}
+	override int DoSpecialDamage( Actor target, int damage, Name damagetype )
+	{
+		if ( damage <= 0 ) return damage;
+		if ( (target.mass < LARGE_MASS) && !target.bDONTTHRUST ) target.vel.z += 5;
+		return damage;
+	}
+	void A_SwirlTrail()
+	{
+		SetZ(floorz);
+		let s = Spawn("mkMinotaurExFloorTrail",pos);
+		s.target = target;
+		s.scale *= FRandom[MinotaurExSwirl](0.5,0.7);
+		s.special1 = !!(GetAge()%3);
+		if ( Random[MinotaurExSwirl](0,1) ) s.bSPRITEFLIP = true;
+		double newspeed = vel.xy.length()*1.1;
+		if ( newspeed > 30 ) newspeed = 30;
+		angle += special1*sin(GetAge()*15)*2.5;
+		vel.xy = (cos(angle),sin(angle))*newspeed;
+		A_CountDown();
+	}
+	States
+	{
+	Spawn:
+		TNT1 A 1 A_SwirlTrail();
+		Wait;
+	Death:
+		CFCF Q 2 Bright A_Explode(Random[MinotaurExSwirl](20,30),120,0);
+		CFCF RSTUVWXYZ 2 Bright;
+		Stop;
+	}
+}
+
+Class mkMinotaurExShockwaveTail : Actor
+{
+	Default
+	{
+		RenderStyle "Translucent";
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+WALLSPRITE;
+	}
+	States
+	{
+	Spawn:
+		SDST A 1
+		{
+			A_FadeOut(0.08);
+			A_SetScale(scale.x,scale.y*0.98);
+		}
+		Wait;
+	}
+}
+
+Class mkMinotaurExShockwave : Actor
+{
+	Default
+	{
+		RenderStyle "Translucent";
+		Speed 25;
+		DamageFunction int(12*alpha);
+		Radius 16;
+		Height 8;
+		Alpha 0.8;
+		Scale 2.0;
+		+NOBLOCKMAP;
+		+DONTSPLASH;
+		+MISSILE;
+		+STEPMISSILE;
+		+NOEXPLODEFLOOR;
+		+WALLSPRITE;
+		+RIPPER;
+	}
+	override int DoSpecialDamage( Actor target, int damage, Name damagetype )
+	{
+		if ( damage <= 0 ) return damage;
+		if ( (target.mass < LARGE_MASS) && !target.bDONTTHRUST )
+		{
+			A_PlaySound("FighterHammerMiss",CHAN_AUTO,alpha);
+			target.vel.xy += vel.xy.unit()*4000/target.mass*alpha;
+			target.vel.z += 20*alpha;
+		}
+		return damage;
+	}
+	States
+	{
+	Spawn:
+		SDST A 1
+		{
+			SetZ(floorz);
+			let s = Spawn("mkMinotaurExShockwaveTail",pos);
+			s.scale = scale;
+			s.alpha = alpha;
+			s.angle = angle;
+			A_FadeOut(0.01);
+			A_SetScale(scale.x*1.03,scale.y*0.99);
+		}
+		Wait;
+	Death:
+		SDST A 1
+		{
+			SetZ(floorz);
+			A_FadeOut(0.05);
+			A_SetScale(scale.x*1.06,scale.y*0.98);
+		}
+		Wait;
+	}
+}
+
+// spawn on floor
+// sets a translation based on the floorpic (only two needed for this map pack, one for dirt and one for stone)
+// erupts after a delay
+Class mkMinotaurExFirePillar : Actor
+{
+	Default
+	{
+		RenderStyle "Translucent";
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+	}
+	void A_Settle()
+	{
+		// stone translation
+		if ( TexMan.GetName(floorpic) ~== "F_057" ) A_SetTranslation('mkMinotaurExPillarGray');
+		SetZ(floorz);
+		A_SetTics(Random[MinotaurExPillar](10,20));
+	}
+	void A_FirePillar()
+	{
+		let s = Spawn("mkMinotaurExPillarFire",Vec3Offset(FRandom[MinotaurExPillar](-2,2),FRandom[MinotaurExPillar](-2,2),FRandom[MinotaurExPillar](8,10)));
+		s.target = target;
+		s.vel.xy = (FRandom[MinotaurExPillar](-1,1),FRandom[MinotaurExPillar](-1,1));
+		s.vel.z = 12*scale.x;
+		s.alpha = 0.5+scale.x;
+		s.scale *= FRandom[MinotaurExPillar](0.6,1.2)*(0.5+scale.x);
+		s.SetState(s.FindState("Spawn")+int((1.0-scale.x)*10));
+		A_SetScale(scale.x*0.95);
+		if ( scale.x < 0.25 ) A_FadeOut();
+	}
+	States
+	{
+	Spawn:
+		TNT1 A 10 NoDelay A_Settle();
+		TSPK C 0 A_PlaySound("Ambient11",CHAN_WEAPON);
+		TSPK C 10 A_QuakeEx(3,3,3,30,0,400,"",QF_RELATIVE|QF_SCALEDOWN,falloff:200);
+		TSPK D 6;
+		TSPK E 0 A_PlaySound("DemonMissileFire",CHAN_VOICE);
+		TSPK E 2 A_FirePillar();
+		Wait;
+	}
+}
+
+Class mkMinotaurExPillarFire : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Radius 4;
+		Height 8;
+		DamageType 'Fire';
+		+NOBLOOD;
+		+NOGRAVITY;
+		+NOBLOCKMAP;
+		+DONTSPLASH;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		bSPRITEFLIP = Random[MinotaurExFirePillar](0,1);
+	}
+	override int DoSpecialDamage( Actor target, int damage, Name damagetype )
+	{
+		if ( damage <= 0 ) return damage;
+		if ( (target.mass < LARGE_MASS) && !target.bDONTTHRUST ) target.vel.z += 1;
+		return damage;
+	}
+	States
+	{
+	Spawn:
+		CFFX ABCDEFGHIJKLM 2 Bright
+		{
+			A_FadeOut();
+			A_Explode(int(8*scale.x*alpha),int(60*scale.x*alpha),0,false,int(40*scale.x*alpha));
+		}
+		Stop;
+	}
+}
+
+// fades in and then launches towards tracer
+Class mkMinotaurExFirePellet : Actor
+{
+	Vector3 InitialDir, Acceleration;
+	Default
+	{
+		RenderStyle "Add";
+		Damage 3;
+		Radius 2;
+		Height 2;
+		Alpha 0.2;
+		Scale 0.2;
+		Projectile;
+		DeathSound "FireDemonMissileHit";
+	}
+	void A_DTSeeker( double f = 0.5 )
+	{
+		if ( InitialDir.length() < double.epsilon ) InitialDir = vel.unit();
+		if ( tracer && (tracer != target) )
+		{
+			Vector3 SeekingDir = level.Vec3Diff(pos,tracer.Vec3Offset(0,0,tracer.height/2)).unit();
+			if ( SeekingDir dot InitialDir > 0 )
+			{
+				double MagnitudeVel = Vel.length();
+				SeekingDir = (SeekingDir*f*MagnitudeVel+Vel).unit();
+				Vel = MagnitudeVel * SeekingDir;
+				Acceleration = 25 * SeekingDir;
+			}
+		}
+	}
+	States
+	{
+	Spawn:
+		TNT1 A 1 NoDelay A_SetTics(Random[MinotaurExPellet](3,6));
+		FDMB Z 1 Bright
+		{
+			A_FadeIn(0.1);
+			A_SetScale(scale.x+0.1);
+			if ( scale.x >= 1.0 )
+			{
+				alpha = 1.0;
+				scale = (1.0,1.0);
+				A_PlaySound("FireDemonAttack2",CHAN_WEAPON);
+				vel = (cos(angle)*cos(pitch),sin(angle)*cos(pitch),-sin(pitch));
+				Acceleration = vel*25.;
+				return ResolveState("Seek");
+			}
+			return ResolveState(null);
+		}
+		Wait;
+	Seek:
+		FDMB A 1 Bright
+		{
+			let s = Spawn("mkSmokePoof",pos);
+			s.scale *= 0.6;
+			if ( !(GetAge()%3) ) A_DTSeeker(0.5);
+			vel += Acceleration/TICRATE;
+			vel += (FRandom[MinotaurExPelle](-1,1),FRandom[MinotaurExPelle](-1,1),FRandom[MinotaurExPelle](-1,1))*FRandom[MinotaurExPelle](0.3,0.6);
+			Vector3 dir = vel.unit();
+			if ( vel.length() > 30. ) vel = dir*30.;
+			angle = atan2(dir.y,dir.x);
+			pitch = asin(-dir.z);
+		}
+		Loop;
+	Death:
+		FDMB BCDE 5 Bright;
 		Stop;
 	}
 }
