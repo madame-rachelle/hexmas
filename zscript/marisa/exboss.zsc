@@ -38,7 +38,7 @@ Class mkMinotaur : Actor
 			brother = a;
 			break;
 		}
-		if ( brother ) SetTag("\cfTwin Minotaur\c-");
+		if ( brother ) SetTag("\cfTwin Maulotaur\c-");
 		// find crowd
 		// they will react to minotaurs attacking and getting hurt
 		crowd.Clear();
@@ -306,8 +306,8 @@ Class mkMinotaur : Actor
 
 	override string GetObituary( Actor victim, Actor inflictor, Name mod, bool playerattack )
 	{
-		if ( mod == 'Melee' ) return HitObituary..(brother?"Twin Minotaur.":"Minotaur.");
-		return Obituary..(brother?"Twin Minotaur.":"Minotaur.");
+		if ( mod == 'Melee' ) return HitObituary..(brother?"Twin Maulotaur.":"Maulotaur.");
+		return Obituary..(brother?"Twin Maulotaur.":"Maulotaur.");
 	}
 
 	Default
