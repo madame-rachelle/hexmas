@@ -80,19 +80,21 @@ Class mkBossHealthBar : HUDMessageBase
 	override void Draw( int bottom, int visibility )
 	{
 		if ( !tfont ) tfont = Font.GetFont(MKHBAR_FONT);
+		Vector2 hscale = StatusBar.GetHudScale();
+		Vector2 vsize = (Screen.GetWidth()/hscale.x,Screen.GetHeight()/hscale.y);
 		double ypos;
-		if ( MKHBAR_POSITION ) ypos = bottom-(MKHBAR_GAP+MKHBAR_SEPARATION*(pos-1))*CleanYFac;
-		else ypos = (MKHBAR_GAP+MKHBAR_SEPARATION*(pos-1))*CleanYFac;
+		if ( MKHBAR_POSITION ) ypos = (bottom/hscale.y)-(MKHBAR_GAP+MKHBAR_SEPARATION*(pos-1));
+		else ypos = (MKHBAR_GAP+MKHBAR_SEPARATION*(pos-1));
 		Vector2 bs = TexMan.GetScaledSize(bbar_r);
-		double xpos = (Screen.GetWidth()-bs.x*CleanXFac)/2.;
-		Screen.DrawTexture(bbar_f,false,xpos,ypos,DTA_CleanNoMove,true,DTA_Alpha,alpha);
-		Screen.DrawTexture(bbar_d,false,xpos,ypos,DTA_CleanNoMove,true,DTA_Alpha,alpha,DTA_WindowRightF,bs.x*GetHealth(true));
-		Screen.DrawTexture(bbar_r,false,xpos,ypos,DTA_CleanNoMove,true,DTA_Alpha,alpha,DTA_WindowRightF,bs.x*GetHealth());
-		if ( MKHBAR_ALIGN == -1 ) xpos += MKHBAR_XMARGIN*CleanXFac;
-		else if ( MKHBAR_ALIGN == 0 ) xpos = (Screen.GetWidth()-tfont.StringWidth(tname)*CleanXFac)/2.;
-		else xpos += (bs.x-(tfont.StringWidth(tname)+MKHBAR_XMARGIN))*CleanXFac;
-		ypos -= (tfont.GetHeight()+MKHBAR_YMARGIN)*CleanYFac;
-		Screen.DrawText(tfont,Font.CR_RED,xpos,ypos,tname,DTA_CleanNoMove,true,DTA_Alpha,alpha);
+		double xpos = (vsize.x-bs.x)/2.;
+		Screen.DrawTexture(bbar_f,false,xpos,ypos,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true,DTA_Alpha,alpha);
+		Screen.DrawTexture(bbar_d,false,xpos,ypos,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true,DTA_Alpha,alpha,DTA_WindowRightF,bs.x*GetHealth(true));
+		Screen.DrawTexture(bbar_r,false,xpos,ypos,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true,DTA_Alpha,alpha,DTA_WindowRightF,bs.x*GetHealth());
+		if ( MKHBAR_ALIGN == -1 ) xpos += MKHBAR_XMARGIN;
+		else if ( MKHBAR_ALIGN == 0 ) xpos = (vsize.x-tfont.StringWidth(tname))/2.;
+		else xpos += (bs.x-(tfont.StringWidth(tname)+MKHBAR_XMARGIN));
+		ypos -= (tfont.GetHeight()+MKHBAR_YMARGIN);
+		Screen.DrawText(tfont,Font.CR_RED,xpos,ypos,tname,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true,DTA_Alpha,alpha);
 	}
 }
 
