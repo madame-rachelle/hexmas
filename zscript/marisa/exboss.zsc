@@ -38,7 +38,7 @@ Class mkMinotaur : Actor
 			brother = a;
 			break;
 		}
-		if ( brother ) SetTag("\cfTwin Minotau\c-");
+		if ( brother ) SetTag("\cfTwin Minotaur\c-");
 		// find crowd
 		// they will react to minotaurs attacking and getting hurt
 		crowd.Clear();
