@@ -644,7 +644,7 @@ Class mkElderAcolyte : Actor
 		SetOrigin(Vec2OffsetZ(0,0,newz),true);
 		if ( Random[AcolyteDecide](0,4) || A_CheckForResurrection() )
 			A_Chase(null,"Missile");
-		if ( (Distance3D(target) < meleethreshold) && !Random[AcolyteDecide](0,7) )
+		if ( target && (Distance3D(target) < meleethreshold) && !Random[AcolyteDecide](0,7) )
 			SetStateLabel("Melee");
 	}
 	void A_AcolyteDecide()
