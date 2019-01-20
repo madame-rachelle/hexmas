@@ -105,7 +105,7 @@ Class mkLampLight : DynamicLight
 		}
 		if ( target.player ) SetOrigin(target.vec2OffsetZ(0,0,target.player.viewz-16),true);
 		else SetOrigin(target.vec3Offset(0,0,target.height*0.5),true);
-		bDORMANT = !mkLamp(master).bActive;
-		if ( mkLamp(target) && target.bInvisible ) bDORMANT = true;
+		if ( (!mkLamp(master).bActive || (mkLamp(target) && target.bInvisible)) && !bDORMANT ) Deactivate(target);
+		else if ( bDORMANT ) Activate(target);
 	}
 }
