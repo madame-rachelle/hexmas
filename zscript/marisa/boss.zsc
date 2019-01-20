@@ -14,31 +14,6 @@ Class mkElderWizard : Actor
 	int lchg;
 	int fires;
 
-	private static int ilerp( int a, int b, double theta )
-	{
-		return int(floor(a*(1.0-theta)+b*theta));
-	}
-
-	static void DoLightning( double str )
-	{
-		let l = ActorIterator.Create(LITE_TID);
-		Actor a;
-		while ( a = l.Next() )
-		{
-			a.args[0] = ilerp(64,224,str);
-			a.args[1] = 255;
-			a.args[2] = ilerp(64,224,str);
-		}
-		let s = SectorTagIterator.Create(SKYBOX_TAG);
-		int i;
-		while ( (i = s.Next()) != -1 )
-		{
-			level.Sectors[i].SetFade(Color(ilerp(64,224,str),ilerp(128,255,str),ilerp(64,224,str)));
-			level.Sectors[i].SetFogDensity(ilerp(0,512,str));
-			level.Sectors[i].lightlevel = ilerp(160,255,str);
-		}
-	}
-
 	static void KillCult()
 	{
 		let t = ThinkerIterator.Create("Actor");

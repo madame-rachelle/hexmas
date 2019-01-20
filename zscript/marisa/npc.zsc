@@ -380,7 +380,15 @@ Class mkSmoothLookTo : Thinker
 	static double FaceToFace( Actor a, Actor b )
 	{
 		if ( !a || !b ) return 0;
-		Vector3 otherpos = level.Vec3Diff(b.Vec3Offset(0,0,b.height),a.Vec3Offset(0,0,a.height));
+		// this isn't being used across portals, so we can ignore this
+		// for now as it's impossible to do this in a way that works
+		// in both 3.7 and 3.8
+		// not to mention the complications that could possibly arise
+		// anyway from trying to do this between actors in separate
+		// levels (how would one even call Vec3Diff in that case?
+		//         which actor's level should it be called from?)
+		//Vector3 otherpos = level.Vec3Diff(b.Vec3Offset(0,0,b.height),a.Vec3Offset(0,0,a.height));
+		Vector3 otherpos = a.Vec3Offset(0,0,a.height)-b.Vec3Offset(0,0,b.height);
 		double dist = otherpos.length();
 		if ( dist > 0 ) return asin(otherpos.z/dist);
 		return 0;
