@@ -20,13 +20,12 @@ Class mkClericKeyDrops : Actor
 {
 	void A_TossKeyItems()
 	{
-		bool haskey1 = false, haskey2 = false, haspiece = false;
+		bool haskey1 = false, haskey2 = false;
 		for ( int i=0; i<MAXPLAYERS; i++ )
 		{
-			if ( !playeringame[i] ) continue;
+			if ( !playeringame[i] || !players[i].mo ) continue;
 			if ( players[i].mo.FindInventory("KeyDungeon") ) haskey1 = true;
 			if ( players[i].mo.FindInventory("KeySteel") ) haskey2 = true;
-			if ( players[i].mo.FindInventory("mkHubGemAether") ) haspiece = true;
 		}
 		if ( !haskey1 )
 		{
@@ -36,11 +35,6 @@ Class mkClericKeyDrops : Actor
 		if ( !haskey2 )
 		{
 			let a = A_DropItem("KeySteel");
-			a.TossItem();
-		}
-		if ( !haspiece )
-		{
-			let a = A_DropItem("mkHubGemAether");
 			a.TossItem();
 		}
 	}
@@ -56,8 +50,7 @@ Class mkClericKeyDrops : Actor
 	{
 	Spawn:
 		TNT1 A 10;
-		TNT1 A 35 A_TossKeyItems();
-		TNT1 A 1 A_PrintBold("Congratulations! You completed this map in the dirtiest way possible.\n\nBut was it worth it?");
+		TNT1 A 1 A_TossKeyItems();
 		Stop;
 	}
 }

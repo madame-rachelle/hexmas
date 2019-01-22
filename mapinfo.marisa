@@ -3,20 +3,9 @@ GameInfo
 	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler", "mkInventoryResetHandler"
 }
 
-clearepisodes
-episode FROSTBITE
-{
-	name = "HeXmas Community Map Project"
-	key = x
-}
-
-cluster 1
-{
-	hub
-}
-
 map MARISA "Viridescent"
 {
+	levelnum = 5
 	cluster = 1
 	music = "creepy"
 	sky1 = "ARCTICS1"
@@ -70,4 +59,5 @@ DoomEdNums
 	6446 = "mkHubGemEarth"
 	6447 = "mkHubGemAir"
 	6448 = "mkHubGemAether"
+	6449 = "mkHubGemNether"
 }

@@ -1,17 +1,187 @@
 // hub-related stuff (inventory resets, the lore giving npc, the central artifact pieces)
+Class mkSavedInventory : Actor
+{
+	Inventory InvSel, InvFirst;
+	Weapon rw;
+	Default
+	{
+		+NOGRAVITY;
+		+NOBLOCKMAP;
+		+DONTSPLASH;
+	}
+}
+
 Class mkInventoryResetHandler : EventHandler
 {
-	override void WorldLoaded( WorldEvent e )
+	private void RetrieveInventory( mkSavedInventory saved, PlayerPawn giveto )
 	{
-		if ( e.IsSaveGame || e.IsReopen ) return;
-		// reset the inventory of each player on first map load
-		// the artifact pieces have +UNDROPPABLE on them, so they should be fine
+		Inventory i, prev, next, top;
+		prev = null;
+		i = saved.inv;
+		top = giveto.inv;
+		if ( top )
+		{
+			while ( top.inv )
+			{
+				top = top.inv;
+			}
+		}
+		while ( i )
+		{
+			next = i.inv;
+			if ( !i.bUNDROPPABLE )
+			{
+				if ( top )
+				{
+					top.inv = i;
+					top = i;
+				}
+				else giveto.inv = top = i;
+				i.owner = giveto;
+				i.inv = null;
+				if ( saved.inv == i ) saved.inv = next;
+				if ( prev ) prev.inv = next;
+			}
+			else prev = i;
+			i = next;
+		}
+		giveto.invsel = saved.invsel;
+		giveto.invfirst = saved.invfirst;
+		if ( saved.rw )
+		{
+			giveto.player.PendingWeapon = giveto.player.ReadyWeapon = saved.rw;
+			giveto.BringUpWeapon();
+		}
+		else
+		{
+			giveto.player.ReadyWeapon = null;
+			giveto.player.PendingWeapon = WP_NOCHANGE;
+		}
+	}
+
+	private void StashInventory( mkSavedInventory stored, PlayerPawn takefrom )
+	{
+		Inventory i, prev, next, top;
+		prev = null;
+		i = takefrom.inv;
+		top = stored.inv;
+		if ( top )
+		{
+			while ( top.inv )
+			{
+				top = top.inv;
+			}
+		}
+		while ( i )
+		{
+			next = i.inv;
+			if ( !i.bUNDROPPABLE )
+			{
+				if ( top )
+				{
+					top.inv = i;
+					top = i;
+				}
+				else stored.inv = top = i;
+				i.owner = stored;
+				i.inv = null;
+				if ( takefrom.inv == i ) takefrom.inv = next;
+				if ( prev ) prev.inv = next;
+			}
+			else prev = i;
+			i = next;
+		}
+		stored.invsel = takefrom.invsel;
+		stored.invfirst = takefrom.invfirst;
+		if ( takefrom.invsel && (takefrom.invsel.owner != takefrom) ) takefrom.invsel = null;
+		if ( takefrom.invfirst && (takefrom.invfirst.owner != takefrom) ) takefrom.invfirst = null;
+		stored.rw = takefrom.player.ReadyWeapon;
+		takefrom.player.ReadyWeapon = null;
+		takefrom.player.PendingWeapon = WP_NOCHANGE;
+	}
+
+	private mkSavedInventory FindSavedInventory( int i )
+	{
+		let t = ThinkerIterator.Create("mkSavedInventory");
+		mkSavedInventory a;
+		while ( a = mkSavedInventory(t.Next()) )
+		{
+			if ( a.special1 == i ) return a;
+		}
+		return null;
+	}
+
+	override void WorldUnloaded( WorldEvent e )
+	{
+		if ( e.IsSaveGame ) return;
+		// stash away current inventory
 		for ( int i=0; i<MAXPLAYERS; i++ )
 		{
-			if ( !playeringame[i] ) continue;
-			players[i].mo.ClearInventory();
-			players[i].mo.GiveDefaultInventory();
-			players[i].mo.BringUpWeapon();
+			if ( !playeringame[i] || !players[i].mo ) continue;
+			mkSavedInventory stored = FindSavedInventory(i);
+			if ( !stored )
+			{
+				stored = mkSavedInventory(players[i].mo.Spawn("mkSavedInventory"));
+				stored.special1 = i;
+			}
+			StashInventory(stored,players[i].mo);
+		}
+	}
+
+	override void WorldLoaded( WorldEvent e )
+	{
+		if ( e.IsSaveGame ) return;
+		// clear previous inventory then restore saved one (if any)
+		for ( int j=0; j<MAXPLAYERS; j++ )
+		{
+			if ( !playeringame[j] || !players[j].mo ) continue;
+			players[j].mo.ClearInventory();
+			mkSavedInventory saved = FindSavedInventory(j);
+			if ( saved ) RetrieveInventory(saved,players[j].mo);
+			else
+			{
+				players[j].mo.GiveDefaultInventory();
+				// fixup, remove repeated copies of BasicArmor/HexenArmor from inventory
+				Inventory i, prev, next, ba, ha;
+				prev = ba = ha = null;
+				i = players[j].mo.inv;
+				while ( i )
+				{
+					next = i.inv;
+					if ( i is 'BasicArmor' )
+					{
+						if ( !ba ) ba = i;
+						else
+						{
+							if ( players[j].mo.inv == i ) players[j].mo.inv = next;
+							if ( prev ) prev.inv = next;
+							else prev = next;
+							i.Destroy();
+						}
+					}
+					else if ( i is 'HexenArmor' )
+					{
+						if ( !ha ) ha = i;
+						else
+						{
+							if ( players[j].mo.inv == i ) players[j].mo.inv = next;
+							if ( prev ) prev.inv = next;
+							else prev = next;
+							i.Destroy();
+						}
+					}
+					i = next;
+				}
+				// set invsel/invfirst to first found selectable item
+				for ( Inventory i=players[j].mo.inv; i; i=i.inv )
+				{
+					if ( !i.bINVBAR ) continue;
+					players[j].mo.InvSel = players[j].mo.InvFirst = i;
+					break;
+				}
+			}
+			if ( players[j].PendingWeapon != WP_NOCHANGE )
+				players[j].mo.BringUpWeapon();
 		}
 	}
 }
@@ -20,6 +190,8 @@ Class mkSageNPC : Actor
 {
 	Default
 	{
+		//$Title Sage NPC
+		//$Category Marisa/Decoration
 		Speed 2;
 		Radius 16;
 		Height 64;
@@ -74,9 +246,13 @@ Class mkHubGem : Inventory abstract
 			if ( AllActorClasses[i].GetParentClass() == 'mkHubGem' ) totalpieces++;
 		}
 		int numpieces = 0;
-		for ( Inventory i=Owner.inv; i; i=i.inv )
+		for ( int j=0; j<MAXPLAYERS; j++ )
 		{
-			if ( i is 'mkHubGem' ) numpieces++;
+			if ( !playeringame[j] || !players[j].mo ) continue;
+			for ( Inventory i=players[j].mo.inv; i; i=i.inv )
+			{
+				if ( i is 'mkHubGem' ) numpieces++;
+			}
 		}
 		if ( numpieces < totalpieces ) Owner.A_Print(String.Format("%d more Gems left to find.",totalpieces-numpieces));
 		else Owner.A_Print("You have all the Elemental Gems.");
@@ -88,6 +264,8 @@ Class mkHubGemFire : mkHubGem
 {
 	Default
 	{
+		//$Title Fire Gem
+		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN0";
 		Tag "Fire Gem";
 	}
@@ -102,6 +280,8 @@ Class mkHubGemWater : mkHubGem
 {
 	Default
 	{
+		//$Title Water Gem
+		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN1";
 		Tag "Water Gem";
 	}
@@ -116,6 +296,8 @@ Class mkHubGemEarth : mkHubGem
 {
 	Default
 	{
+		//$Title Earth Gem
+		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN2";
 		Tag "Earth Gem";
 	}
@@ -130,6 +312,8 @@ Class mkHubGemAir : mkHubGem
 {
 	Default
 	{
+		//$Title Air Gem
+		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN3";
 		Tag "Air Gem";
 	}
@@ -144,6 +328,8 @@ Class mkHubGemAether : mkHubGem
 {
 	Default
 	{
+		//$Title Aether Gem
+		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN4";
 		Tag "Aether Gem";
 	}
@@ -151,6 +337,22 @@ Class mkHubGemAether : mkHubGem
 	{
 	Spawn:
 		EGEM E -1;
+		Stop;
+	}
+}
+Class mkHubGemNether : mkHubGem
+{
+	Default
+	{
+		//$Title Nether Gem
+		//$Category Marisa/Key Items
+		Inventory.Icon "GEMICN5";
+		Tag "Nether Gem";
+	}
+	States
+	{
+	Spawn:
+		EGEM F -1;
 		Stop;
 	}
 }
