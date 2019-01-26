@@ -1,5 +1,5 @@
 clearepisodes
-episode FROSTBITE
+episode HUB
 {
 	name = "HeXmas Community Map Project"
 	key = x
@@ -11,8 +11,8 @@ cluster 1
 }
 
 // just a template entry here, fill in as you need - MK
-/*map UNTITLED "Untitled"
+map HUB "Hub"
 {
 	cluster = 1
-	levelnum = 2
-}*/
+	levelnum = 1
+}

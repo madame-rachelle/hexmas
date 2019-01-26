@@ -1,6 +1,6 @@
 Map FROSTBITE "Frostbitten Peak"
 {
-	levelnum = 1
+	levelnum = 2
 	cluster = 1
 	Music = "tulku3"
 	FogDensity = 128
