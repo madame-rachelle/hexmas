@@ -2,6 +2,7 @@ clearepisodes
 episode HUB
 {
 	name = "HeXmas Community Map Project"
+	music = "orchest"
 	key = x
 }
 
