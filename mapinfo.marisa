@@ -50,6 +50,7 @@ DoomEdNums
 	6433 = "mkNightmareLordSighting"
 	6434 = "mkSageNPC"
 	6435 = "mkEttinSpectator"
+	6436 = "mkSageProjectionNPC"
 	6440 = "mkFullQuietus"
 	6441 = "mkFullWraithverge"
 	6442 = "mkFullBloodscourge"

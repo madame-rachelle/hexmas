@@ -186,8 +186,11 @@ Class mkInventoryResetHandler : EventHandler
 	}
 }
 
+// the sage proper, stands still but will walk around if he has a goal
 Class mkSageNPC : Actor
 {
+	int scnt;
+
 	Default
 	{
 		//$Title Sage NPC
@@ -205,20 +208,61 @@ Class mkSageNPC : Actor
 	States
 	{
 	Spawn:
-		SAGE B 20 A_SetTics(Random[SageNPC](10,40));
-		Goto See;
-	See:
-		SAGE BBBBBBAAAAAABBBBBBCCCCCC 2
-		{
-			A_ClearTarget();
-			if ( goal ) A_Chase();
-			else A_Wander();
-		}
-		SAGE B 0 A_JumpIf((!goal)&&(!Random[SageNPC](0,2)),"Spawn");
+		SAGE B 2;
+		SAGE B 2 A_JumpIf(goal,"See");
 		Loop;
+	See:
+		SAGE # 2
+		{
+			if ( goal )
+			{
+				if ( (scnt%12) < 6 ) frame = 1;
+				else if ( (scnt%24) < 12 ) frame = 0;
+				else frame = 2;
+				scnt++;
+				A_Chase(null,null);
+			}
+			return A_JumpIf(!goal,"Spawn");
+		}
+		Wait;
 	Greetings:
 		SAGE B 1;
 		Goto Spawn;
+	}
+}
+
+// a ghostly "projection" version of the sage, floats off the ground
+Class mkSageProjectionNPC : mkSageNPC
+{
+	Default
+	{
+		//$Title Sage NPC (Projection)
+		//$Category Marisa/Decoration
+		RenderStyle "Translucent";
+		Alpha 0.0;
+		+NOGRAVITY;
+		+FLOATBOB;
+		FloatBobStrength 0.1;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		SetZ(floorz+8);
+	}
+	override void Tick()
+	{
+		Super.Tick();
+		// fade based on player distance
+		double mindist = double.infinity;
+		for ( int i=0; i<MAXPLAYERS; i++ )
+		{
+			if ( !playeringame[i] || !players[i].mo ) continue;
+			double dist = Vec3To(players[i].mo).length();
+			if ( dist < mindist ) mindist = dist;
+		}
+		double talpha = clamp((500-mindist)*0.008,0.0,1.0);
+		// alpha has some "pulse" to it
+		alpha = (0.75+sin(level.time*10)*0.1)*talpha;
 	}
 }
 
@@ -231,7 +275,6 @@ Class mkHubGem : Inventory abstract
 		+INVENTORY.INVBAR;
 		Inventory.MaxAmount 1;
 		Inventory.PickupMessage "You got the %s.";
-		Tag "Elemental Gem";
 	}
 	override String PickupMessage()
 	{
@@ -243,7 +286,7 @@ Class mkHubGem : Inventory abstract
 		int totalpieces = 0;
 		for ( int i=0; i<AllActorClasses.Size(); i++ )
 		{
-			if ( AllActorClasses[i].GetParentClass() == 'mkHubGem' ) totalpieces++;
+			if ( AllActorClasses[i].GetParentClass() == GetParentClass() ) totalpieces++;
 		}
 		int numpieces = 0;
 		for ( int j=0; j<MAXPLAYERS; j++ )
@@ -251,16 +294,71 @@ Class mkHubGem : Inventory abstract
 			if ( !playeringame[j] || !players[j].mo ) continue;
 			for ( Inventory i=players[j].mo.inv; i; i=i.inv )
 			{
-				if ( i is 'mkHubGem' ) numpieces++;
+				if ( i.GetParentClass() == GetParentClass() ) numpieces++;
 			}
 		}
-		if ( numpieces < totalpieces ) Owner.A_Print(String.Format("%d more Gems left to find.",totalpieces-numpieces));
-		else Owner.A_Print("You have all the Elemental Gems.");
+		Owner.A_PlaySound("misc/i_pkup",CHAN_ITEM,local:true);
+		if ( numpieces < totalpieces ) Owner.A_Print(String.Format("%d more %s%s left to find.",totalpieces-numpieces,GetDefaultByType((Class<Actor>)(GetParentClass())).GetTag(),((totalpieces-numpieces)>1)?"s":""));
+		else Owner.A_Print(String.Format("You have all the %ss.",GetDefaultByType((Class<Actor>)(GetParentClass())).GetTag()));
 		return false;
 	}
 }
 
-Class mkHubGemFire : mkHubGem
+Class mkHubGemMundane : mkHubGem abstract
+{
+	Default
+	{
+		Tag "Mundane Gem";
+	}
+
+	static bool HasAllGems()
+	{
+		int totalpieces = 0;
+		for ( int i=0; i<AllActorClasses.Size(); i++ )
+		{
+			if ( AllActorClasses[i].GetParentClass() == 'mkHubGemMundane' ) totalpieces++;
+		}
+		int numpieces = 0;
+		for ( int j=0; j<MAXPLAYERS; j++ )
+		{
+			if ( !playeringame[j] || !players[j].mo ) continue;
+			for ( Inventory i=players[j].mo.inv; i; i=i.inv )
+			{
+				if ( i.GetParentClass() == 'mkHubGemMundane' ) numpieces++;
+			}
+		}
+		return (numpieces>=totalpieces);
+	}
+}
+
+Class mkHubGemArcane : mkHubGem abstract
+{
+	Default
+	{
+		Tag "Arcane Gem";
+	}
+
+	static bool HasAllGems()
+	{
+		int totalpieces = 0;
+		for ( int i=0; i<AllActorClasses.Size(); i++ )
+		{
+			if ( AllActorClasses[i].GetParentClass() == 'mkHubGemArcane' ) totalpieces++;
+		}
+		int numpieces = 0;
+		for ( int j=0; j<MAXPLAYERS; j++ )
+		{
+			if ( !playeringame[j] || !players[j].mo ) continue;
+			for ( Inventory i=players[j].mo.inv; i; i=i.inv )
+			{
+				if ( i.GetParentClass() == 'mkHubGemArcane' ) numpieces++;
+			}
+		}
+		return (numpieces>=totalpieces);
+	}
+}
+
+Class mkHubGemFire : mkHubGemMundane
 {
 	Default
 	{
@@ -276,7 +374,7 @@ Class mkHubGemFire : mkHubGem
 		Stop;
 	}
 }
-Class mkHubGemWater : mkHubGem
+Class mkHubGemWater : mkHubGemMundane
 {
 	Default
 	{
@@ -292,7 +390,7 @@ Class mkHubGemWater : mkHubGem
 		Stop;
 	}
 }
-Class mkHubGemEarth : mkHubGem
+Class mkHubGemEarth : mkHubGemMundane
 {
 	Default
 	{
@@ -308,7 +406,7 @@ Class mkHubGemEarth : mkHubGem
 		Stop;
 	}
 }
-Class mkHubGemAir : mkHubGem
+Class mkHubGemAir : mkHubGemMundane
 {
 	Default
 	{
@@ -324,7 +422,7 @@ Class mkHubGemAir : mkHubGem
 		Stop;
 	}
 }
-Class mkHubGemAether : mkHubGem
+Class mkHubGemAether : mkHubGemArcane
 {
 	Default
 	{
@@ -340,7 +438,7 @@ Class mkHubGemAether : mkHubGem
 		Stop;
 	}
 }
-Class mkHubGemNether : mkHubGem
+Class mkHubGemNether : mkHubGemArcane
 {
 	Default
 	{
