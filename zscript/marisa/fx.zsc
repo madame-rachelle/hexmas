@@ -520,6 +520,12 @@ Class mkMovingFloorTrap : Actor abstract
 
 	property Dir: mdir;
 
+	override void Tick()
+	{
+		Vel *= 0;
+		Super.Tick();
+	}
+
 	bool MoveDown()
 	{
 		SetOrigin(Vec3Offset(0,0,-2),true);
@@ -555,6 +561,8 @@ Class mkMovingFloorTrap : Actor abstract
 		+NOBLOOD;
 		+ACTLIKEBRIDGE;
 		+NOGRAVITY;
+		+DONTTHRUST;
+		Mass int.max;
 		Radius 64;
 		Height 16;
 	}

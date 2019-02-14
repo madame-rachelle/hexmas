@@ -18,6 +18,7 @@ Class mkLamp : Inventory
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
+		if ( Owner ) return;	// spawned through give, skip this
 		bActive = args[0];
 		if ( !lt ) lt = Spawn("mkLampLight");
 		lt.target = self;
