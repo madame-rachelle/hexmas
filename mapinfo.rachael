@@ -12,6 +12,9 @@ cluster 1
 
 map HUB "Hub"
 {
+	sky1 = "ARCTICS1"
+	sky2 = "ARCTICS2", 0.03
+	doublesky
 	cluster = 1
 	levelnum = 1
 	music = "orchest"
