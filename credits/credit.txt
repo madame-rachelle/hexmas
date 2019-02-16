@@ -1,5 +1,6 @@
 Knight Archer monster: Ravagefox, based on sprites by Raven Software & CodenniumRed
-tulku3 MIDI: Hexen 2 - Portals Of Praevus
+tulku3: Hexen 2 - Portals Of Praevus
+roma1: Hexen 2
 H2TX* textures: Hexen 2, compiled by Ceeb
 NW*, W_*, F*, NF* textures: C.R.U.E.L. pack by Ettingrinder
 SNOW* skybox: Kothic Skyboxes pack by Kell

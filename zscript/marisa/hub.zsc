@@ -315,8 +315,6 @@ Class mkHubGem : Inventory abstract
 		}
 		Owner.A_PlaySound("misc/i_pkup",CHAN_ITEM,local:true);
 		Owner.A_Print(GemMsg);
-		if ( numpieces < totalpieces ) Owner.A_Print(String.Format("%d more %s%s left to find.",totalpieces-numpieces,GetDefaultByType((Class<Actor>)(GetParentClass())).GetTag(),((totalpieces-numpieces)>1)?"s":""));
-		else Owner.A_Print(String.Format("You have all the %ss.",GetDefaultByType((Class<Actor>)(GetParentClass())).GetTag()));
 		return false;
 	}
 }
