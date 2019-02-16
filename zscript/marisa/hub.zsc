@@ -195,6 +195,7 @@ Class mkSageNPC : Actor
 	{
 		//$Title Sage NPC
 		//$Category Marisa/Decoration
+		//$Sprite SAGEB1
 		Speed 2;
 		Radius 16;
 		Height 64;
@@ -238,6 +239,7 @@ Class mkSageProjectionNPC : mkSageNPC
 	{
 		//$Title Sage NPC (Projection)
 		//$Category Marisa/Decoration
+		//$Sprite SAGEB1
 		RenderStyle "Translucent";
 		Alpha 0.0;
 		+NOGRAVITY;
@@ -248,10 +250,12 @@ Class mkSageProjectionNPC : mkSageNPC
 	{
 		Super.PostBeginPlay();
 		SetZ(floorz+8);
+		specialf1 = 2.5;
 	}
 	override void Tick()
 	{
 		Super.Tick();
+		if ( level.frozen || globalfreeze ) return;
 		// fade based on player distance
 		double mindist = double.infinity;
 		for ( int i=0; i<MAXPLAYERS; i++ )
@@ -261,13 +265,25 @@ Class mkSageProjectionNPC : mkSageNPC
 			if ( dist < mindist ) mindist = dist;
 		}
 		double talpha = clamp((500-mindist)*0.008,0.0,1.0);
+		if ( bDORMANT ) specialf1 = max(0.0,specialf1-0.08);
 		// alpha has some "pulse" to it
-		alpha = (0.75+sin(level.time*10)*0.1)*talpha;
+		alpha = (0.75+sin(level.time*10)*0.1)*talpha*min(1.0,specialf1);
+		if ( bDORMANT && (specialf1 <= 0) ) Destroy();
+	}
+	override void Deactivate( Actor activator )
+	{
+		bDORMANT = true;
+		bINCOMBAT = true;
+		bSOLID = false;
 	}
 }
 
 Class mkHubGem : Inventory abstract
 {
+	String GemMsg;
+
+	Property GemMessage : GemMsg;
+
 	Default
 	{
 		+INVENTORY.UNDROPPABLE;
@@ -298,67 +314,14 @@ Class mkHubGem : Inventory abstract
 			}
 		}
 		Owner.A_PlaySound("misc/i_pkup",CHAN_ITEM,local:true);
+		Owner.A_Print(GemMsg);
 		if ( numpieces < totalpieces ) Owner.A_Print(String.Format("%d more %s%s left to find.",totalpieces-numpieces,GetDefaultByType((Class<Actor>)(GetParentClass())).GetTag(),((totalpieces-numpieces)>1)?"s":""));
 		else Owner.A_Print(String.Format("You have all the %ss.",GetDefaultByType((Class<Actor>)(GetParentClass())).GetTag()));
 		return false;
 	}
 }
 
-Class mkHubGemMundane : mkHubGem abstract
-{
-	Default
-	{
-		Tag "Mundane Gem";
-	}
-
-	static bool HasAllGems()
-	{
-		int totalpieces = 0;
-		for ( int i=0; i<AllActorClasses.Size(); i++ )
-		{
-			if ( AllActorClasses[i].GetParentClass() == 'mkHubGemMundane' ) totalpieces++;
-		}
-		int numpieces = 0;
-		for ( int j=0; j<MAXPLAYERS; j++ )
-		{
-			if ( !playeringame[j] || !players[j].mo ) continue;
-			for ( Inventory i=players[j].mo.inv; i; i=i.inv )
-			{
-				if ( i.GetParentClass() == 'mkHubGemMundane' ) numpieces++;
-			}
-		}
-		return (numpieces>=totalpieces);
-	}
-}
-
-Class mkHubGemArcane : mkHubGem abstract
-{
-	Default
-	{
-		Tag "Arcane Gem";
-	}
-
-	static bool HasAllGems()
-	{
-		int totalpieces = 0;
-		for ( int i=0; i<AllActorClasses.Size(); i++ )
-		{
-			if ( AllActorClasses[i].GetParentClass() == 'mkHubGemArcane' ) totalpieces++;
-		}
-		int numpieces = 0;
-		for ( int j=0; j<MAXPLAYERS; j++ )
-		{
-			if ( !playeringame[j] || !players[j].mo ) continue;
-			for ( Inventory i=players[j].mo.inv; i; i=i.inv )
-			{
-				if ( i.GetParentClass() == 'mkHubGemArcane' ) numpieces++;
-			}
-		}
-		return (numpieces>=totalpieces);
-	}
-}
-
-Class mkHubGemFire : mkHubGemMundane
+Class mkHubGemFire : mkHubGem
 {
 	Default
 	{
@@ -366,6 +329,7 @@ Class mkHubGemFire : mkHubGemMundane
 		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN0";
 		Tag "Fire Gem";
+		mkHubGem.GemMessage "It's warm to the touch.";
 	}
 	States
 	{
@@ -374,7 +338,7 @@ Class mkHubGemFire : mkHubGemMundane
 		Stop;
 	}
 }
-Class mkHubGemWater : mkHubGemMundane
+Class mkHubGemWater : mkHubGem
 {
 	Default
 	{
@@ -382,6 +346,7 @@ Class mkHubGemWater : mkHubGemMundane
 		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN1";
 		Tag "Water Gem";
+		mkHubGem.GemMessage "Although solid, your hands get wet when touching it.";
 	}
 	States
 	{
@@ -390,7 +355,7 @@ Class mkHubGemWater : mkHubGemMundane
 		Stop;
 	}
 }
-Class mkHubGemEarth : mkHubGemMundane
+Class mkHubGemEarth : mkHubGem
 {
 	Default
 	{
@@ -398,6 +363,7 @@ Class mkHubGemEarth : mkHubGemMundane
 		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN2";
 		Tag "Earth Gem";
+		mkHubGem.GemMessage "Feels rough to the touch.";
 	}
 	States
 	{
@@ -406,7 +372,7 @@ Class mkHubGemEarth : mkHubGemMundane
 		Stop;
 	}
 }
-Class mkHubGemAir : mkHubGemMundane
+Class mkHubGemAir : mkHubGem
 {
 	Default
 	{
@@ -414,6 +380,7 @@ Class mkHubGemAir : mkHubGemMundane
 		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN3";
 		Tag "Air Gem";
+		mkHubGem.GemMessage "Cool air seems to come out of it.";
 	}
 	States
 	{
@@ -422,7 +389,7 @@ Class mkHubGemAir : mkHubGemMundane
 		Stop;
 	}
 }
-Class mkHubGemAether : mkHubGemArcane
+Class mkHubGemAether : mkHubGem
 {
 	Default
 	{
@@ -430,6 +397,7 @@ Class mkHubGemAether : mkHubGemArcane
 		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN4";
 		Tag "Aether Gem";
+		mkHubGem.GemMessage "You can feel some arcane power within.";
 	}
 	States
 	{
@@ -438,7 +406,7 @@ Class mkHubGemAether : mkHubGemArcane
 		Stop;
 	}
 }
-Class mkHubGemNether : mkHubGemArcane
+Class mkHubGemNether : mkHubGem
 {
 	Default
 	{
@@ -446,6 +414,7 @@ Class mkHubGemNether : mkHubGemArcane
 		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN5";
 		Tag "Nether Gem";
+		mkHubGem.GemMessage "There's something off about this gem...";
 	}
 	States
 	{

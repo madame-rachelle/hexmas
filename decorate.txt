@@ -27,12 +27,12 @@ Actor mkHubGemStaticWater : mkHubGemStatic
 	}
 }
 
-Actor mkHubGemStaticWater : mkHubGemStatic
+Actor mkHubGemStaticEarth : mkHubGemStatic
 {
 	States
 	{
 		Spawn:
-		 EGEM B -1
+		 EGEM C -1
 		 Stop
 	}
 }
@@ -43,16 +43,6 @@ Actor mkHubGemStaticAir : mkHubGemStatic
 	{
 		Spawn:
 		 EGEM D -1
-		 Stop
-	}
-}
-
-Actor mkHubGemStaticEarth : mkHubGemStatic
-{
-	States
-	{
-		Spawn:
-		 EGEM C -1
 		 Stop
 	}
 }
