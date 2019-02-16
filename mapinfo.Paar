@@ -6,5 +6,5 @@ map FORTRESS "Fortress of Solitude"
 	outsidefog = "FF FF FF"
 	outsidefogdensity = "32"
         skyfog = "172"
-	music = "roma1"
+	music = "BONESR"
 }
