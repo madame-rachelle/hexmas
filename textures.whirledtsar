@@ -1,10 +1,5 @@
 // C.R.U.E.L. texture pack
 
-Texture "HUGEBRIC", 256, 128
-{
-	Patch "EGW_336", 0, 0
-}
-
 Texture "VILL02", 128, 128
 {
 	Patch "NW_0000", 0, 0
@@ -131,16 +126,6 @@ Texture "TOMBZ01", 128, 128
 	Patch "NW_0024", 0, 0
 }
 
-Texture "TOMBT01", 64, 128
-{
-	Patch "NW_0032", 0, 0
-}
-
-Texture "TOMBT02", 64, 128
-{
-	Patch "NW_0033", 0, 0
-}
-
 Texture "TOMBT03", 64, 128
 {
 	Patch "NW_0034", 0, 0
@@ -154,46 +139,6 @@ Texture "TOMBT04", 64, 128
 Texture "TOMBT05", 64, 128
 {
 	Patch "NW_0036", 0, 0
-}
-
-Texture "TOMBT06", 64, 128
-{
-	Patch "NW_0037", 0, 0
-}
-
-Texture "TOMBT07", 64, 128
-{
-	Patch "NW_0038", 0, 0
-}
-
-Texture "TOMBT08", 64, 128
-{
-	Patch "NW_0039", 0, 0
-}
-
-Texture "TOMBT09", 128, 128
-{
-	Patch "NW_0040", 0, 0
-}
-
-Texture "TOMBT10", 128, 128
-{
-	Patch "NW_0041", 0, 0
-}
-
-Texture "TOMBT11", 64, 128
-{
-	Patch "NW_0042", 0, 0
-}
-
-Texture "TOMBT12", 64, 128
-{
-	Patch "NW_0043", 0, 0
-}
-
-Texture "TOMBT13", 64, 128
-{
-	Patch "NW_0044", 0, 0
 }
 
 Texture "TOMBT14", 64, 128
@@ -281,27 +226,6 @@ Texture "MONK30", 128, 128
 	Patch "W_042", 0, 0
 	Patch "NW_0062", 0, 0
 }
-
-Texture "MONK31", 128, 128
-{
-	Patch "W_042", 0, 0
-	Patch "NW_0060", 31, 40
-}
-
-Texture "MONK32", 128, 128
-{
-	Patch "W_042", 0, 0
-	Patch "NW_0062", 0, 0
-	Patch "NW_0061", 48, 0
-	Patch "NW_0060", 31, 40
-}
-
-Texture "MONK33", 64, 128
-{
-	Patch "W_132", 0, 0
-	Patch "NW_0063", 0, 0
-}
-
 Texture "UTEMPL01", 128, 128
 {
 	Patch "NW_0064", 0, 0
@@ -520,16 +444,6 @@ Texture "PORTCULL", 128, 128
 Texture "GALLOW3", 128, 16
 {
 	Patch "NW_0168", 0, 0
-}
-
-Texture "BRICK01", 64, 128
-{
-	Patch "NW_0154", 0, 0
-}
-
-Texture "BRICK02", 64, 128
-{
-	Patch "NW_0155", 0, 0
 }
 
 Texture "BRASS8", 192, 128

@@ -17,7 +17,7 @@ map HUB "Hub"
 	sky2 = "ARCTICS2", 0.03
 	doublesky
 	cluster = 1
-	levelnum = 1
+	levelnum = 2
 	music = "orchest"
 	next = EndGame2
 }
