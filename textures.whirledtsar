@@ -1,3 +1,11 @@
+Texture "TPORTX2", 64, 128
+{
+	Patch  "TPORTX", 0, 0
+	{
+		Translation "0:255=%[0.00,0.00,0.00]:[1.00,1.00,1.00]"
+	}
+}
+
 // C.R.U.E.L. texture pack
 
 Texture "VILL02", 128, 128
