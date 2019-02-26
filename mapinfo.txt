@@ -3,7 +3,68 @@ GameInfo
 	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler", "mkInventoryResetHandler"
 }
 
-map MARISA "Viridescent"
+clearepisodes
+episode FROSTBITE
+{
+	name = "HeXmas Community Map Project"
+	key = x
+}
+
+cluster 1
+{
+	hub
+	exittext = "..."	// put something here -- MK
+}
+
+// 1
+Map FROSTBITE "Frostbitten Peak"
+{
+	levelnum = 1
+	cluster = 1
+	Music = "tulku3"
+	FogDensity = 128
+	UsePlayerStartZ
+	ClipMidTextures
+	MonsterFallingDamage
+	Grinding_Polyobj
+}
+
+// 2
+map HUB "Hub - Rachael & whirledtsar"
+{
+	sky1 = "ARCTICS1"
+	sky2 = "ARCTICS2", 0.03
+	doublesky
+	cluster = 1
+	levelnum = 2
+	music = "orchest"
+	next = EndGame2
+}
+
+// 3
+map FORTRESS "Fortress of Solitude"
+{
+	levelnum = 3
+        sky1 = "SKYFOG"
+	cluster = 1
+	outsidefog = "FF FF FF"
+	outsidefogdensity = "32"
+        skyfog = "172"
+	music = "BONESR"
+}
+
+// 4
+map HRUNT "Hruntheim"
+{
+	levelnum = 4
+	cluster = 1
+	par = 180
+	sky1 = "SKY1", 0
+	music = "CRYPTR"
+}
+
+// 5
+map MARISA "Viridescent - Marisa Kirisame"
 {
 	levelnum = 5
 	cluster = 1
@@ -16,6 +77,11 @@ map MARISA "Viridescent"
 	strictmonsteractivation
 	checkswitchrange
 	grinding_polyobj
+}
+
+SpawnNums
+{
+	109 = IceShard2
 }
 
 DoomEdNums
