@@ -42,7 +42,7 @@ map HUB "Hub - Rachael & whirledtsar"
 }
 
 // 3
-map FORTRESS "Fortress of Solitude"
+map FORTRESS "Fortress of Solitude - Paar"
 {
 	levelnum = 3
         sky1 = "SKYFOG"
@@ -54,7 +54,7 @@ map FORTRESS "Fortress of Solitude"
 }
 
 // 4
-map HRUNT "Hruntheim"
+map HRUNT "Hruntheim - Crazy Toni"
 {
 	levelnum = 4
 	cluster = 1
