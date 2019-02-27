@@ -253,12 +253,15 @@ Class mkMinotaur : Actor
 
 	void A_ChaseBrother()
 	{
-		tics = 4;
-		A_Chase(null,null);
-		if ( !goal )
+		for ( int i=0; i<2; i++ )
 		{
-			A_Face(brother);
-			SetStateLabel("InitiatePhaseTwo");
+			A_Chase(null,null);
+			if ( !goal )
+			{
+				A_Face(brother);
+				SetStateLabel("InitiatePhaseTwo");
+				break;
+			}
 		}
 	}
 
@@ -358,7 +361,11 @@ Class mkMinotaur : Actor
 	See:
 		MINO ABCD 4
 		{
-			if ( brother && brother.bKILLED ) A_ChaseBrother();
+			if ( brother && brother.bKILLED )
+			{
+				A_SetTics(3);
+				A_ChaseBrother();
+			}
 			else A_Chase();
 		}
 		MINO A 0 A_DecideDash();
@@ -491,8 +498,8 @@ Class mkMinotaurEx : Actor
 		Radius 50;
 		Height 200;
 		Mass 3000;
-		Speed 25;
-		Painchance 20;
+		Speed 24;
+		Painchance 10;
 		MeleeRange 100;
 		MeleeThreshold 250;
 		MissileHeight 150;
@@ -513,6 +520,7 @@ Class mkMinotaurEx : Actor
 		+NOINFIGHTSPECIES;
 		+DONTHARMSPECIES;
 		+MISSILEMORE;
+		+MISSILEEVENMORE;
 		Species "Minotaur";
 		Tag "\cmHellsmith\c-";
 		Obituary "%o was blown to pieces by the Hellsmith.";
@@ -539,7 +547,7 @@ Class mkMinotaurEx : Actor
 		bool dummy;
 		Actor a;
 		[dummy, a] = TestMobjZ(true);
-		if ( (pos.z <= floorz) || a )
+		if ( (pos.z <= floorz+8) || a )
 		{
 			if ( wasinair )
 			{
@@ -820,7 +828,7 @@ Class mkMinotaurEx : Actor
 	}
 	void A_HellsmithFireSwirl( bool alt = false )
 	{
-		for ( int i=-20; i<=20; i+=20 )
+		for ( int i=-30; i<=30; i+=20 )
 		{
 			let p = Spawn("mkMinotaurExSwirl",Vec3Angle(meleerange,angle+(alt?5:-5)));
 			p.target = self;
@@ -832,7 +840,7 @@ Class mkMinotaurEx : Actor
 	{
 		double iang = FRandom[MinotaurExMissile](0,360);
 		special1++;
-		double idist = 80+special1*30+FRandom[MinotaurExMissile](-10,10);
+		double idist = 70+special1*42+FRandom[MinotaurExMissile](-10,10);
 		Vector3 spawnspot;
 		for ( int i=0; i<360; i+=15 )
 		{
@@ -885,7 +893,7 @@ Class mkMinotaurEx : Actor
 		Wait;
 	See:
 		MIN2 A 0 { scnt = 2; }
-		MIN2 AABBCCDD 4
+		MIN2 AABBCCDD 3
 		{
 			scnt++;
 			if ( wasinair ) return ResolveState("Fall");
@@ -989,7 +997,7 @@ Class mkMinotaurEx : Actor
 		MIN2 FF 4 A_FaceTarget(20);
 		MIN2 G 0 A_HellsmithMelee(true);
 		MIN2 G 0 A_IgnorePain();
-		MIN2 GGGGGGGGGG 4 A_HellsmithFirePillar();
+		MIN2 GGGGGGGGGGGGGGG 4 A_HellsmithFirePillar();
 		MIN2 G 30;
 		MIN2 G 0 A_ResetPain();
 		Goto See;
@@ -1000,7 +1008,7 @@ Class mkMinotaurEx : Actor
 		MIN2 KK 4 A_FaceTarget(20);
 		MIN2 L 0 A_HellsmithMelee(true,true);
 		MIN2 L 0 A_IgnorePain();
-		MIN2 LLLLLLLLLL 4 A_HellsmithFirePillar();
+		MIN2 LLLLLLLLLLLLLLL 4 A_HellsmithFirePillar();
 		MIN2 L 30;
 		MIN2 L 0 A_ResetPain();
 		Goto See;
