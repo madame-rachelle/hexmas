@@ -186,7 +186,17 @@ Class mkInventoryResetHandler : EventHandler
 	}
 }
 
-// the sage proper, stands still but will walk around if he has a goal
+// for dialogue advance
+Class mkHasClearedHub : Inventory
+{
+	Default
+	{
+		+INVENTORY.UNDROPPABLE;
+		+INVENTORY.UNTOSSABLE;
+	}
+}
+
+// the sage of winter, stands still but will walk around if he has a goal
 Class mkSageNPC : Actor
 {
 	int scnt;
@@ -229,52 +239,6 @@ Class mkSageNPC : Actor
 	Greetings:
 		SAGE B 1;
 		Goto Spawn;
-	}
-}
-
-// a ghostly "projection" version of the sage, floats off the ground
-Class mkSageProjectionNPC : mkSageNPC
-{
-	Default
-	{
-		//$Title Sage NPC (Projection)
-		//$Category Marisa/Decoration
-		//$Sprite SAGEB1
-		RenderStyle "Translucent";
-		Alpha 0.0;
-		+NOGRAVITY;
-		+FLOATBOB;
-		FloatBobStrength 0.1;
-	}
-	override void PostBeginPlay()
-	{
-		Super.PostBeginPlay();
-		SetZ(floorz+8);
-		specialf1 = 2.5;
-	}
-	override void Tick()
-	{
-		Super.Tick();
-		if ( level.frozen || globalfreeze ) return;
-		// fade based on player distance
-		double mindist = double.infinity;
-		for ( int i=0; i<MAXPLAYERS; i++ )
-		{
-			if ( !playeringame[i] || !players[i].mo ) continue;
-			double dist = Vec3To(players[i].mo).length();
-			if ( dist < mindist ) mindist = dist;
-		}
-		double talpha = clamp((500-mindist)*0.008,0.0,1.0);
-		if ( bDORMANT ) specialf1 = max(0.0,specialf1-0.08);
-		// alpha has some "pulse" to it
-		alpha = (0.75+sin(level.time*10)*0.1)*talpha*min(1.0,specialf1);
-		if ( bDORMANT && (specialf1 <= 0) ) Destroy();
-	}
-	override void Deactivate( Actor activator )
-	{
-		bDORMANT = true;
-		bINCOMBAT = true;
-		bSOLID = false;
 	}
 }
 
