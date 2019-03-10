@@ -2,6 +2,7 @@
 hardwareshader postprocess scene
 {
 	Name "marifx_grading"
+	Shader "shaders/glsl/marifx_grading.fp" 330
 	Uniform vec3 grademul
 	Uniform vec3 gradepow
 	Uniform vec3 gradecol
@@ -10,7 +11,25 @@ hardwareshader postprocess scene
 	Uniform float gradesatpow
 	Uniform float gradevalmul
 	Uniform float gradevalpow
-	Shader "shaders/glsl/marifx_grading.fp" 330
+}
+
+hardwareshader postprocess scene
+{
+	Name "insanity1"
+	Shader "shaders/glsl/insanity_layer1.fp" 330
+	Uniform float dfact
+	Uniform float timer
+	Texture fluidtex "textures/fluidtex.png"
+}
+
+hardwareshader postprocess scene
+{
+	Name "insanity2"
+	Shader "shaders/glsl/insanity_layer2.fp" 330
+	Uniform float tun
+	Uniform float dfact
+	Uniform float timer
+	Texture warptex "textures/warptex.png"
 }
 
 // edited textures

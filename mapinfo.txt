@@ -1,6 +1,6 @@
 GameInfo
 {
-	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler", "mkInventoryResetHandler"
+	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler", "mkInventoryResetHandler", "mkEldrichHandler"
 }
 
 clearepisodes
@@ -126,4 +126,10 @@ DoomEdNums
 	6447 = "mkHubGemAir"
 	6448 = "mkHubGemAether"
 	6449 = "mkHubGemNether"
+}
+
+DamageType Eldrich
+{
+	NoArmor
+	Obituary = "%o was consumed by dark energies."
 }

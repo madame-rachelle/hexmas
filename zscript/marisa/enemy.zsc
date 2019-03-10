@@ -238,6 +238,7 @@ Class mkElderApprentice : Actor
 		Tag "Elder Apprentice";
 		SeeSound "apprentice/see";
 		BloodColor "Purple";
+		DamageFactor "Eldrich", 0.3;
 	}
 	override void Tick()
 	{
@@ -602,6 +603,7 @@ Class mkElderAcolyte : Actor
 		ActiveSound "acolyte/actives";
 		Obituary "%o was blown to pieces by an Elder Acolyte.";
 		Tag "Elder Acolyte";
+		DamageFactor "Eldrich", 0.1;
 	}
 	double _PitchTo( Actor other )
 	{

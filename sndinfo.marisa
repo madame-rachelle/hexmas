@@ -112,6 +112,16 @@ $pitchshift nightmarelord/appear 0
 $pitchshift nightmarelord/disappear 0
 $pitchshift nightmarelord/stomp 0
 
+mirrorman/giggle lka
+$pitchshift mirrorman/giggle 0
+
+insanity/layer1 nslayer1
+insanity/layer2 nslayer2
+insanity/layer3 nslayer3
+$pitchshift insanity/layer1 0
+$pitchshift insanity/layer2 0
+$pitchshift insanity/layer3 0
+
 $random skelsit { raiseske sklsrs1 sklsrs2 }
 raiseske	raiseske
 sklsrs1		sklsrs1

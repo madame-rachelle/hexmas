@@ -81,6 +81,19 @@ Class mkLamp : Inventory
 			}
 		}
 	}
+
+	static bool ItsLit( Actor activator )
+	{
+
+		let t = ThinkerIterator.Create("mkLamp");
+		mkLamp l;
+		while ( l = mkLamp(t.Next()) )
+		{
+			if ( l.Owner != activator ) continue;
+			return l.bActive;
+		}
+		return false;
+	}
 }
 
 Class mkLampLight : DynamicLight
@@ -107,6 +120,6 @@ Class mkLampLight : DynamicLight
 		if ( target.player ) SetOrigin(target.vec2OffsetZ(0,0,target.player.viewz-16),true);
 		else SetOrigin(target.vec3Offset(0,0,target.height*0.5),true);
 		if ( (!mkLamp(master).bActive || (mkLamp(target) && target.bInvisible)) && !bDORMANT ) Deactivate(target);
-		else if ( bDORMANT ) Activate(target);
+		else if ( (mkLamp(master).bActive || (mkLamp(target) && !target.bInvisible && mkLamp(target).bActive)) && bDORMANT ) Activate(target);
 	}
 }
