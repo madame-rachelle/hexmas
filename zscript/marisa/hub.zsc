@@ -196,6 +196,17 @@ Class mkHasClearedHub : Inventory
 	}
 }
 
+Class mkSageHealing : Inventory
+{
+	override bool TryPickup( in out Actor toucher )
+	{
+		if ( !toucher.GiveBody(-100) )
+			return false;
+		GoAwayAndDie();
+		return true;
+	}
+}
+
 // the sage of winter, stands still but will walk around if he has a goal
 Class mkSageNPC : Actor
 {

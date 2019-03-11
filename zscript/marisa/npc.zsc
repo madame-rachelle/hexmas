@@ -7,6 +7,14 @@ Class mkBossClearedToken : Inventory
 		+INVENTORY.UNTOSSABLE;
 	}
 }
+Class mkMirrorManFoundToken : Inventory
+{
+	Default
+	{
+		+INVENTORY.UNDROPPABLE;
+		+INVENTORY.UNTOSSABLE;
+	}
+}
 Class mkExBossClearedToken : Inventory
 {
 	Default
@@ -79,8 +87,6 @@ Class mkClericNPC : Actor
 	}
 	override int DamageMobj( Actor inflictor, Actor source, int damage, Name mod, int flags, double angle )
 	{
-		Inventory h = FindInventory("ArtiHealth");
-		while ( h && (h.amount > 0) && ((health-damage) <= 0) ) UseInventory(h);
 		if ( (Health > 0) && source && source.player && bFRIENDLY )
 		{
 			source.A_Print("Have you gone insane?");
@@ -132,6 +138,14 @@ Class mkClericNPC : Actor
 			}
 			return ResolveState(null);
 		}
+		CLER A 0
+		{
+			if ( health <= 75 )
+			{
+				Inventory h = FindInventory("ArtiHealth");
+				if ( h && (h.Amount > 0) ) UseInventory(h);
+			}
+		}
 		Loop;
 	ChaosReturn:
 		CLER A 10;
@@ -166,6 +180,7 @@ Class mkClericNPC : Actor
 		CLER H 4 A_PlaySound("PlayerClericPain");
 		Goto See;
 	Death:
+		TNT1 A 0 ACS_NamedExecute("updatemarisa",2,1);
 		CLER I 6;
 		CLER J 6 A_PlaySound("PlayerClericNormalDeath");
 		CLER KL 6;
@@ -174,6 +189,7 @@ Class mkClericNPC : Actor
 		CLER Q -1;
 		Stop;
 	XDeath:
+		TNT1 A 0 ACS_NamedExecute("updatemarisa",2,1);
 		CLER R 5 A_PlaySound("PlayerClericCrazyDeath");
 		CLER S 5;
 		CLER T 5 A_NoBlocking();
@@ -181,10 +197,12 @@ Class mkClericNPC : Actor
 		CLER [ -1;
 		Stop;
 	Ice:
+		TNT1 A 0 ACS_NamedExecute("updatemarisa",2,1);
 		CLER \ 5 A_FreezeDeath();
 		CLER \ 1 A_FreezeDeathChunks();
 		Wait;
 	Burn:
+		TNT1 A 0 ACS_NamedExecute("updatemarisa",2,1);
 		FDTH C 5 Bright A_PlaySound("PlayerClericBurnDeath");
 		FDTH D 4 Bright;
 		FDTH G 5 Bright;

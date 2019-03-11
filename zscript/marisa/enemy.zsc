@@ -451,7 +451,7 @@ Class mkWizardFire : mkAcolyteFire
 	{
 		Scale 1.25;
 		Speed 6;
-		DamageFunction Random[EWizFire](2,3)*4;
+		DamageFunction Random[EWizFire](2,3)*(args[0]?2:4);
 	}
 	States
 	{
@@ -459,9 +459,10 @@ Class mkWizardFire : mkAcolyteFire
 		DMFX AABBCC 1 Bright
 		{
 			A_SpawnItemEx("mkSmokePoof");
-			if ( !(GetAge()%3) ) A_DTSeeker();
+			if ( args[0] || !(GetAge()%3) ) A_DTSeeker();
 			vel += Acceleration/TICRATE;
-			vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](1,2);
+			if ( args[0] ) vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](0.4,0.8);
+			else vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](1,2);
 			Vector3 dir = vel.unit();
 			if ( vel.length() > 30. ) vel = dir*30.;
 			angle = atan2(dir.y,dir.x);
@@ -469,7 +470,7 @@ Class mkWizardFire : mkAcolyteFire
 		}
 		Loop;
 	Death:
-		TNT1 A 0 A_Explode(Random[EWizFire](2,3)*3,80,0);
+		TNT1 A 0 A_Explode(Random[EWizFire](2,3)*(args[0]?2:3),args[0]?30:80,0);
 		DMFX DEFG 3 Bright;
 		Stop;
 	}
@@ -535,11 +536,19 @@ Class mkAcolyteBoom : Actor
 			}
 		}
 		if ( !args[0] ) return;
-		int mx = (args[0]==3)?6:(args[0]==2)?4:2;
+		int mx = (args[0]==4)?1:(args[0]==3)?6:(args[0]==2)?4:2;
 		for ( int i=0; i<mx; i++ )
 		{
 			Actor a;
-			if ( args[0] == 3 )
+			if ( args[0] == 4 )
+			{
+				a = Spawn("mkWizardFire",pos);
+				a.scale *= 0.5;
+				a.args[0] = 1;
+				a.angle = angle+FRandom[EWizFire](-3,3);
+				a.pitch = pitch+FRandom[EWizFire](-3,3);
+			}
+			else if ( args[0] == 3 )
 			{
 				a = Spawn("mkAcolyteFire",pos);
 				a.speed *= 3;

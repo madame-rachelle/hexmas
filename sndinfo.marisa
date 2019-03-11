@@ -93,6 +93,11 @@ eldrich/attack	wizatk
 eldrich/death	wizdie
 eldrich/pain	wizpai
 eldrich/see	wizsit
+eldrich/active2	wizact2
+eldrich/attack2	wizatk2
+eldrich/death2	wizdie2
+eldrich/pain2	wizpai2
+eldrich/see2	wizsit2
 eldrich/flash	FLASHIE
 eldrich/tele	HEZETELE
 eldrich/beamst	mcfirest

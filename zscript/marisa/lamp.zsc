@@ -117,7 +117,7 @@ Class mkLampLight : DynamicLight
 			Destroy();
 			return;
 		}
-		if ( target.player ) SetOrigin(target.vec2OffsetZ(0,0,target.player.viewz-16),true);
+		if ( target.player ) SetOrigin(target.vec2OffsetZ(0,0,target.player.viewz),true);
 		else SetOrigin(target.vec3Offset(0,0,target.height*0.5),true);
 		if ( (!mkLamp(master).bActive || (mkLamp(target) && target.bInvisible)) && !bDORMANT ) Deactivate(target);
 		else if ( (mkLamp(master).bActive || (mkLamp(target) && !target.bInvisible && mkLamp(target).bActive)) && bDORMANT ) Activate(target);

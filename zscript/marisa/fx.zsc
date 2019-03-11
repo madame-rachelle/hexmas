@@ -455,10 +455,10 @@ Class mkIceIceBaby : Actor
 		Super.PostBeginPlay();
 		for ( int i=0; i<256; i++ )
 		{
-			Vector3 shardpos = Vec3Offset(FRandom[Glass](-60,60),FRandom[Glass](-60,60),FRandom[Glass](-156,156));
+			Vector3 shardpos = Vec3Offset(FRandom[Glass](-28,28),FRandom[Glass](-28,28),FRandom[Glass](-72,72));
 			let s = Spawn("IceChunk",shardpos);
 			double ang = angle+FRandom[Glass](0,360);
-			s.scale *= FRandom[Glass](1.2,2.2);
+			s.scale *= FRandom[Glass](0.4,1.4);
 			s.vel.xy = (cos(ang),sin(ang))*FRandom[Glass](1.2,4.5);
 			s.vel.z = FRandom[Glass](0.6,3.6);
 		}
