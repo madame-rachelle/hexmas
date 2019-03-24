@@ -15,6 +15,7 @@ Class mkElderWizard : Actor
 	int fires;
 	bool phasetwo;
 	int p2health, mhealth;
+	int musing, mtimer;
 
 	static void KillCult()
 	{
@@ -22,7 +23,7 @@ Class mkElderWizard : Actor
 		Actor a;
 		while ( a = Actor(t.Next()) )
 		{
-			if ( (a.Health <= 0) || (!(a is 'mkElderApprentice') && !(a is 'mkElderAcolyte')) ) continue;
+			if ( (a.Health <= 0) || (!(a is 'mkElderApprentice') && !(a is 'mkElderAcolyte') && !(a.master && (a.master is 'mkElderWizard'))) ) continue;
 			if ( a.bDORMANT ) a.Activate(null);
 			a.DamageMobj(null,null,int.max,'Silent',DMG_FORCED|DMG_THRUSTLESS);
 		}
@@ -31,13 +32,14 @@ Class mkElderWizard : Actor
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
+		mtimer = 10;
 		// inflate health
 		int nplayers = 0;
 		for ( int i=0; i<MAXPLAYERS; i++ ) if ( playeringame[i] ) nplayers++;
 		Health += (G_SkillPropertyInt(SKILLP_ACSReturn)-2)*2000;
 		Health += 250*(nplayers-1)*G_SkillPropertyInt(SKILLP_ACSReturn);
 		mhealth = health;
-		p2health = int(Health*0.5);
+		p2health = int(Health*0.15);
 		// populate arrays
 		ActorIterator t = ActorIterator.Create(TELESPOT_TID);
 		Actor a;
@@ -59,9 +61,8 @@ Class mkElderWizard : Actor
 	{
 		// gratly reduce damage while doing phase two intro
 		if ( InStateSequence(CurState,FindState("PhaseTwoStart")) || InStateSequence(CurState,FindState("PhaseTwoBoom")) ) damage = int(damage*0.1);
-		// reduce damage while in phase two, amplify otherwise
-		if ( phasetwo ) damage = int(damage*0.8);
-		else damage = int(damage*3.5);
+		// amplify otherwise before phase two
+		if ( !phasetwo ) damage = int(damage*2.5);
 		// reduce damage while attacking
 		if ( !InStateSequence(CurState,FindState("See")) ) damage = int(damage*0.75);
 		// reduce attack cooldown when damaged by players or friendlies
@@ -80,6 +81,49 @@ Class mkElderWizard : Actor
 			p2health = 0;
 			SetStateLabel("PhaseTwoStart");
 			return;
+		}
+		if ( !phasetwo )
+		{
+			mtimer--;
+			if ( mtimer <= 0 )
+			{
+				switch ( musing )
+				{
+				case 0:
+					A_PrintBold("\cdI know you have come for the gem, mortal.");
+					break;
+				case 1:
+					A_PrintBold("\cdIf you think I am going to hand it over, think again.");
+					break;
+				case 2:
+					A_PrintBold("\cdIts potential is much greater than you could ever imagine.");
+					break;
+				case 3:
+					A_PrintBold("\cdThe old sage doesn't even know... what it is capable of.");
+					break;
+				case 4:
+					A_PrintBold("\cdOnly I have the knowledge... Only I can truly harness its full power.");
+					break;
+				case 5:
+					A_PrintBold("\cdWith the serpent riders now gone it is my chance.");
+					break;
+				case 6:
+					A_PrintBold("\cdBut you... Do you think you can stop me?");
+					break;
+				case 7:
+					A_PrintBold("\cdYou severely underestimate me, mortal.");
+					break;
+				case 8:
+					A_PrintBold("\cdThe knowledge, the power... Everything HE has given me...");
+					break;
+				case 9:
+					A_PrintBold("\cdI will not let it all go to waste!");
+					break;
+				}
+				if ( musing <= 9 ) A_PlaySound(ActiveSound,CHAN_5,attenuation:ATTN_NONE);
+				musing++;
+				mtimer = 70;
+			}
 		}
 		if ( !target || (target.Health <= 0) )
 		{
@@ -105,7 +149,7 @@ Class mkElderWizard : Actor
 				if ( (meleecharge > 40) && !Random[EWizMelee](0,10) && (dist < 90) )
 					players[i].mo.DamageMobj(self,self,meleecharge/40,'Melee',0,AngleTo(players[i].mo));
 			}
-			if ( inrange ) meleecharge++;
+			if ( inrange ) meleecharge += Random[EWizMelee](1,3);
 			else meleecharge = max(0,meleecharge-4);
 			for ( int i=0; i<10; i++ )
 			{
@@ -129,8 +173,9 @@ Class mkElderWizard : Actor
 		if ( (mcnt <= 0) && (meleecharge <= 0) ) SetState(CurState+1);
 	}
 
-	void A_WizMeleePuffs()
+	void A_WizMeleePuffs( bool orient = false )
 	{
+		if ( orient ) A_FaceTarget(15);
 		for ( int i=0; i<MAXPLAYERS; i++ )
 		{
 			if ( !playeringame[i] || (Distance2D(players[i].mo) > 80) ) continue;
@@ -150,7 +195,7 @@ Class mkElderWizard : Actor
 		A_QuakeEx(6,6,6,90,0,65535,"",QF_RELATIVE|QF_SCALEDOWN);
 		A_PlaySound("SorcererBigBallExplode",CHAN_WEAPON,attenuation:ATTN_NONE);
 		A_PlaySound("SorcererBallExplode",CHAN_ITEM,attenuation:ATTN_NONE);
-		int mx = big?20:10;
+		int mx = big?30:10;
 		for ( int i=0; i<mx; i++ )
 		{
 			double ang = 36*i+FRandom[EWizPoof](-18.,18.);
@@ -160,7 +205,7 @@ Class mkElderWizard : Actor
 			if ( big )
 			{
 				p.scale *= 3.0;
-				p.vel *= FRandom[EWizPoof](1.2,1.6);
+				p.vel *= FRandom[EWizPoof](1.2,1.8);
 				p.special1 = 1;
 			}
 		}
@@ -175,7 +220,21 @@ Class mkElderWizard : Actor
 		int dec = Random[EWizDecide](0,12);
 		if ( !phasetwo )
 		{
-			if ( dec <= 9 ) SetStateLabel("SeekingFireball");
+			if ( dec <= 6 ) SetStateLabel("SeekingFireball");
+			else if ( dec <= 8 )
+			{
+				// slimy
+				int countslimes = 0;
+				let t = ThinkerIterator.Create("mkSlime");
+				Actor a;
+				while ( a = Actor(t.Next()) )
+				{
+					if ( (a.Health <= 0) || (a.master != self) ) continue;
+					countslimes++;
+				}
+				if ( countslimes < 2 )
+					SetStateLabel("CallInSlimes");
+			}
 			else SetStateLabel("Teleport");
 			return;
 		}
@@ -184,10 +243,15 @@ Class mkElderWizard : Actor
 			// charged laser
 			SetStatelabel("ChargeLaser");
 		}
-		else if ( dec <= 7 )
+		else if ( dec <= 6 )
 		{
 			// seeking fireballs
 			SetStateLabel("SeekingFireballs");
+		}
+		else if ( dec <= 8 )
+		{
+			// 'splode
+			SetStateLabel("RadiusBlast");
 		}
 		else if ( dec <= 10 )
 		{
@@ -229,6 +293,7 @@ Class mkElderWizard : Actor
 
 	void A_TeleOut()
 	{
+		if ( !phasetwo ) A_SetTics(10);
 		bNODAMAGE = false;
 		bSOLID = true;
 		bSHOOTABLE = true;
@@ -401,6 +466,20 @@ Class mkElderWizard : Actor
 	override void Tick()
 	{
 		vel *= 0;	// don't get pushed
+		if ( (Health > 0) && (sprite != GetSpriteIndex('TNT1')) && !Random[EWizAura](0,6) )
+		{
+			double rad = radius*60.;
+			let bi = BlockThingsIterator.Create(self,rad);
+			while ( bi.Next() )
+			{
+				if ( !bi.Thing || !bi.Thing.player || !bi.Thing.IsVisible(self,false) ) continue;
+				let c = mkInsanityCounter(bi.Thing.FindInventory("mkInsanityCounter"));
+				if ( c && c.special1 ) continue;
+				double fact = clamp(rad-Distance3D(bi.Thing),0.,rad)/(rad);
+				if ( phasetwo ) bi.Thing.GiveInventory("mkInsanityCounter",int(Random[EWizAura](30,40)*fact));
+				else bi.Thing.GiveInventory("mkInsanityCounter",int(Random[EWizAura](20,30)*fact));
+			}
+		}
 		Super.Tick();
 	}
 
@@ -424,18 +503,22 @@ Class mkElderWizard : Actor
 		Obituary "%o succumbed to the Viridescent Lord.";
 		HitObituary "%o got too close to the Viridescent Lord.";
 		MONSTER;
+		+BUDDHA;
 		+BOSS;
 		+DONTMORPH;
 		+DONTTHRUST;
 		+TELESTOMP;
 		+NOTARGET;
+		+NOINFIGHTING;
 		+NOICEDEATH;
 		+DONTDRAIN;
 		+NOTELEFRAG;
 		+LOOKALLAROUND;
 		+INTERPOLATEANGLES;
+		+DONTHARMSPECIES;
 		+NOPAIN;
 		+LAXTELEFRAGDMG;	// prevents fall damage completely (thanks, hege)
+		Species "Eldrich";
 		SeeSound "eldrich/see2";
 		AttackSound "eldrich/attack2";
 		ActiveSound "eldrich/active2";
@@ -493,10 +576,22 @@ Class mkElderWizard : Actor
 		VIRL A 5;
 		Goto PhaseTwoBoom;
 	PhaseTwoBoom:
+		VIRL A 0
+		{
+			A_PlaySound(ActiveSound,CHAN_5,attenuation:ATTN_NONE);
+			A_PrintBold("\cdYou are persistent, mortal. But this ends now!");
+		}
+		VIRL AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 2 A_WizMeleePuffs(true);
+		VIRL A 0
+		{
+			A_PlaySound(ActiveSound,CHAN_5,attenuation:ATTN_NONE);
+			A_PrintBold("\cdAllow me to show you the full extent of my power!");
+		}
+		VIRL AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 2 A_WizMeleePuffs(true);
 		VIRL A 0 A_PlaySound("eldrich/beamst",CHAN_WEAPON,attenuation:ATTN_NONE);
-		VIRL AAAAAAAAAAAAAAAAAA 2 A_WizMeleePuffs();
+		VIRL AAAAAAAAAAAAAAAAAA 2 A_WizMeleePuffs(true);
 		VIRL A 0 A_PlaySound(AttackSound,CHAN_VOICE);
-		VIRL BBBBBBBBBBBBBBBBBB 2 A_WizMeleePuffs();
+		VIRL BBBBBBBBBBBBBBBBBB 2 A_WizMeleePuffs(true);
 		VIRL B 40
 		{
 			A_QuakeEx(6,6,6,120,0,2400,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
@@ -510,11 +605,56 @@ Class mkElderWizard : Actor
 			PainSound = "eldrich/pain";
 			DeathSound = "eldrich/death";
 			bFULLVOLACTIVE = true;
+			bBUDDHA = false;
 			phasetwo = true;
 			ACS_NamedExecute('LordPhaseTwo');
 		}
 		VIRL A 20;
 		Goto Spawn;
+	RadiusBlast:
+		VIRL A 5 A_JumpIf(last_tele==0,"RadiusBlast2");
+		VIRL B 20;
+		TNT1 A 60 A_TeleIn();
+		TNT1 A 0 { last_tele = 0; }
+		VIRL B 20 A_TeleOut();
+		VIRL A 5;
+	RadiusBlast2:
+		VIRL A 0 A_PlaySound("eldrich/beamst",CHAN_WEAPON,attenuation:ATTN_NONE);
+		VIRL AAAAAAAAAAAAAAABBBBBBBBBBBBBBB 2 A_WizMeleePuffs(true);
+		VIRL C 0
+		{
+			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
+			A_PlaySound(AttackSound,CHAN_VOICE,attenuation:ATTN_NONE);
+		}
+		VIRL CCCCCCCCCCCC 2 A_WizMeleePuffs(true);
+		VIRL D 16
+		{
+			A_WizMelee(true);
+			int cnt = Random[EWizAttack](3,4);
+			double ang = FRandom[EWizAttack](0,360);
+			for ( int i=0; i<cnt; i++ )
+			{
+				let s = Spawn("mkSlimeSmoke",Vec3Angle(radius*3,ang+i*(360/cnt),0));
+				s.SetZ(s.floorz);
+				let s2 = Spawn("mkSlime",s.pos);
+				s2.master = self;
+				s2.target = target;
+				s2.angle = s2.AngleTo(target);
+			}
+			cnt = Random[EWizAttack](5,8);
+			ang = FRandom[EWizAttack](0,360);
+			for ( int i=0; i<cnt; i++ )
+			{
+				let s = Spawn("mkSlimeSmoke",Vec3Angle(radius*5,ang+i*(360/cnt),0));
+				s.SetZ(s.floorz);
+				let s2 = Spawn("mkSlime",s.pos);
+				s2.master = self;
+				s2.target = target;
+				s2.angle = s2.AngleTo(target);
+			}
+		}
+		VIRL CBA 6;
+		Goto See;
 	MeleeSmall:
 		VIRL B 4 A_FaceTarget();
 		VIRL C 4
@@ -530,13 +670,13 @@ Class mkElderWizard : Actor
 		VIRL DCBA 3;
 		Goto See;
 	Melee:
-		VIRL AAAAAAAAABBBBBBBBB 2 A_WizMeleePuffs();
+		VIRL AAAAAAAAABBBBBBBBB 2 A_WizMeleePuffs(true);
 		VIRL C 0
 		{
 			A_QuakeEx(6,6,6,80,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
 			A_PlaySound(AttackSound,CHAN_VOICE,attenuation:ATTN_NONE);
 		}
-		VIRL CCCCCCCCC 2 A_WizMeleePuffs();
+		VIRL CCCCCCCCC 2 A_WizMeleePuffs(true);
 		VIRL D 16 A_WizMelee();
 		VIRL CBA 6;
 		Goto See;
@@ -555,11 +695,36 @@ Class mkElderWizard : Actor
 		}
 		VIRL CBA 8;
 		Goto See;
+	CallInSlimes:
+		VIRL B 4 A_FaceTarget();
+		VIRL C 4
+		{
+			A_FaceTarget();
+			A_PlaySound(AttackSound,CHAN_VOICE);
+			fires = 0;
+		}
+		VIRL DDD 4 A_FaceTarget(10);
+		VIRL D 10
+		{
+			int cnt = Random[EWizAttack](3,4);
+			double ang = FRandom[EWizAttack](0,360);
+			for ( int i=0; i<cnt; i++ )
+			{
+				let s = Spawn("mkSlimeSmoke",Vec3Angle(radius*3,ang+i*(360/cnt),0));
+				s.SetZ(s.floorz);
+				let s2 = Spawn("mkSlime",s.pos);
+				s2.master = self;
+				s2.target = target;
+				s2.angle = ang+i*(360/cnt);
+			}
+		}
+		VIRL CBA 3;
+		Goto See;
 	Teleport:
 		VIRL B 0 { fires = 0; }
 	Teleport2:
-		VIRL B 20;
-		TNT1 A 120 A_TeleIn();
+		VIRL B 20 A_SetTics(phasetwo?20:10);
+		TNT1 A 20 A_TeleIn();
 		VIRL B 20 A_TeleOut();
 		VIRL B 0 A_JumpIf(!phasetwo,"See");
 		VIRL B 0 A_JumpIf(MaxFires(),"Teleport3");
@@ -644,6 +809,7 @@ Class mkElderWizard : Actor
 			A_StopSound(CHAN_WEAPON);
 			A_StopSound(CHAN_ITEM);
 			A_ClearLaser();
+			A_PrintBold("\cdNO! THIS CANNOT BE!");
 		}
 		VIRL E 4 A_DeathFlash();
 		VIRL E 20 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
@@ -651,7 +817,11 @@ Class mkElderWizard : Actor
 		VIRL E 40 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
 		VIRL E 4 A_DeathFlash();
 		VIRL E 60 A_QuakeEx(3,3,3,30,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
-		VIRL F 0 A_Scream();
+		VIRL F 0
+		{
+			A_Scream();
+			A_PrintBold("\cdNOOOOOOOOOO!!!");
+		}
 		VIRL F 20
 		{
 			if ( phasetwo ) A_QuakeEx(9,9,9,180,0,1200,"",QF_RELATIVE|QF_SCALEDOWN,falloff:400);
@@ -970,7 +1140,7 @@ Class mkWizMeleeBlast : Actor
 		let b = BlockThingsIterator.Create(self,dst);
 		while ( b.Next() )
 		{
-			if ( !b.Thing || !b.Thing.bSHOOTABLE || (b.Thing.Health <= 0) || (b.Thing == target) || (Distance3D(b.Thing) > dst) ) continue;
+			if ( !b.Thing || (target && (b.Thing.Species == target.Species)) || !b.Thing.bSHOOTABLE || (b.Thing.Health <= 0) || (b.Thing == target) || (Distance3D(b.Thing) > dst) ) continue;
 			b.Thing.DamageMobj(self,target,special1?1:8,'Melee',DMG_THRUSTLESS);
 			if ( b.Thing.Mass >= LARGE_MASS || b.Thing.bDONTTHRUST ) continue;
 			b.Thing.vel += vel*(special1?0.05:0.2);
@@ -1166,6 +1336,7 @@ Class mkInsanityMeter : HUDMessageBase
 	double alpha;
 	Inventory cnt;
 	DynamicValueInterpolator isan;
+	int grace;
 
 	mkInsanityMeter Init()
 	{
@@ -1180,9 +1351,15 @@ Class mkInsanityMeter : HUDMessageBase
 	override bool Tick()
 	{
 		cnt = players[consoleplayer].camera.FindInventory("mkInsanityCounter");
-		if ( !cnt || (cnt.amount <= 0) ) alpha -= 0.05;
+		if ( !cnt || (cnt.amount <= 0) )
+		{
+			grace++;
+			if ( grace > 50 )
+				alpha -= 0.05;
+		}
 		else
 		{
+			grace = 0;
 			isan.update(cnt.amount);
 			alpha = 1.0;
 		}
@@ -1226,20 +1403,20 @@ Class mkEldrichHandler : EventHandler
 		if ( e.DamageType == 'Eldrich' )
 		{
 			mkInsanityCounter cnt = mkInsanityCounter(e.Thing.FindInventory("mkInsanityCounter"));
-			if ( !cnt ) e.Thing.GiveInventory("mkInsanityCounter",e.Damage*70*Random[Insane](3,5));
+			if ( !cnt ) e.Thing.GiveInventory("mkInsanityCounter",e.Damage*40*Random[Insane](3,5));
 			else if ( cnt.special1 )
 			{
 				if ( e.DamageSource ) cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*30*Random[Insane](3,5));
 				else cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*3*Random[Insane](3,5));
 			}
-			else cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*70*Random[Insane](3,5));
+			else cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*40*Random[Insane](3,5));
 		}
 		else if ( (e.DamageSource is 'mkElderWizard') || (e.DamageSource is 'mkElderAcolyte') )
 		{
 			mkInsanityCounter cnt = mkInsanityCounter(e.Thing.FindInventory("mkInsanityCounter"));
-			if ( !cnt ) e.Thing.GiveInventory("mkInsanityCounter",e.Damage*20*Random[Insane](3,5));
-			else if ( cnt.special1 ) cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*5*Random[Insane](3,5));
-			else cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*20*Random[Insane](3,5));
+			if ( !cnt ) e.Thing.GiveInventory("mkInsanityCounter",e.Damage*10*Random[Insane](3,5));
+			else if ( cnt.special1 ) cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*3*Random[Insane](3,5));
+			else cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*10*Random[Insane](3,5));
 		}
 	}
 
@@ -1250,6 +1427,15 @@ Class mkEldrichHandler : EventHandler
 			let cnt = players[e.playernumber].mo.FindInventory("mkInsanityCounter");
 			if ( cnt ) cnt.amount = 0;
 		}
+	}
+
+	override void WorldLoaded( WorldEvent e )
+	{
+		// "pre-cache" shader
+		Shader.SetEnabled(players[consoleplayer],"insanity1",true);
+		Shader.SetEnabled(players[consoleplayer],"insanity2",true);
+		Shader.SetEnabled(players[consoleplayer],"insanity1",false);
+		Shader.SetEnabled(players[consoleplayer],"insanity2",false);
 	}
 
 	override void RenderOverlay( RenderEvent e )
@@ -1321,7 +1507,7 @@ Class mkInsanityCounter : Inventory
 			special1 = 1;
 		}
 		if ( owner.Health <= 0 ) amount -= max(3,8-amount/400);
-		else if ( special1 ) amount -= max(1,10-amount/150);
+		else if ( special1 ) amount -= max(1,12-amount/150);
 		else amount -= max(2,6-amount/350);
 		if ( amount <= 0 )
 		{
@@ -1378,5 +1564,259 @@ Class mkInsanitySound : Actor
 			A_SoundVolume(CHAN_6,clamp(Inventory(master).Amount*0.00075-0.9,0.0,0.6));
 			A_SoundVolume(CHAN_7,clamp(Inventory(master).Amount*0.0025-4.0,0.0,1.0));
 		}
+	}
+}
+
+Class mkSlimeGas : Actor
+{
+	Default
+	{
+		RenderStyle "Translucent";
+		Radius 2;
+		Height 2;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+FORCEXYBILLBOARD;
+		+THRUACTORS;
+		Scale 1.8;
+		Alpha 0.5;
+		Translation "0:255=%[0.00,0.00,0.00]:[0.80,2.00,0.80]";
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		double ang, pt;
+		scale *= FRandom[Puff](0.5,1.0);
+		alpha *= FRandom[Puff](0.5,1.0);
+		ang = FRandom[Puff](0,360);
+		pt = FRandom[Puff](-90,90);
+		vel += (cos(pt)*cos(ang),cos(pt)*sin(ang),-sin(pt))*FRandom[Puff](0.2,0.8);
+	}
+	States
+	{
+	Spawn:
+		SPIR QQRRSSTTUU 2 { vel *= 0.95; }
+		Stop;
+	}
+}
+
+Class mkSlimeSmoke : Actor
+{
+	Default
+	{
+		Scale 0.8;
+		Translation "0:255=%[0.00,0.00,0.00]:[0.80,2.00,0.80]";
+	}
+	States
+	{
+	Spawn:
+		MNSM ABCDEFGHIJKLMNOPQ 1 Bright;
+		Stop;
+	}
+}
+
+// Slimes - pretty similar to Unreal's bloblets
+// slide themselves towards a target and deal gradual damage by coughing up gas
+// can cause sanity damage too since they're pretty much full of Elder Fluid
+Class mkSlime : Actor
+{
+	Vector2 refscale;
+	double phase, freq, flatten;
+	int slimecooldown;
+	bool checkcol;
+
+	Default
+	{
+		//$Title Slime
+		//$Sprite SLIMA0
+		//$Category Marisa/Monsters
+		RenderStyle "Translucent";
+		Scale 1.2;
+		Alpha 0.95;
+		Health 60;
+		Radius 25;
+		Height 20;
+		Speed 6;
+		PainChance 255;
+		MeleeRange 50;
+		MONSTER;
+		BloodColor "40 FF 40";
+		+THRUSPECIES;
+		+DONTMORPH;
+		+QUICKTORETALIATE;
+		+DONTHARMSPECIES;
+		+LOOKALLAROUND;
+		-COUNTKILL;
+		Species "Eldrich";
+		PainSound "slime/pain";
+		DeathSound "slime/death";
+		Obituary "%o was corroded by a Slime.";
+		Tag "Slime";
+		DamageFactor "AcolyteBoom", 0.0;
+		DamageFactor "AcolyteFire", 0.0;
+		DamageFactor "Falling", 0.0;
+		DamageFactor "Eldrich", 0.0;
+		// have to build in the translation because SLADE decided to be a piece of shit and won't let me remap the png
+		Translation "4:32=187:201", "255:255=202:202", "33:50=188:201";
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		Health -= Random[Slime](0,40);
+		speed *= Frandom[Slime](0.9,1.3);
+		refscale = scale*FRandom[Slime](0.9,1.35);
+		scale.x *= 1.3;
+		phase = FRandom[Slime](0.0,1.0);
+		freq = (7.0+FRandom[Slime](-1.3,1.3))*RandomPick[Slime](-1,1);
+		A_PlaySound(String.Format("slime/active%d",RandomPick[Slime](1,3)),CHAN_7,0.2,true,2.5);
+	}
+	override void OnDestroy()
+	{
+		Super.OnDestroy();
+		A_StopSound(CHAN_7);
+	}
+	override bool CanCollideWith( Actor other, bool passive )
+	{
+		if ( other == target ) return checkcol;
+		else if ( other.player || other.bIsMonster ) return false;
+		return true;
+	}
+	override void Tick()
+	{
+		Super.Tick();
+		if ( Health <= 0 )
+		{
+			phase += freq*0.01;
+			A_SoundVolume(CHAN_7,0.04);
+		}
+		else if ( target )
+		{
+			phase += freq*2.3;
+			A_SoundVolume(CHAN_7,0.6);
+		}
+		else
+		{
+			phase += freq;
+			A_SoundVolume(CHAN_7,0.2);
+		}
+		// wiggle wiggle
+		scale.x = refscale.x+sin(phase)*refscale.x*0.3;
+		scale.y = refscale.y+cos(phase)*refscale.y*0.15;
+		scale.x += flatten*refscale.x;
+		scale.y -= flatten*refscale.y;
+		flatten = max(0.,flatten-0.04);
+	}
+	void A_SlimeAttack()
+	{
+		slimecooldown = Random[Slime](20,35);
+		A_FaceTarget();
+		A_SetTics(Random[Slime](3,12));
+		A_PlaySound("slime/attack",CHAN_VOICE);
+		int sang = Random[Slime](0,360);
+		for ( int i=0; i<10; i++ )
+		{
+			let s = Spawn("mkSlimeGas",Vec3Angle(5*refscale.x,sang+i*36.,4.));
+			s.target = self;
+			s.angle = sang+i*36;
+			s.vel = (cos(s.angle),sin(s.angle),0)*FRandom[Slime](3.,4.);
+		}
+		let bt = BlockThingsIterator.Create(self,80);
+		while ( bt.Next() )
+		{
+			let t = bt.Thing;
+			if ( !t || (t.species == species) || (t == master) || (Distance3D(t) > (t.radius+80)) ) continue;
+			t.DamageMobj(self,self,Random[Slime](1,2),'Slime');
+			if ( t.player ) t.GiveInventory("mkInsanityCounter",Random[Slime](70,120));
+		}
+	}
+	// turns out it can not be blocking
+	bool BlockingLineIsBlocking()
+	{
+		if ( !BlockingLine ) return false;
+		// one-sided
+		if ( !BlockingLine.sidedef[1] ) return true;
+		// blocks us
+		if ( BlockingLine.flags&(Line.ML_BLOCKING|Line.ML_BLOCKMONSTERS|Line.ML_BLOCKEVERYTHING) ) return true;
+		return false;
+	}
+	void A_SlimeChase()
+	{
+		if ( !target || (target.Health <= 0) )
+		{
+			SetStateLabel("Spawn");
+			return;
+		}
+		Vector2 dir = RotateVector((radius,0),AngleTo(target));
+		Vector3 oldpos = pos;
+		bool success = false;
+		checkcol = true;
+		for ( int i=0; i<20; i++ )
+		{
+			if ( TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight)) )
+				continue;
+			if ( BlockingMobj == target )
+			{
+				success = true;
+				break;
+			}
+			if ( BlockingLineIsBlocking() || (BlockingMobj && BlockingMobj.bSOLID) )
+				break;
+		}
+		checkcol = false;
+		SetOrigin(oldpos,false);
+		if ( success )
+		{
+			A_FaceTarget(10);
+			dir = RotateVector((speed,0),angle);
+			TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight));
+		}
+		else A_Chase(null,null);
+	}
+	States
+	{
+	Spawn:
+		SLIM A 1 A_Look();
+		Wait;
+	See:
+		SLIM A 1
+		{
+			if ( Health <= 0 ) return ResolveState("Death");	// somehow I have to do this
+			A_SlimeChase();
+			slimecooldown = max(0,slimecooldown-1);
+			return A_JumpIf(CheckMeleeRange()&&!Random[Slime](0,8)&&(slimecooldown<=0),"Melee");
+		}
+		Wait;
+	Melee:
+		SLIM A 1 A_SlimeAttack();
+		Goto See;
+	Pain:
+		SLIM A 1
+		{
+			flatten = FRandom[Slime](0.5,0.7);
+			A_FaceTarget();
+			A_Recoil(FRandom[Slime](2.3,3.3));
+			A_Pain();
+			A_SetTics(Random[Slime](3,12));
+		}
+		Goto See;
+	Death:
+		SLIM A 0
+		{
+			flatten = FRandom[Slime](0.8,0.9);
+			A_ScreamAndUnblock();
+		}
+		SLIM A 1 A_JumpIf(flatten<=0.5,1);
+		Wait;
+		SLIM A 1
+		{
+			refscale.x *= 1.0001;
+			refscale.y *= 0.99;
+			A_FadeOut(0.003);
+			return A_JumpIf(refscale.y<0.1,1);
+		}
+		Wait;
+		SLIM A 1 A_FadeOut(0.03);
+		Wait;
 	}
 }

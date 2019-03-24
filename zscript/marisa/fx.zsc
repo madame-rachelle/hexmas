@@ -503,6 +503,16 @@ Class mkUtility abstract
 		int i;
 		while ( (i = s.Next()) != -1 ) level.Sectors[i].SetPlaneLight(0,val);
 	}
+
+	static play void SetActorZ( int tag, int newz )
+	{
+		Actor a;
+		let ai = ActorIterator.Create(tag);
+		while ( a = ai.Next() )
+		{
+			a.SetZ(newz);
+		}
+	}
 }
 
 Class mkMovingFloorTrap : Actor abstract

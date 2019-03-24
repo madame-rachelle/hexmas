@@ -606,6 +606,8 @@ Class mkElderAcolyte : Actor
 		+NOTARGET;
 		+DONTMORPH;
 		+QUICKTORETALIATE;
+		+DONTHARMSPECIES;
+		Species "Eldrich";
 		SeeSound "acolyte/see";
 		PainSound "acolyte/pain";
 		DeathSound "acolyte/death";

@@ -124,3 +124,23 @@ Class mkGreenTeleSmoke : TeleSmoke
 		Translation "0:255=%[0.00,0.00,0.00]:[0.81,1.03,0.75]";
 	}
 }
+
+Class mkWizardStatue : Actor
+{
+	Default
+	{
+		//$Title Viridescent Lord Statue
+		//$Category Marisa/Decoration
+		Translation "0:255=%[0.00,0.00,0.00]:[0.40,0.40,0.40]";
+		Radius 20;
+		Height 80;
+		Scale 1.5;
+		+SOLID;
+	}
+	States
+	{
+	Spawn:
+		VIRL A -1;
+		Stop;
+	}
+}

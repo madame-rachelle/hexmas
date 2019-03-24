@@ -108,6 +108,13 @@ $pitchshift eldrich/beam 0
 eldrich/icebreak icebrk2
 $pitchshift eldrich/icebreak 0
 
+slime/active1 BlobGp1
+slime/active2 BlobGp2
+slime/active3 BlobGp3
+slime/attack  BlobHit
+slime/pain    BlobInj
+slime/death   BlobDth
+
 nightmarelord/see DEESACT3
 nightmarelord/appear SORRISE
 nightmarelord/disappear BISHAPP
