@@ -14,14 +14,16 @@ cluster 1
 {
 	hub
 	pic = "interpic"
-	exittext =
-"Stepping into the portal, you find yourself back in town.\
-Looks like everything's ready for the Winter Solstice celebrations.\
-The streets are lit up in a multitude of colors, and the townsfolk\
-roam the streets, merrily spreading the holiday spirit around.\
+	exittext = "Stepping into the portal, you find yourself\
+back in town. Looks like everything's ready\
+for the Winter Solstice celebrations. The\
+streets are lit up in a multitude of colors,\
+and the townsfolk roam the streets, merrily\
+spreading the holiday spirit around.\
 \
-After word spreads of your heroic return, and people gather around\
-to welcome you, eager to hear what stories you can tell of your\
+After word spreads of your heroic return,\
+people gather around to welcome you, eager\
+to hear what stories you can tell of your\
 last adventure."
 }
 
