@@ -379,8 +379,9 @@ Class mkHubGemDisplayHandler : EventHandler
 {
 	Array<Class<Inventory> > gems;
 
-	override void OnRegister()
+	override void WorldLoaded( WorldEvent e )
 	{
+		gems.Clear();
 		for ( int i=0; i<AllActorClasses.Size(); i++ )
 		{
 			let c = AllActorClasses[i];
