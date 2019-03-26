@@ -263,34 +263,12 @@ Class mkHubGem : Inventory abstract
 	{
 		+INVENTORY.UNDROPPABLE;
 		+INVENTORY.UNTOSSABLE;
-		+INVENTORY.INVBAR;
 		Inventory.MaxAmount 1;
-		Inventory.PickupMessage "You got the %s.";
+		Inventory.PickupMessage "You got the %s.\n%s";
 	}
 	override String PickupMessage()
 	{
-		return String.Format(PickupMsg,GetTag());
-	}
-	override bool Use( bool pickup )
-	{
-		if ( pickup ) return false;
-		int totalpieces = 0;
-		for ( int i=0; i<AllActorClasses.Size(); i++ )
-		{
-			if ( AllActorClasses[i].GetParentClass() == GetParentClass() ) totalpieces++;
-		}
-		int numpieces = 0;
-		for ( int j=0; j<MAXPLAYERS; j++ )
-		{
-			if ( !playeringame[j] || !players[j].mo ) continue;
-			for ( Inventory i=players[j].mo.inv; i; i=i.inv )
-			{
-				if ( i.GetParentClass() == GetParentClass() ) numpieces++;
-			}
-		}
-		Owner.A_PlaySound("misc/i_pkup",CHAN_ITEM,local:true);
-		Owner.A_Print(GemMsg);
-		return false;
+		return String.Format(PickupMsg,GetTag(),GemMsg);
 	}
 }
 
@@ -394,5 +372,40 @@ Class mkHubGemNether : mkHubGem
 	Spawn:
 		EGEM F -1;
 		Stop;
+	}
+}
+
+Class mkHubGemDisplayHandler : EventHandler
+{
+	Array<Class<Inventory> > gems;
+
+	override void OnRegister()
+	{
+		for ( int i=0; i<AllActorClasses.Size(); i++ )
+		{
+			let c = AllActorClasses[i];
+			if ( c.GetParentClass() != 'mkHubGem' ) continue;
+			gems.Push((Class<Inventory>)(c));
+		}
+	}
+
+	override void RenderOverlay( RenderEvent e )
+	{
+		if ( !automapactive ) return;
+		int owned = 0;
+		for ( int i=0; i<gems.Size(); i++ )
+			owned += !!players[consoleplayer].mo.CountInv(gems[i]);
+		Vector2 gs = TexMan.GetScaledSize(GetDefaultByType(gems[0]).Icon);
+		Vector2 hscale = StatusBar.GetHudScale();
+		Vector2 vsize = (Screen.GetWidth()/hscale.x,Screen.GetHeight()/hscale.y);
+		double xpos, ypos;
+		xpos = vsize.x-(gs.x+4);
+		ypos = (StatusBar.GetTopOfStatusBar()/hscale.y-(owned*gs.y+(owned-1)*4))/2.;
+		for ( int i=0; i<gems.Size(); i++ )
+		{
+			if ( !players[consoleplayer].mo.CountInv(gems[i]) ) continue;
+			Screen.DrawTexture(GetDefaultByType(gems[i]).Icon,false,xpos,ypos,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true,DTA_TopOffset,0,DTA_LeftOffset,0);
+			ypos += (gs.y+4);
+		}
 	}
 }

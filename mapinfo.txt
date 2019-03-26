@@ -1,6 +1,6 @@
 GameInfo
 {
-	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler", "mkInventoryResetHandler", "mkEldrichHandler"
+	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler", "mkInventoryResetHandler", "mkEldrichHandler", "mkHubGemDisplayHandler"
 }
 
 clearepisodes
