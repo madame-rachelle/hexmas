@@ -152,6 +152,7 @@ Class mkGradingHandler : EventHandler
 // note: under no circumstance should the "mkFog" RNG be used for
 // anything but clientside actions
 
+
 Class mkSnow : Actor
 {
 	Default
@@ -227,9 +228,23 @@ Class mkSnowMaker : Actor
 			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
 			if ( !level.IsPointInMap(spawnpos) )
 				continue;
+			if ( level.Vec3Diff(players[consoleplayer].camera.pos,spawnpos).length() > 800 )
+				continue;
 			let f = Spawn("mkSnow",spawnpos);
 			f.master = invoker;
 		}
+		special1++;
+		if ( special1 >= 6 )
+		{
+			special1 = 0;
+			score = 0;
+			let t = ThinkerIterator.Create("mkSnow");
+			while ( t.Next() ) score++;
+		}
+		if ( score > 200 ) A_SetTics(12);
+		else if ( score > 160 ) A_SetTics(10);
+		else if ( score > 120 ) A_SetTics(8);
+		else if ( score > 80 ) A_SetTics(6);
 	}
 	Default
 	{
@@ -242,7 +257,7 @@ Class mkSnowMaker : Actor
 	States
 	{
 	Spawn:
-		TNT1 A 3 A_DoSnow();
+		TNT1 A 4 A_DoSnow();
 		Wait;
 	}
 }
@@ -276,7 +291,7 @@ Class mkFog : Actor
 		ang = FRandom[mkFog](0,360);
 		pt = FRandom[mkFog](-90,90);
 		vel = (cos(pt)*cos(ang),cos(pt)*sin(ang),-sin(pt))*FRandom[mkFog](0.1,0.4);
-		lifespan = Random[mkFog](100,300);
+		lifespan = Random[mkFog](100,200);
 		lifetime = 0;
 		SetState(FindState("Spawn")+Random[mkFog](0,19));
 	}
@@ -331,10 +346,24 @@ Class mkFogMaker : Actor
 			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
 			if ( !level.IsPointInMap(spawnpos) )
 				continue;
+			if ( level.Vec3Diff(players[consoleplayer].camera.pos,spawnpos).length() > 1200 )
+				continue;
 			let f = Spawn("mkFog",spawnpos);
 			f.scale *= 1.+0.1*args[4];
 			f.master = invoker;
 		}
+		special1++;
+		if ( special1 >= 6 )
+		{
+			special1 = 0;
+			score = 0;
+			let t = ThinkerIterator.Create("mkFog");
+			while ( t.Next() ) score++;
+		}
+		if ( score > 200 ) A_SetTics(12);
+		else if ( score > 160 ) A_SetTics(10);
+		else if ( score > 120 ) A_SetTics(8);
+		else if ( score > 80 ) A_SetTics(6);
 	}
 	Default
 	{
@@ -347,7 +376,7 @@ Class mkFogMaker : Actor
 	States
 	{
 	Spawn:
-		TNT1 A 3 A_DoFog();
+		TNT1 A 4 A_DoFog();
 		Wait;
 	}
 }
