@@ -228,7 +228,7 @@ Class mkSnowMaker : Actor
 			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
 			if ( !level.IsPointInMap(spawnpos) )
 				continue;
-			if ( level.Vec3Diff(players[consoleplayer].camera.pos,spawnpos).length() > 800 )
+			if ( level.Vec2Diff(players[consoleplayer].camera.pos.xy,spawnpos.xy).length() > 800 )
 				continue;
 			let f = Spawn("mkSnow",spawnpos);
 			f.master = invoker;
