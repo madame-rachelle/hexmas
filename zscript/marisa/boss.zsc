@@ -427,7 +427,7 @@ Class mkElderWizard : Actor
 
 	void A_FireLaser()
 	{
-		if ( lchg&1 ) A_FaceTarget(0.5+(100-lchg)/50.);
+		if ( lchg&1 ) A_FaceTarget(0.5+(100-lchg)/100.);
 		Vector3 spos = Vec3Angle(radius*2,angle,missileheight*scale.y);
 		let sx = Spawn("mkWizChargePoint",spos);
 		sx.Scale *= 0.5;
@@ -1617,7 +1617,7 @@ Class mkSlimeSmoke : Actor
 }
 
 // Slimes - pretty similar to Unreal's bloblets
-// slide themselves towards a target and deal gradual damage by coughing up gas
+// slide themselves towards a target and deal damage by coughing up gas
 // can cause sanity damage too since they're pretty much full of Elder Fluid
 Class mkSlime : Actor
 {
@@ -1637,7 +1637,7 @@ Class mkSlime : Actor
 		Health 60;
 		Radius 25;
 		Height 20;
-		Speed 6;
+		Speed 4;
 		PainChance 255;
 		MeleeRange 50;
 		MONSTER;

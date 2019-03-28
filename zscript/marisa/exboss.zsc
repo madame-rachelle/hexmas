@@ -791,7 +791,7 @@ Class mkMinotaurEx : Actor
 			else if ( !ground && (diff.z < height*0.3) ) continue;
 			Vector3 sc = level.SphericalCoords(pos,a.pos,(angle,0));
 			if ( abs(sc.x) > 50 ) continue;
-			int dmg = Random[MinotaurMelee](25,30);
+			int dmg = Random[MinotaurMelee](20,25);
 			int nd = a.DamageMobj(self,self,dmg,'Melee');
 			if ( (a.Mass < LARGE_MASS) && !a.bDONTTHRUST )
 			{
@@ -1059,11 +1059,11 @@ Class mkMinotaurEx : Actor
 		MIN2 A 0 A_Jump(80,"Missile4R");
 		Goto See;
 	Melee:
-		MIN2 A 0 A_FaceTarget();
+		MIN2 A 4 A_FaceTarget();
 		MIN2 A 0 A_JumpIf(target&&(target.pos.z > pos.z+height*0.4),"MeleeHigh");
 		MIN2 A 0 A_Jump(128,"Melee2");
 	Melee1:
-		MIN2 EE 4 A_FaceTarget(20);
+		MIN2 EEE 4 A_FaceTarget(20);
 		MIN2 F 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
 		MIN2 FF 4 A_FaceTarget(20);
 	Melee1_:
@@ -1071,7 +1071,7 @@ Class mkMinotaurEx : Actor
 		MIN2 A 0 A_JumpIf(CheckMeleeRange()&&target&&(target.Health>0),"Melee2");
 		Goto See;
 	Melee2:
-		MIN2 JJ 4 A_FaceTarget(20);
+		MIN2 JJJ 4 A_FaceTarget(20);
 		MIN2 K 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
 		MIN2 KK 4 A_FaceTarget(20);
 	Melee2_:
@@ -1081,14 +1081,14 @@ Class mkMinotaurEx : Actor
 	MeleeHigh:
 		MIN2 A 0 A_Jump(128,"MeleeHigh2");
 	MeleeHigh1:
-		MIN2 EE 4 A_FaceTarget(20);
+		MIN2 EEE 4 A_FaceTarget(20);
 		MIN2 H 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
 		MIN2 HH 4 A_FaceTarget(20);
 		MIN2 I 20 A_HellsmithMelee();
 		MIN2 A 0 A_JumpIf(CheckMeleeRange()&&target&&(target.Health>0),"MeleeHigh2");
 		Goto See;
 	MeleeHigh2:
-		MIN2 JJ 4 A_FaceTarget(20);
+		MIN2 JJJ 4 A_FaceTarget(20);
 		MIN2 M 0 A_PlaySound("hellsmith/swing",CHAN_ITEM);
 		MIN2 MM 4 A_FaceTarget(20);
 		MIN2 N 20 A_HellsmithMelee();
