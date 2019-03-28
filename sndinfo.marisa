@@ -4,6 +4,9 @@ timallen/grunt TIMGRUNT
 IgniteSmall DSZIP
 Tinky Default
 
+$alias FireDemonAttack2 FireDemonAttack
+$limit FireDemonAttack 32
+
 world/amb11	AMB11
 world/amb4	AMB4
 world/amb8	AMB8
@@ -90,6 +93,11 @@ eldrich/attack	wizatk
 eldrich/death	wizdie
 eldrich/pain	wizpai
 eldrich/see	wizsit
+eldrich/active2	wizact2
+eldrich/attack2	wizatk2
+eldrich/death2	wizdie2
+eldrich/pain2	wizpai2
+eldrich/see2	wizsit2
 eldrich/flash	FLASHIE
 eldrich/tele	HEZETELE
 eldrich/beamst	mcfirest
@@ -99,3 +107,79 @@ $pitchshift eldrich/beam 0
 
 eldrich/icebreak icebrk2
 $pitchshift eldrich/icebreak 0
+
+slime/active1 BlobGp1
+slime/active2 BlobGp2
+slime/active3 BlobGp3
+slime/attack  BlobHit
+slime/pain    BlobInj
+slime/death   BlobDth
+
+nightmarelord/see DEESACT3
+nightmarelord/appear SORRISE
+nightmarelord/disappear BISHAPP
+nightmarelord/stomp STHMP1
+$pitchshift nightmarelord/see 0
+$pitchshift nightmarelord/appear 0
+$pitchshift nightmarelord/disappear 0
+$pitchshift nightmarelord/stomp 0
+
+mirrorman/giggle lka
+$pitchshift mirrorman/giggle 0
+
+insanity/layer1 nslayer1
+insanity/layer2 nslayer2
+insanity/layer3 nslayer3
+$pitchshift insanity/layer1 0
+$pitchshift insanity/layer2 0
+$pitchshift insanity/layer3 0
+
+$random skelsit { raiseske sklsrs1 sklsrs2 }
+raiseske	raiseske
+sklsrs1		sklsrs1
+sklsrs2		sklsrs2
+$random skelpai { sgethit1 sgethit2 sgethit3 sgethit4 sgethit5 sgethit6 sgethit7 }
+sgethit1 	sgethit1
+sgethit2	sgethit2
+sgethit3 	sgethit3
+sgethit4 	sgethit4
+sgethit5 	sgethit5
+sgethit6	sgethit6
+sgethit7	sgethit7
+$random skelatt { sattack1 sattack2 sattack3 sattack4 sattack5 sattack6 }
+sattack1		sattack1
+sattack2		sattack2
+sattack3		sattack3
+sattack4		sattack4
+sattack5		sattack5
+sattack6		sattack6
+$random skeldth { sdeath1 sdeath2 sdeath3 sdeath4 sdeath5 sklsrd1 sklsrd2 }
+sdeath1 	sdeath1
+sdeath2		sdeath2
+sdeath3		sdeath3
+sdeath4		sdeath4
+sdeath5		sdeath5
+sklsrd1		sklsrd1
+sklsrd2		sklsrd2
+$random swordhit { ssword1 ssword2 ssword3 ssword4 ssword5 ssword6 }
+ssword1		ssword1
+ssword2		ssword2
+ssword3		ssword3
+ssword4		ssword4
+ssword5		ssword5
+ssword6		ssword6
+
+minotaur/swing HAMSWING
+
+hellsmith/see		HLSSIT
+hellsmith/die		HLSDTH
+hellsmith/active	HLSACT
+hellsmith/pain		HLSPAIN
+hellsmith/charge	HLSCHRG
+hellsmith/step1		hs_step1
+hellsmith/step2		hs_step2
+hellsmith/step3		hs_step3
+hellsmith/step4		hs_step4
+$random hellsmith/step { hellsmith/step1 hellsmith/step2 hellsmith/step3 hellsmith/step4 }
+hellsmith/swing		THROW9
+hellsmith/skid		skid

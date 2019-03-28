@@ -1,5 +1,75 @@
 // for dialogue advance
-Class mkBossClearedToken : Inventory {}
+Class mkBossClearedToken : Inventory
+{
+	Default
+	{
+		+INVENTORY.UNDROPPABLE;
+		+INVENTORY.UNTOSSABLE;
+	}
+}
+Class mkMirrorManFoundToken : Inventory
+{
+	Default
+	{
+		+INVENTORY.UNDROPPABLE;
+		+INVENTORY.UNTOSSABLE;
+	}
+}
+Class mkNightmareLordFoundToken : Inventory
+{
+	Default
+	{
+		+INVENTORY.UNDROPPABLE;
+		+INVENTORY.UNTOSSABLE;
+	}
+}
+Class mkExBossClearedToken : Inventory
+{
+	Default
+	{
+		+INVENTORY.UNDROPPABLE;
+		+INVENTORY.UNTOSSABLE;
+	}
+}
+
+Class mkClericKeyDrops : Actor
+{
+	void A_TossKeyItems()
+	{
+		bool haskey1 = false, haskey2 = false;
+		for ( int i=0; i<MAXPLAYERS; i++ )
+		{
+			if ( !playeringame[i] || !players[i].mo ) continue;
+			if ( players[i].mo.FindInventory("KeyDungeon") ) haskey1 = true;
+			if ( players[i].mo.FindInventory("KeySteel") ) haskey2 = true;
+		}
+		if ( !haskey1 )
+		{
+			let a = A_DropItem("KeyDungeon");
+			a.TossItem();
+		}
+		if ( !haskey2 )
+		{
+			let a = A_DropItem("KeySteel");
+			a.TossItem();
+		}
+	}
+
+	Default
+	{
+		+NOGRAVITY;
+		+NOBLOCKMAP;
+		+DONTSPLASH;
+	}
+
+	States
+	{
+	Spawn:
+		TNT1 A 10;
+		TNT1 A 1 A_TossKeyItems();
+		Stop;
+	}
+}
 
 Class mkClericNPC : Actor
 {
@@ -13,14 +83,15 @@ Class mkClericNPC : Actor
 		Health 100;
 		PainChance 255;
 		Speed 10;
-		Radius 16;
-		Height 64;
+		Radius 12;
+		Height 56;
 		MONSTER;
 		+FRIENDLY;
 		+STANDSTILL;
 		-COUNTKILL;
 		Obituary "%o got bludgeoned by a cleric.";
 		Tag "Cleric";
+		DropItem "mkClericKeyDrops";
 	}
 	override int DamageMobj( Actor inflictor, Actor source, int damage, Name mod, int flags, double angle )
 	{
@@ -31,7 +102,7 @@ Class mkClericNPC : Actor
 		}
 		return Super.DamageMobj(inflictor,source,damage,mod,flags,angle);
 	}
-	action void A_MaceAttack()
+	void A_MaceAttack()
 	{
 		if ( !target ) return;
 		if ( CheckMeleeRange() )
@@ -46,7 +117,10 @@ Class mkClericNPC : Actor
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
-		spawnspot = Spawn("MapSpot",SpawnPoint);
+		GiveInventory("ArtiHealth",10);
+		spawnspot = Spawn("PatrolPoint",SpawnPoint);
+		spawnspot.angle = SpawnAngle;
+		spawnspot.ChangeTid(args[0]);
 	}
 	States
 	{
@@ -67,26 +141,35 @@ Class mkClericNPC : Actor
 			{
 				A_ClearTarget();
 				if ( !spawnspot ) ThrowAbortException("Spawn Spot does not exist for Cleric NPC");
-				if ( Distance2D(spawnspot) > 2000. ) return ResolveState("ChaosReturn");
 				goal = spawnspot;
 				return ResolveState("Returning");
 			}
 			return ResolveState(null);
 		}
+		CLER A 0
+		{
+			if ( health <= 75 )
+			{
+				Inventory h = FindInventory("ArtiHealth");
+				if ( h && (h.Amount > 0) ) UseInventory(h);
+			}
+		}
 		Loop;
 	ChaosReturn:
 		CLER A 10;
-		CLER A 0 Teleport(SpawnPoint,SpawnAngle,TELF_SOURCEFOG|TELF_DESTFOG);
+		CLER A 0 Teleport(spawnspot.pos,spawnspot.angle,TELF_SOURCEFOG|TELF_DESTFOG);
 		CLER A 5;
 		Goto Spawn;
 	Returning:
 		CLER AABBCCDD 2
 		{
 			A_Chase(null,null);
-			if ( Distance3D(spawnspot) < speed )
+			double dist = Distance2D(spawnspot);
+			if ( dist > 2000. ) return ResolveState("ChaosReturn");
+			if ( (dist < speed) || !goal )
 			{
-				SetOrigin(SpawnPoint,true);
-				angle = SpawnAngle;
+				SetOrigin(spawnspot.pos,true);
+				angle = spawnspot.angle;
 				A_ClearTarget();
 				A_ResetHealth();
 				bFRIENDLY = true;
@@ -105,6 +188,7 @@ Class mkClericNPC : Actor
 		CLER H 4 A_PlaySound("PlayerClericPain");
 		Goto See;
 	Death:
+		TNT1 A 0 ACS_NamedExecute("updatemarisa",2,1);
 		CLER I 6;
 		CLER J 6 A_PlaySound("PlayerClericNormalDeath");
 		CLER KL 6;
@@ -113,6 +197,7 @@ Class mkClericNPC : Actor
 		CLER Q -1;
 		Stop;
 	XDeath:
+		TNT1 A 0 ACS_NamedExecute("updatemarisa",2,1);
 		CLER R 5 A_PlaySound("PlayerClericCrazyDeath");
 		CLER S 5;
 		CLER T 5 A_NoBlocking();
@@ -120,14 +205,14 @@ Class mkClericNPC : Actor
 		CLER [ -1;
 		Stop;
 	Ice:
-		TNT1 A 0 { Translation = 0; }
+		TNT1 A 0 ACS_NamedExecute("updatemarisa",2,1);
 		CLER \ 5 A_FreezeDeath();
 		CLER \ 1 A_FreezeDeathChunks();
 		Wait;
 	Burn:
+		TNT1 A 0 ACS_NamedExecute("updatemarisa",2,1);
 		FDTH C 5 Bright A_PlaySound("PlayerClericBurnDeath");
 		FDTH D 4 Bright;
-		TNT1 A 0 { Translation = 0; }
 		FDTH G 5 Bright;
 		FDTH H 4 Bright A_PlaySound("PlayerClericCrazyDeath");
 		FDTH I 5 Bright;
@@ -215,10 +300,13 @@ Class mkApprenticeSighting : Actor
 }
 
 // remember him?
+// he's behind everything...
 Class mkMirrorMan : Actor
 {
 	private bool InConsoleplayerLOS()
 	{
+		if ( !CheckSight(players[consoleplayer].mo) )
+			return false;
 		double vfov = CVar.GetCVar('fov',players[consoleplayer]).GetFloat()*0.5;
 		double hfov = atan(Screen.GetAspectRatio()*tan(vfov));
 		let mo = players[consoleplayer].mo;
@@ -232,21 +320,31 @@ Class mkMirrorMan : Actor
 	{
 		Super.Tick();
 		if ( InConsoleplayerLOS() ) bAMBUSH = true;
-		if ( bAMBUSH )
+		if ( bAMBUSH && !bSTANDSTILL )
 		{
 			alpha = max(alpha-0.03,0.0);
 			if ( alpha <= 0.0 ) Destroy();
 		}
-		else alpha = min(alpha+0.16,1.0);
+		else
+		{
+			if ( bSTANDSTILL ) alpha = min(alpha+0.03,1.35);
+			else alpha = min(alpha+0.09,1.35);
+		}
 	}
 
 	Default
 	{
+		//$Title The Mirror Man (Sighting)
+		//$Sprite MRMNB0
+		//$Category Marisa/Decoration
 		RenderStyle "Translucent";
 		Alpha 0.0;
 		Scale 0.17;
-		-SOLID;
+		Radius 24;
+		Height 80;
+		+SOLID;
 		+NOGRAVITY;
+		+LOOKALLAROUND;
 	}
 
 	States
@@ -254,5 +352,161 @@ Class mkMirrorMan : Actor
 	Spawn:
 		MRMN A -1 Bright;
 		Stop;
+		TNT1 A -1;	// Dummy
+		Stop;
+	}
+}
+
+// The rebirth of D'Sparil...
+Class mkNightmareLordSighting : Actor
+{
+	Default
+	{
+		//$Title Nightmare Lord (Sighting)
+		//$Category Marisa/Decoration
+		Radius 32;
+		Height 64;
+	}
+
+	override void Activate( Actor activator )
+	{
+		SetStateLabel("Disappear");
+	}
+
+	States
+	{
+	Spawn:
+		NLRX A -1;
+		Stop;
+	Disappear:
+		NLRX BCDE 4 A_SetScale(scale.x+0.2);
+		NLRD A 30 A_SetScale(2.0);
+		NLRD A 0 A_PlaySound("nightmarelord/appear",CHAN_6,1.0,false,0.3);
+		NLRD ABCDEF 4;
+		NLRD G 20;
+		NLRD G 150 A_PlaySound("nightmarelord/see",CHAN_VOICE,attenuation:ATTN_NONE);
+		NLRD G 0 A_PlaySound("nightmarelord/disappear",CHAN_6,1.0,false,0.3);
+		NLRD HIJKL 3 Bright;
+		Stop;
+	}
+}
+
+Class mkSmoothLookTo : Thinker
+{
+	Actor target;
+	double angle, pitch, speed;
+
+	static double FaceToFace( Actor a, Actor b )
+	{
+		if ( !a || !b ) return 0;
+		// this isn't being used across portals, so we can ignore this
+		// for now as it's impossible to do this in a way that works
+		// in both 3.7 and 3.8
+		// not to mention the complications that could possibly arise
+		// anyway from trying to do this between actors in separate
+		// levels (how would one even call Vec3Diff in that case?
+		//         which actor's level should it be called from?)
+		//Vector3 otherpos = level.Vec3Diff(b.Vec3Offset(0,0,b.height),a.Vec3Offset(0,0,a.height));
+		Vector3 otherpos = a.Vec3Offset(0,0,a.height)-b.Vec3Offset(0,0,b.height);
+		double dist = otherpos.length();
+		if ( dist > 0 ) return asin(otherpos.z/dist);
+		return 0;
+	}
+
+	static void LookTowards( Actor target, double angle, double pitch = 0.0, double speed = 1.0 )
+	{
+		if ( !target ) return;
+		let slt = new("mkSmoothLookTo");
+		slt.ChangeStatNum(STAT_USER);
+		slt.target = target;
+		slt.angle = angle;
+		slt.pitch = pitch;
+		slt.speed = speed;
+	}
+
+	static void LookTowardsTid( Actor target, int ttid, double speed = 1.0 )
+	{
+		if ( !target ) return;
+		let slt = new("mkSmoothLookTo");
+		slt.ChangeStatNum(STAT_USER);
+		slt.target = target;
+		Actor t = ActorIterator.Create(ttid).Next();
+		slt.angle = target.AngleTo(t);
+		slt.pitch = FaceToFace(target,t);
+		slt.speed = speed;
+	}
+
+	override void Tick()
+	{
+		Super.Tick();
+		if ( !target )
+		{
+			Destroy();
+			return;
+		}
+		double iangle, ipitch;
+		iangle = Actor.DeltaAngle(target.angle,angle);
+		ipitch = Actor.DeltaAngle(target.pitch,pitch);
+		iangle = Clamp(iangle,-speed,speed);
+		ipitch = Clamp(ipitch,-speed,speed);
+		target.A_SetAngle(target.angle+iangle,SPF_INTERPOLATE);
+		target.A_SetPitch(target.pitch+ipitch,SPF_INTERPOLATE);
+		if ( (abs(iangle) < speed) && (abs(ipitch) < speed) )
+			Destroy();
+	}
+}
+
+// cheerin' on
+Class mkEttinSpectator : Actor
+{
+	static void DeleteMe( Actor ettinactor )
+	{
+		if ( !(ettinactor is 'mkEttinSpectator') ) return;
+		ettinactor.Destroy();
+	}
+
+	Default
+	{
+		//$Title Ettin Spectator
+		//$Category Marisa/Decoration
+		Radius 25;
+		Height 68;
+		Mass 175;
+		Speed 13;
+		MONSTER;
+		+NODAMAGE;
+		+NEVERTARGET;
+		-SHOOTABLE;
+		-COUNTKILL;
+	}
+	States
+	{
+	Spawn:
+		ETTN A 1;
+		Wait;
+	Cheer:
+		ETTN A 10 A_SetTics(Random[EttinSpectator](4,16));
+		ETTN BE 5;
+		ETTN F 20 A_PlaySound("EttinSight",attenuation:2.5);
+		ETTN EB 5;
+		ETTN A 8;
+		Goto Spawn;
+	Flinch:
+		ETTN A 10 A_SetTics(Random[EttinSpectator](16,32));
+		ETTN H 7 A_PlaySound("PuppyBeat",attenuation:2.5);
+		Goto Spawn;
+	Flinch2:
+		ETTN A 10 A_SetTics(Random[EttinSpectator](4,8));
+		ETTN H 11 A_PlaySound("PuppyBeat",attenuation:2.5);
+		ETTN A 3
+		{
+			A_ClearTarget();
+			bCHASEGOAL = true;
+			goal = ActorIterator.Create(args[0]).Next();
+		}
+		Goto Leave;
+	Leave:
+		ETTN ABCD 3 A_Chase(null,null);
+		Loop;
 	}
 }

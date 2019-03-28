@@ -1,3 +1,87 @@
+Actor mkHubGemStatic
+{
+	Radius 1
+	Height 1
+	+FLOATBOB
+	+NOGRAVITY
+	+NOINTERACTION
+}
+
+Actor mkHubGemStaticFire : mkHubGemStatic
+{
+	States
+	{
+		Spawn:
+		 EGEM A -1
+		 Stop
+	}
+}
+
+Actor mkHubGemStaticWater : mkHubGemStatic
+{
+	States
+	{
+		Spawn:
+		 EGEM B -1
+		 Stop
+	}
+}
+
+Actor mkHubGemStaticEarth : mkHubGemStatic
+{
+	States
+	{
+		Spawn:
+		 EGEM C -1
+		 Stop
+	}
+}
+
+Actor mkHubGemStaticAir : mkHubGemStatic
+{
+	States
+	{
+		Spawn:
+		 EGEM D -1
+		 Stop
+	}
+}
+
+Actor mkHubGemStaticAether : mkHubGemStatic
+{
+	States
+	{
+		Spawn:
+		 EGEM E -1
+		 Stop
+	}
+}
+
+Actor mkHubGemStaticNether : mkHubGemStatic
+{
+	States
+	{
+		Spawn:
+		 EGEM F -1
+		 Stop
+	}
+}
+
+
+Actor BookGeneric 135
+{
+	//$category "Decoration"
+	Radius 1
+	Height 1
+	+NOINTERACTION
+	States
+	{
+		Spawn:
+		 BOOK A -1
+		 stop
+	}
+}
+
 Actor BurningLog 134
 {
 	//$category "Decoration"

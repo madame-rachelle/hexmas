@@ -1,8 +1,0 @@
-map FORTRESS "Fortress of Solitude"
-{
-        sky1 = "SKYFOG"
-	cluster = 1
-	outsidefog = "FF FF FF"
-	outsidefogdensity = "32"
-        skyfog = "172"
-}

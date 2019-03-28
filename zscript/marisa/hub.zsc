@@ -1,0 +1,412 @@
+// hub-related stuff (inventory resets, the lore giving npc, the central artifact pieces)
+Class mkSavedInventory : Actor
+{
+	Inventory InvSel, InvFirst;
+	Weapon rw;
+	Default
+	{
+		+NOGRAVITY;
+		+NOBLOCKMAP;
+		+DONTSPLASH;
+	}
+}
+
+Class mkInventoryResetHandler : EventHandler
+{
+	private void RetrieveInventory( mkSavedInventory saved, PlayerPawn giveto )
+	{
+		Inventory i, prev, next, top;
+		prev = null;
+		i = saved.inv;
+		top = giveto.inv;
+		if ( top )
+		{
+			while ( top.inv )
+			{
+				top = top.inv;
+			}
+		}
+		while ( i )
+		{
+			next = i.inv;
+			if ( !i.bUNDROPPABLE )
+			{
+				if ( top )
+				{
+					top.inv = i;
+					top = i;
+				}
+				else giveto.inv = top = i;
+				i.owner = giveto;
+				i.inv = null;
+				if ( saved.inv == i ) saved.inv = next;
+				if ( prev ) prev.inv = next;
+			}
+			else prev = i;
+			i = next;
+		}
+		giveto.invsel = saved.invsel;
+		giveto.invfirst = saved.invfirst;
+		if ( saved.rw )
+		{
+			giveto.player.PendingWeapon = giveto.player.ReadyWeapon = saved.rw;
+			giveto.BringUpWeapon();
+		}
+		else
+		{
+			giveto.player.ReadyWeapon = null;
+			giveto.player.PendingWeapon = WP_NOCHANGE;
+		}
+	}
+
+	private void StashInventory( mkSavedInventory stored, PlayerPawn takefrom )
+	{
+		Inventory i, prev, next, top;
+		prev = null;
+		i = takefrom.inv;
+		top = stored.inv;
+		if ( top )
+		{
+			while ( top.inv )
+			{
+				top = top.inv;
+			}
+		}
+		while ( i )
+		{
+			next = i.inv;
+			if ( !i.bUNDROPPABLE )
+			{
+				if ( top )
+				{
+					top.inv = i;
+					top = i;
+				}
+				else stored.inv = top = i;
+				i.owner = stored;
+				i.inv = null;
+				if ( takefrom.inv == i ) takefrom.inv = next;
+				if ( prev ) prev.inv = next;
+			}
+			else prev = i;
+			i = next;
+		}
+		stored.invsel = takefrom.invsel;
+		stored.invfirst = takefrom.invfirst;
+		if ( takefrom.invsel && (takefrom.invsel.owner != takefrom) ) takefrom.invsel = null;
+		if ( takefrom.invfirst && (takefrom.invfirst.owner != takefrom) ) takefrom.invfirst = null;
+		stored.rw = takefrom.player.ReadyWeapon;
+		takefrom.player.ReadyWeapon = null;
+		takefrom.player.PendingWeapon = WP_NOCHANGE;
+	}
+
+	private mkSavedInventory FindSavedInventory( int i )
+	{
+		let t = ThinkerIterator.Create("mkSavedInventory");
+		mkSavedInventory a;
+		while ( a = mkSavedInventory(t.Next()) )
+		{
+			if ( a.special1 == i ) return a;
+		}
+		return null;
+	}
+
+	override void WorldUnloaded( WorldEvent e )
+	{
+		if ( e.IsSaveGame ) return;
+		// stash away current inventory
+		for ( int i=0; i<MAXPLAYERS; i++ )
+		{
+			if ( !playeringame[i] || !players[i].mo ) continue;
+			mkSavedInventory stored = FindSavedInventory(i);
+			if ( !stored )
+			{
+				stored = mkSavedInventory(players[i].mo.Spawn("mkSavedInventory"));
+				stored.special1 = i;
+			}
+			StashInventory(stored,players[i].mo);
+		}
+	}
+
+	override void WorldLoaded( WorldEvent e )
+	{
+		if ( e.IsSaveGame ) return;
+		// clear previous inventory then restore saved one (if any)
+		for ( int j=0; j<MAXPLAYERS; j++ )
+		{
+			if ( !playeringame[j] || !players[j].mo ) continue;
+			players[j].mo.ClearInventory();
+			mkSavedInventory saved = FindSavedInventory(j);
+			if ( saved ) RetrieveInventory(saved,players[j].mo);
+			else
+			{
+				players[j].mo.GiveDefaultInventory();
+				// fixup, remove repeated copies of BasicArmor/HexenArmor from inventory
+				Inventory i, prev, next, ba, ha;
+				prev = ba = ha = null;
+				i = players[j].mo.inv;
+				while ( i )
+				{
+					next = i.inv;
+					if ( i is 'BasicArmor' )
+					{
+						if ( !ba ) ba = i;
+						else
+						{
+							if ( players[j].mo.inv == i ) players[j].mo.inv = next;
+							if ( prev ) prev.inv = next;
+							else prev = next;
+							i.Destroy();
+						}
+					}
+					else if ( i is 'HexenArmor' )
+					{
+						if ( !ha ) ha = i;
+						else
+						{
+							if ( players[j].mo.inv == i ) players[j].mo.inv = next;
+							if ( prev ) prev.inv = next;
+							else prev = next;
+							i.Destroy();
+						}
+					}
+					i = next;
+				}
+				// set invsel/invfirst to first found selectable item
+				for ( Inventory i=players[j].mo.inv; i; i=i.inv )
+				{
+					if ( !i.bINVBAR ) continue;
+					players[j].mo.InvSel = players[j].mo.InvFirst = i;
+					break;
+				}
+			}
+			if ( players[j].PendingWeapon != WP_NOCHANGE )
+				players[j].mo.BringUpWeapon();
+		}
+	}
+}
+
+// for dialogue advance
+Class mkHasClearedHub : Inventory
+{
+	Default
+	{
+		+INVENTORY.UNDROPPABLE;
+		+INVENTORY.UNTOSSABLE;
+	}
+}
+
+Class mkSageHealing : Inventory
+{
+	override bool TryPickup( in out Actor toucher )
+	{
+		if ( !toucher.GiveBody(-100) )
+			return false;
+		GoAwayAndDie();
+		return true;
+	}
+}
+
+// the sage of winter, stands still but will walk around if he has a goal
+Class mkSageNPC : Actor
+{
+	int scnt;
+
+	Default
+	{
+		//$Title Sage NPC
+		//$Category Marisa/Decoration
+		//$Sprite SAGEB1
+		Speed 2;
+		Radius 16;
+		Height 64;
+		MONSTER;
+		+NEVERTARGET;
+		+FRIENDLY;
+		+NODAMAGE;
+		-COUNTKILL;
+		-SHOOTABLE;
+	}
+	States
+	{
+	Spawn:
+		SAGE B 2;
+		SAGE B 2 A_JumpIf(goal,"See");
+		Loop;
+	See:
+		SAGE # 2
+		{
+			if ( goal )
+			{
+				if ( (scnt%12) < 6 ) frame = 1;
+				else if ( (scnt%24) < 12 ) frame = 0;
+				else frame = 2;
+				scnt++;
+				A_Chase(null,null);
+			}
+			return A_JumpIf(!goal,"Spawn");
+		}
+		Wait;
+	Greetings:
+		SAGE B 1;
+		Goto Spawn;
+	}
+}
+
+Class mkHubGem : Inventory abstract
+{
+	String GemMsg;
+
+	Property GemMessage : GemMsg;
+
+	Default
+	{
+		+INVENTORY.UNDROPPABLE;
+		+INVENTORY.UNTOSSABLE;
+		Inventory.MaxAmount 1;
+		Inventory.PickupMessage "You got the %s.\n%s";
+	}
+	override String PickupMessage()
+	{
+		return String.Format(PickupMsg,GetTag(),GemMsg);
+	}
+}
+
+Class mkHubGemFire : mkHubGem
+{
+	Default
+	{
+		//$Title Fire Gem
+		//$Category Marisa/Key Items
+		Inventory.Icon "GEMICN0";
+		Tag "Fire Gem";
+		mkHubGem.GemMessage "It's warm to the touch.";
+	}
+	States
+	{
+	Spawn:
+		EGEM A -1;
+		Stop;
+	}
+}
+Class mkHubGemWater : mkHubGem
+{
+	Default
+	{
+		//$Title Water Gem
+		//$Category Marisa/Key Items
+		Inventory.Icon "GEMICN1";
+		Tag "Water Gem";
+		mkHubGem.GemMessage "Although solid, your hands get wet when touching it.";
+	}
+	States
+	{
+	Spawn:
+		EGEM B -1;
+		Stop;
+	}
+}
+Class mkHubGemEarth : mkHubGem
+{
+	Default
+	{
+		//$Title Earth Gem
+		//$Category Marisa/Key Items
+		Inventory.Icon "GEMICN2";
+		Tag "Earth Gem";
+		mkHubGem.GemMessage "Feels rough to the touch.";
+	}
+	States
+	{
+	Spawn:
+		EGEM C -1;
+		Stop;
+	}
+}
+Class mkHubGemAir : mkHubGem
+{
+	Default
+	{
+		//$Title Air Gem
+		//$Category Marisa/Key Items
+		Inventory.Icon "GEMICN3";
+		Tag "Air Gem";
+		mkHubGem.GemMessage "Cool air seems to come out of it.";
+	}
+	States
+	{
+	Spawn:
+		EGEM D -1;
+		Stop;
+	}
+}
+Class mkHubGemAether : mkHubGem
+{
+	Default
+	{
+		//$Title Aether Gem
+		//$Category Marisa/Key Items
+		Inventory.Icon "GEMICN4";
+		Tag "Aether Gem";
+		mkHubGem.GemMessage "You can feel some arcane power within.";
+	}
+	States
+	{
+	Spawn:
+		EGEM E -1;
+		Stop;
+	}
+}
+Class mkHubGemNether : mkHubGem
+{
+	Default
+	{
+		//$Title Nether Gem
+		//$Category Marisa/Key Items
+		Inventory.Icon "GEMICN5";
+		Tag "Nether Gem";
+		mkHubGem.GemMessage "There's something off about this gem...";
+	}
+	States
+	{
+	Spawn:
+		EGEM F -1;
+		Stop;
+	}
+}
+
+Class mkHubGemDisplayHandler : EventHandler
+{
+	Array<Class<Inventory> > gems;
+
+	override void WorldLoaded( WorldEvent e )
+	{
+		gems.Clear();
+		for ( int i=0; i<AllActorClasses.Size(); i++ )
+		{
+			let c = AllActorClasses[i];
+			if ( c.GetParentClass() != 'mkHubGem' ) continue;
+			gems.Push((Class<Inventory>)(c));
+		}
+	}
+
+	override void RenderOverlay( RenderEvent e )
+	{
+		if ( !automapactive ) return;
+		int owned = 0;
+		for ( int i=0; i<gems.Size(); i++ )
+			owned += !!players[consoleplayer].mo.CountInv(gems[i]);
+		Vector2 gs = TexMan.GetScaledSize(GetDefaultByType(gems[0]).Icon);
+		Vector2 hscale = StatusBar.GetHudScale();
+		Vector2 vsize = (Screen.GetWidth()/hscale.x,Screen.GetHeight()/hscale.y);
+		double xpos, ypos;
+		xpos = vsize.x-(gs.x+4);
+		ypos = (StatusBar.GetTopOfStatusBar()/hscale.y-(owned*gs.y+(owned-1)*4))/2.;
+		for ( int i=0; i<gems.Size(); i++ )
+		{
+			if ( !players[consoleplayer].mo.CountInv(gems[i]) ) continue;
+			Screen.DrawTexture(GetDefaultByType(gems[i]).Icon,false,xpos,ypos,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true,DTA_TopOffset,0,DTA_LeftOffset,0);
+			ypos += (gs.y+4);
+		}
+	}
+}

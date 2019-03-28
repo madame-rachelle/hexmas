@@ -1,9 +1,12 @@
-// C.R.U.E.L. texture pack
-
-Texture "HUGEBRIC", 256, 128
+Texture "TPORTX2", 64, 128
 {
-	Patch "EGW_336", 0, 0
+	Patch  "TPORTX", 0, 0
+	{
+		Translation "0:255=%[0.00,0.00,0.00]:[1.00,1.00,1.00]"
+	}
 }
+
+// C.R.U.E.L. texture pack
 
 Texture "VILL02", 128, 128
 {
@@ -24,17 +27,6 @@ Texture "BOOKSNO1", 64, 128
 {
 	Patch "NW_0006", 0, 0
 }
-
-Texture "FOREST13", 128, 128
-{
-	Patch "NW_0007", 0, 0
-}
-
-Texture "FOREST14", 128, 128
-{
-	Patch "NW_0008", 0, 0
-}
-
 Texture "BOOKSNO2", 64, 208
 {
 	Patch "NW_0006", 0, 0
@@ -142,16 +134,6 @@ Texture "TOMBZ01", 128, 128
 	Patch "NW_0024", 0, 0
 }
 
-Texture "TOMBT01", 64, 128
-{
-	Patch "NW_0032", 0, 0
-}
-
-Texture "TOMBT02", 64, 128
-{
-	Patch "NW_0033", 0, 0
-}
-
 Texture "TOMBT03", 64, 128
 {
 	Patch "NW_0034", 0, 0
@@ -167,46 +149,6 @@ Texture "TOMBT05", 64, 128
 	Patch "NW_0036", 0, 0
 }
 
-Texture "TOMBT06", 64, 128
-{
-	Patch "NW_0037", 0, 0
-}
-
-Texture "TOMBT07", 64, 128
-{
-	Patch "NW_0038", 0, 0
-}
-
-Texture "TOMBT08", 64, 128
-{
-	Patch "NW_0039", 0, 0
-}
-
-Texture "TOMBT09", 128, 128
-{
-	Patch "NW_0040", 0, 0
-}
-
-Texture "TOMBT10", 128, 128
-{
-	Patch "NW_0041", 0, 0
-}
-
-Texture "TOMBT11", 64, 128
-{
-	Patch "NW_0042", 0, 0
-}
-
-Texture "TOMBT12", 64, 128
-{
-	Patch "NW_0043", 0, 0
-}
-
-Texture "TOMBT13", 64, 128
-{
-	Patch "NW_0044", 0, 0
-}
-
 Texture "TOMBT14", 64, 128
 {
 	Patch "NW_0045", 0, 0
@@ -217,35 +159,32 @@ Texture "FIRE18", 64, 128
 	Patch "NW_0046", 0, 0
 }
 
-Texture "X_FLOW1", 128, 128
+Texture "X_FLOW1", 64, 128
 {
-	Patch "W_252", 0, 0
-	Patch "NW_0047", 64, 0
+	Patch "NW_0047", 0, 0
 }
 
-Texture "X_FLOW2", 128, 128
+Texture "X_FLOW2", 64, 128
 {
-	Patch "W_253", 0, 0
-	Patch "NW_0048", 64, 0
+	Patch "NW_0048", 0, 0
 }
 
-Texture "X_FLOW3", 128, 128
+Texture "X_FLOW3", 64, 128
 {
-	Patch "W_254", 0, 0
-	Patch "NW_0049", 64, 0
+	Patch "NW_0049", 0, 0
 }
 
-Texture "X_FLAME1", 128, 128
+Texture "X_FLAME1", 64, 128
 {
 	Patch "NW_0107", 0, 0
 }
 
-Texture "X_FLAME2", 128, 128
+Texture "X_FLAME2", 64, 128
 {
 	Patch "NW_0108", 0, 0
 }
 
-Texture "X_FLAME3", 256, 128
+Texture "X_FLAME3", 64, 128
 {
 	Patch "NW_0109", 0, 0
 }
@@ -295,27 +234,6 @@ Texture "MONK30", 128, 128
 	Patch "W_042", 0, 0
 	Patch "NW_0062", 0, 0
 }
-
-Texture "MONK31", 128, 128
-{
-	Patch "W_042", 0, 0
-	Patch "NW_0060", 31, 40
-}
-
-Texture "MONK32", 128, 128
-{
-	Patch "W_042", 0, 0
-	Patch "NW_0062", 0, 0
-	Patch "NW_0061", 48, 0
-	Patch "NW_0060", 31, 40
-}
-
-Texture "MONK33", 64, 128
-{
-	Patch "W_132", 0, 0
-	Patch "NW_0063", 0, 0
-}
-
 Texture "UTEMPL01", 128, 128
 {
 	Patch "NW_0064", 0, 0
@@ -374,16 +292,6 @@ Texture "CASTLE15", 128, 128
 	Patch "NW_0077", 0, 0
 }
 
-Texture "TOMBM01", 64, 128
-{
-	Patch "NW_0078", 0, 0
-}
-
-Texture "TOMBM02", 128, 128
-{
-	Patch "NW_0079", 0, 0
-}
-
 Texture "STEEL09", 128, 128
 {
 	Patch "NW_0080", 0, 0
@@ -438,17 +346,6 @@ Texture "STEEL16", 32, 128
 	Patch "NW_0091", 0, 0
 }
 
-Texture "STEEL17", 32, 128
-{
-	Patch "NW_0092", 0, 0
-}
-
-Texture "CAVE14", 128, 128
-{
-	Patch "NW_0073", 0, 0
-	Patch "NW_0094", 29, 30
-}
-
 Texture "ICE04", 64, 128
 {
 	Patch "W_128", 0, 0
@@ -495,11 +392,6 @@ Texture "PRTL16", 64, 128
 	Patch "NW_0106", 0, 0
 }
 
-Texture "CAVE16", 128, 128
-{
-	Patch "NW_0114", 0, 0
-}
-
 Texture "PRTL17", 32, 128
 {
 	Patch "NW_0115", 0, 0
@@ -508,21 +400,6 @@ Texture "PRTL17", 32, 128
 Texture "PRTL18", 32, 128
 {
 	Patch "NW_0116", 0, 0
-}
-
-Texture "PRTL19", 128, 128
-{
-	Patch "NW_0117", 0, 0
-}
-
-Texture "PRTL20", 64, 128
-{
-	Patch "NW_0118", 0, 0
-}
-
-Texture "PRTL21", 64, 128
-{
-	Patch "NW_0119", 0, 0
 }
 
 Texture "PRTL22", 64, 128
@@ -567,11 +444,6 @@ Texture "SPAWN10G", 128, 128
 	Patch "NW_0127", 0, 0
 }
 
-Texture "GRATE64", 128, 64
-{
-	Patch "NW_0143", 0, 0
-}
-
 Texture "PORTCULL", 128, 128
 {
 	Patch "NW_0144", 0, 0
@@ -580,16 +452,6 @@ Texture "PORTCULL", 128, 128
 Texture "GALLOW3", 128, 16
 {
 	Patch "NW_0168", 0, 0
-}
-
-Texture "BRICK01", 64, 128
-{
-	Patch "NW_0154", 0, 0
-}
-
-Texture "BRICK02", 64, 128
-{
-	Patch "NW_0155", 0, 0
 }
 
 Texture "BRASS8", 192, 128
@@ -626,11 +488,6 @@ Texture "WOODWL01", 128, 128
 	Patch "NW_0161", 0, 0
 }
 
-Texture "WOODWL02", 128, 128
-{
-	Patch "NW_0162", 0, 0
-}
-
 Texture "WOODWL03", 128, 128
 {
 	Patch "NW_0163", 0, 0
@@ -645,12 +502,6 @@ Texture "WOODWL05", 128, 128
 {
 	Patch "NW_0165", 0, 0
 }
-
-Texture "WOODWL06", 128, 128
-{
-	Patch "NW_0166", 0, 0
-}
-
 Texture "HUGEBRIG", 256, 128
 {
 	Patch "NW_0167", 0, 0

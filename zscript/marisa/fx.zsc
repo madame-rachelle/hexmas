@@ -51,6 +51,28 @@ Class mkGradingHandler : EventHandler
 			hnd.gvars_out.gradevalmul = 1.08;
 			hnd.gvars_out.gradevalpow = 1.51;
 			break;
+		case 3:
+			// stronghold preset
+			hnd.gvars_out.grademul = (1.08,1.06,0.92);
+			hnd.gvars_out.gradepow = (0.93,1.05,0.99);
+			hnd.gvars_out.gradecol = (-0.5,-0.26,-0.15);
+			hnd.gvars_out.gradecolfact = -0.19;
+			hnd.gvars_out.gradesatmul = 0.97;
+			hnd.gvars_out.gradesatpow = 1.23;
+			hnd.gvars_out.gradevalmul = 0.96;
+			hnd.gvars_out.gradevalpow = 1.47;
+			break;
+		case 4:
+			// minotaur preset
+			hnd.gvars_out.grademul = (1.12,0.95,0.87);
+			hnd.gvars_out.gradepow = (0.91,1.04,1.13);
+			hnd.gvars_out.gradecol = (-0.79,-0.22,0.22);
+			hnd.gvars_out.gradecolfact = -0.29;
+			hnd.gvars_out.gradesatmul = 0.86;
+			hnd.gvars_out.gradesatpow = 1.11;
+			hnd.gvars_out.gradevalmul = 0.82;
+			hnd.gvars_out.gradevalpow = 1.78;
+			break;
 		}
 		hnd.genabled = true;
 		hnd.gphase = 0;
@@ -130,6 +152,7 @@ Class mkGradingHandler : EventHandler
 // note: under no circumstance should the "mkFog" RNG be used for
 // anything but clientside actions
 
+
 Class mkSnow : Actor
 {
 	Default
@@ -203,12 +226,25 @@ Class mkSnowMaker : Actor
 		for ( int i=0; i<num; i++ )
 		{
 			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
-			// needs 3.7
-			//if ( !level.IsPointInMap(spawnpos) )
-			//	continue;
+			if ( !level.IsPointInMap(spawnpos) )
+				continue;
+			if ( level.Vec2Diff(players[consoleplayer].camera.pos.xy,spawnpos.xy).length() > 800 )
+				continue;
 			let f = Spawn("mkSnow",spawnpos);
 			f.master = invoker;
 		}
+		special1++;
+		if ( special1 >= 6 )
+		{
+			special1 = 0;
+			score = 0;
+			let t = ThinkerIterator.Create("mkSnow");
+			while ( t.Next() ) score++;
+		}
+		if ( score > 200 ) A_SetTics(12);
+		else if ( score > 160 ) A_SetTics(10);
+		else if ( score > 120 ) A_SetTics(8);
+		else if ( score > 80 ) A_SetTics(6);
 	}
 	Default
 	{
@@ -221,7 +257,7 @@ Class mkSnowMaker : Actor
 	States
 	{
 	Spawn:
-		TNT1 A 3 A_DoSnow();
+		TNT1 A 4 A_DoSnow();
 		Wait;
 	}
 }
@@ -255,7 +291,7 @@ Class mkFog : Actor
 		ang = FRandom[mkFog](0,360);
 		pt = FRandom[mkFog](-90,90);
 		vel = (cos(pt)*cos(ang),cos(pt)*sin(ang),-sin(pt))*FRandom[mkFog](0.1,0.4);
-		lifespan = Random[mkFog](100,300);
+		lifespan = Random[mkFog](100,200);
 		lifetime = 0;
 		SetState(FindState("Spawn")+Random[mkFog](0,19));
 	}
@@ -308,13 +344,26 @@ Class mkFogMaker : Actor
 		for ( int i=0; i<num; i++ )
 		{
 			Vector3 spawnpos = pos+(FRandom[mkFog](-x,x),FRandom[mkFog](-y,y),FRandom[mkFog](-z,z));
-			// needs 3.7
-			//if ( !level.IsPointInMap(spawnpos) )
-			//	continue;
+			if ( !level.IsPointInMap(spawnpos) )
+				continue;
+			if ( level.Vec3Diff(players[consoleplayer].camera.pos,spawnpos).length() > 1200 )
+				continue;
 			let f = Spawn("mkFog",spawnpos);
 			f.scale *= 1.+0.1*args[4];
 			f.master = invoker;
 		}
+		special1++;
+		if ( special1 >= 6 )
+		{
+			special1 = 0;
+			score = 0;
+			let t = ThinkerIterator.Create("mkFog");
+			while ( t.Next() ) score++;
+		}
+		if ( score > 200 ) A_SetTics(12);
+		else if ( score > 160 ) A_SetTics(10);
+		else if ( score > 120 ) A_SetTics(8);
+		else if ( score > 80 ) A_SetTics(6);
 	}
 	Default
 	{
@@ -327,7 +376,7 @@ Class mkFogMaker : Actor
 	States
 	{
 	Spawn:
-		TNT1 A 3 A_DoFog();
+		TNT1 A 4 A_DoFog();
 		Wait;
 	}
 }
@@ -349,6 +398,32 @@ Class mkBreakGlass : Actor
 			String scls = String.Format("SGShard%d",Random[Glass](0,9));
 			let s = Spawn(scls,shardpos);
 			s.A_SetTranslation('mkGlass');
+			s.bNOGRAVITY = false;
+			s.Gravity = 0.04;
+			double ang = angle+FRandom[Glass](-15,15);
+			s.vel.xy = (cos(ang),sin(ang))*FRandom[Glass](0.8,3.2);
+			s.vel.z = FRandom[Glass](0.2,0.8);
+		}
+		Destroy();
+	}
+}
+
+Class mkBreakGlassNormal : Actor
+{
+	Default
+	{
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		for ( int i=0; i<64; i++ )
+		{
+			Vector3 shardpos = Vec3Angle(FRandom[Glass](-25,25),angle+90,FRandom[Glass](-50,50));
+			String scls = String.Format("SGShard%d",Random[Glass](0,9));
+			let s = Spawn(scls,shardpos);
 			s.bNOGRAVITY = false;
 			s.Gravity = 0.04;
 			double ang = angle+FRandom[Glass](-15,15);
@@ -409,13 +484,179 @@ Class mkIceIceBaby : Actor
 		Super.PostBeginPlay();
 		for ( int i=0; i<256; i++ )
 		{
-			Vector3 shardpos = Vec3Offset(FRandom[Glass](-60,60),FRandom[Glass](-60,60),FRandom[Glass](-156,156));
+			Vector3 shardpos = Vec3Offset(FRandom[Glass](-28,28),FRandom[Glass](-28,28),FRandom[Glass](-72,72));
 			let s = Spawn("IceChunk",shardpos);
 			double ang = angle+FRandom[Glass](0,360);
-			s.scale *= FRandom[Glass](1.2,2.2);
+			s.scale *= FRandom[Glass](0.4,1.4);
 			s.vel.xy = (cos(ang),sin(ang))*FRandom[Glass](1.2,4.5);
 			s.vel.z = FRandom[Glass](0.6,3.6);
 		}
 		Destroy();
 	}
 }
+
+Class mkUtility abstract
+{
+	static play void SpawnProjectile( String cls, int spot, int speed = -1 )
+	{
+		Actor src;
+		let ai = ActorIterator.Create(spot);
+		while ( src = ai.Next() )
+		{
+			let p = Actor.Spawn(cls,src.pos);
+			p.angle = src.angle;
+			p.pitch = src.pitch;
+			p.vel = (cos(p.angle)*cos(p.pitch),sin(p.angle)*cos(p.pitch),-sin(p.pitch))*((speed!=-1)?speed:p.speed);
+		}
+	}
+
+	static play void SpawnProjectileAimed( String cls, int spot, int target, int spread = 0, int speed = -1 )
+	{
+		Actor src;
+		let ai = ActorIterator.Create(spot);
+		while ( src = ai.Next() )
+		{
+			Actor dst = ActorIterator.Create(target).Next();
+			let p = Actor.Spawn(cls,src.pos);
+			Vector3 dir = level.Vec3Diff(src.pos,dst.pos);
+			dir = dir.unit();
+			p.angle = atan2(dir.y,dir.x)+FRandom[mkutilrng](-spread,spread);
+			p.pitch = asin(-dir.z)+FRandom[mkutilrng](-spread,spread);
+			p.vel = (cos(p.angle)*cos(p.pitch),sin(p.angle)*cos(p.pitch),-sin(p.pitch))*((speed!=-1)?speed:p.speed);
+		}
+	}
+
+	static play void SetSectorFloorLight( int tag, int val )
+	{
+		let s = SectorTagIterator.Create(tag);
+		int i;
+		while ( (i = s.Next()) != -1 ) level.Sectors[i].SetPlaneLight(0,val);
+	}
+
+	static play void SetActorZ( int tag, int newz )
+	{
+		Actor a;
+		let ai = ActorIterator.Create(tag);
+		while ( a = ai.Next() )
+		{
+			a.SetZ(newz);
+		}
+	}
+}
+
+Class mkMovingFloorTrap : Actor abstract
+{
+	enum EDir
+	{
+		DIR_EAST,
+		DIR_NORTH,
+		DIR_WEST,
+		DIR_SOUTH,
+	}
+
+	int mdir;
+	int dcnt, hcnt;
+
+	property Dir: mdir;
+
+	override void Tick()
+	{
+		Vel *= 0;
+		Super.Tick();
+	}
+
+	bool MoveDown()
+	{
+		SetOrigin(Vec3Offset(0,0,-2),true);
+		return (++dcnt>=4);
+	}
+	bool MoveDir()
+	{
+		SetOrigin(Vec3Offset(cos(mdir*90)*6,sin(mdir*90)*6,0),true);
+		return (++hcnt>=20);
+	}
+
+	override void Activate( Actor activator )
+	{
+		if ( !InStateSequence(CurState,FindState("Spawn")) ) return;
+		SetStateLabel("Activated");
+	}
+
+	void StartSq()
+	{
+		StartSoundSequence('Platform',0);
+	}
+
+	void StopSq()
+	{
+		StopSoundSequence();
+	}
+
+	Default
+	{
+		+SOLID;
+		+SHOOTABLE;
+		+NODAMAGE;
+		+NOBLOOD;
+		+ACTLIKEBRIDGE;
+		+NOGRAVITY;
+		+DONTTHRUST;
+		Mass int.max;
+		Radius 64;
+		Height 16;
+	}
+	States
+	{
+	Spawn:
+		PRKM A -1;
+		Stop;
+	Activated:
+		PRKM A 0 StartSq();
+		PRKM A 1 A_JumpIf(MoveDown(),1);
+		Wait;
+		PRKM A 30 StopSq();
+		PRKM A 0 StartSq();
+		PRKM A 1 A_JumpIf(MoveDir(),1);
+		Wait;
+		PRKM A -1 StopSq();
+		Stop;
+	}
+}
+
+Class mkMovingFloorTrapE : mkMovingFloorTrap
+{
+	Default
+	{
+		//$Title Moving Floor Trap (East)
+		//$Category Marisa/FX
+		mkMovingFloorTrap.Dir DIR_EAST;
+	}
+}
+Class mkMovingFloorTrapN : mkMovingFloorTrap
+{
+	Default
+	{
+		//$Title Moving Floor Trap (North)
+		//$Category Marisa/FX
+		mkMovingFloorTrap.Dir DIR_NORTH;
+	}
+}
+Class mkMovingFloorTrapW : mkMovingFloorTrap
+{
+	Default
+	{
+		//$Title Moving Floor Trap (West)
+		//$Category Marisa/FX
+		mkMovingFloorTrap.Dir DIR_WEST;
+	}
+}
+Class mkMovingFloorTrapS : mkMovingFloorTrap
+{
+	Default
+	{
+		//$Title Moving Floor Trap (South)
+		//$Category Marisa/FX
+		mkMovingFloorTrap.Dir DIR_SOUTH;
+	}
+}
+

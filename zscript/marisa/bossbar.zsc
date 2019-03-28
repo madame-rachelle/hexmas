@@ -1,0 +1,161 @@
+// Souls-style health bar for a boss
+// Extended version of the Spooktober implementation
+// Supports multiple bosses (up to 3)
+// Supports easy theming by changing the constants down here
+// Bars are more Hexen-style for this project
+
+const MKHBAR_FONT = "GARGSMAL";	// tag font
+const MKHBAR_FRAME = "bbar_f";	// frame texture
+const MKHBAR_FILL = "bbar_r";	// healthbar texture
+const MKHBAR_DRAIN = "bbar_d";	// "drainbar" texture (bar that lags behind)
+const MKHBAR_POSITION = 1;	// 0: top, 1: bottom
+const MKHBAR_ALIGN = -1;	// -1: left, 0: center, 1: right
+const MKHBAR_XMARGIN = 2;	// horizontal text margin (ignored for center align)
+const MKHBAR_YMARGIN = 4;	// vertical text margin
+const MKHBAR_SEPARATION = 24;	// extra gap between healthbars
+const MKHBAR_GAP = 32;		// extra gap between first healthbar and border
+
+Class mkBossHealthBar : HUDMessageBase
+{
+	String tname;
+	Actor target;
+	transient font tfont;
+	TextureID bbar_f, bbar_r, bbar_d;
+	double alpha;
+	DynamicValueInterpolator ihealth;
+	int pos;
+	int thealth, hmax;
+	int oldhealth[10];
+
+	mkBossHealthBar Init( Actor target, String tname )
+	{
+		self.target = target;
+		self.tname = tname;
+		alpha = 0.0;
+		hmax = thealth = target.health;
+		ihealth = DynamicValueInterpolator.Create(thealth,0.25,1,max(8,hmax/100));
+		for ( int i=0; i<10; i++ ) oldhealth[i] = thealth;
+		bbar_f = TexMan.CheckForTexture(MKHBAR_FRAME,TexMan.Type_Any);
+		bbar_r = TexMan.CheckForTexture(MKHBAR_FILL,TexMan.Type_Any);
+		bbar_d = TexMan.CheckForTexture(MKHBAR_DRAIN,TexMan.Type_Any);
+		return self;
+	}
+
+	override bool Tick()
+	{
+		if ( target )
+		{
+			thealth = target.health;
+			alpha = min(alpha+0.08,1.0);
+		}
+		else
+		{
+			thealth = 0;
+			alpha = max(alpha-0.02,0.0);
+		}
+		oldhealth[0] = thealth;
+		if ( thealth > oldhealth[9] )
+			for ( int i=9; i>0; i-- )
+				oldhealth[i] = thealth;
+		ihealth.Update(oldhealth[9]);
+		for ( int i=9; i>0; i-- )
+			oldhealth[i] = oldhealth[i-1];
+		return (!target && (alpha<=0.0));
+	}
+
+	override void OnDestroy()
+	{
+		Super.OnDestroy();
+		if ( ihealth ) ihealth.Destroy();
+	}
+
+	double GetHealth( bool delay = false )
+	{
+		double hf;
+		if ( delay ) hf = clamp(ihealth.GetValue(),0,hmax)/double(hmax);
+		else hf = clamp(thealth,0,hmax)/double(hmax);
+		return hf;
+	}
+
+	override void Draw( int bottom, int visibility )
+	{
+		if ( !tfont ) tfont = Font.GetFont(MKHBAR_FONT);
+		Vector2 hscale = StatusBar.GetHudScale();
+		Vector2 vsize = (Screen.GetWidth()/hscale.x,Screen.GetHeight()/hscale.y);
+		double ypos;
+		if ( MKHBAR_POSITION ) ypos = (bottom/hscale.y)-(MKHBAR_GAP+MKHBAR_SEPARATION*(pos-1));
+		else ypos = (MKHBAR_GAP+MKHBAR_SEPARATION*(pos-1));
+		Vector2 bs = TexMan.GetScaledSize(bbar_r);
+		double xpos = (vsize.x-bs.x)/2.;
+		Screen.DrawTexture(bbar_f,false,xpos,ypos,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true,DTA_Alpha,alpha);
+		Screen.DrawTexture(bbar_d,false,xpos,ypos,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true,DTA_Alpha,alpha,DTA_WindowRightF,bs.x*GetHealth(true));
+		Screen.DrawTexture(bbar_r,false,xpos,ypos,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true,DTA_Alpha,alpha,DTA_WindowRightF,bs.x*GetHealth());
+		if ( MKHBAR_ALIGN == -1 ) xpos += MKHBAR_XMARGIN;
+		else if ( MKHBAR_ALIGN == 0 ) xpos = (vsize.x-tfont.StringWidth(tname))/2.;
+		else xpos += (bs.x-(tfont.StringWidth(tname)+MKHBAR_XMARGIN));
+		ypos -= (tfont.GetHeight()+MKHBAR_YMARGIN);
+		Screen.DrawText(tfont,Font.CR_RED,xpos,ypos,tname,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true,DTA_Alpha,alpha);
+	}
+}
+
+Class mkBossHealthbarHandler : EventHandler
+{
+	Actor bossenemy[3];
+	ui mkBossHealthBar bossbar[3];
+
+	override void PostUiTick()
+	{
+		for ( int i=0; i<3; i++ )
+		{
+			if ( bossbar[i] && !bossenemy[i] ) bossbar[i].target = null;
+			if ( !bossenemy[i] || bossbar[i] ) continue;
+			bossbar[i] = new("mkBossHealthBar").Init(bossenemy[i],bossenemy[i].GetTag());
+			StatusBar.AttachMessage(bossbar[i]);
+		}
+		// set bar positions
+		if ( bossbar[0] )
+		{
+			bossbar[0].pos = 1;
+			if ( bossbar[1] )
+			{
+				bossbar[1].pos = 2;
+				if ( bossbar[2] ) bossbar[2].pos = 3;
+			}
+			else if ( bossbar[2] ) bossbar[2].pos = 2;
+		}
+		else if ( bossbar[1] )
+		{
+			bossbar[1].pos = 1;
+			if ( bossbar[2] ) bossbar[2].pos = 2;
+		}
+		else if ( bossbar[2] ) bossbar[2].pos = 1;
+	}
+
+	// for ACS
+	static void SetBoss( int tid )
+	{
+		let hnd = mkBossHealthbarHandler(EventHandler.Find("mkBossHealthbarHandler"));
+		if ( !hnd ) return;
+		let ai = ActorIterator.Create(tid);
+		for ( int i=0; i<3; i++ )
+		{
+			if ( !hnd.bossenemy[i] )
+			{
+				Actor a = ai.Next();
+				if ( a ) hnd.bossenemy[i] = a;
+				else break;
+			}
+		}
+	}
+
+	static void ClearBoss( int tid = 0 )
+	{
+		let hnd = mkBossHealthbarHandler(EventHandler.Find("mkBossHealthbarHandler"));
+		if ( !hnd ) return;
+		for ( int i=0; i<3; i++ )
+		{
+			if ( !tid || (hnd.bossenemy[i] && (hnd.bossenemy[i].tid == tid)) )
+				hnd.bossenemy[i] = null;
+		}
+	}
+}

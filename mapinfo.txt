@@ -1,0 +1,148 @@
+GameInfo
+{
+	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler", "mkInventoryResetHandler", "mkEldrichHandler", "mkHubGemDisplayHandler"
+}
+
+clearepisodes
+episode FROSTBITE
+{
+	name = "HeXmas Community Map Project"
+	key = x
+}
+
+cluster 1
+{
+	hub
+	pic = "interpic"
+	exittext = "Stepping into the portal, you find yourself\
+back in town. Looks like everything's ready\
+for the Winter Solstice celebrations. The\
+streets are lit up in a multitude of colors,\
+and the townsfolk roam the streets, merrily\
+spreading the holiday spirit around.\
+\
+After word spreads of your heroic return,\
+people gather around to welcome you, eager\
+to hear what stories you can tell of your\
+last adventure."
+}
+
+// 1
+Map FROSTBITE "Frostbitten Peak - whirledtsar"
+{
+	levelnum = 1
+	cluster = 1
+	Music = "tulku3"
+	FogDensity = 128
+	UsePlayerStartZ
+	ClipMidTextures
+	MonsterFallingDamage
+	Grinding_Polyobj
+}
+
+// 2
+map HUB "Hub - Rachael & whirledtsar"
+{
+	sky1 = "ARCTICS1"
+	sky2 = "ARCTICS2", 0.03
+	doublesky
+	cluster = 1
+	levelnum = 2
+	music = "orchest"
+	next = EndGame2
+}
+
+// 3
+map FORTRESS "Fortress of Solitude - Paar"
+{
+	levelnum = 3
+        sky1 = "SKYFOG"
+	cluster = 1
+	outsidefog = "FF FF FF"
+	outsidefogdensity = "32"
+        skyfog = "172"
+	music = "BONESR"
+}
+
+// 4
+map HRUNT "Hruntheim - Crazy Toni"
+{
+	levelnum = 4
+	cluster = 1
+	par = 180
+	sky1 = "SKY1", 0
+	music = "CRYPTR"
+}
+
+// 5
+map MARISA "Viridescent - Marisa Kirisame"
+{
+	levelnum = 5
+	cluster = 1
+	music = "creepy"
+	sky1 = "ARCTICS1"
+	sky2 = "ARCTICS2", 0.03
+	doublesky
+	evenlighting
+	monsterfallingdamage
+	strictmonsteractivation
+	checkswitchrange
+	grinding_polyobj
+}
+
+SpawnNums
+{
+	109 = IceShard2
+}
+
+DoomEdNums
+{
+	6400 = "mkSnowMaker"
+	6401 = "mkFogMaker"
+	6402 = "mkWarpPipe"
+	6403 = "mkMovingFloorTrapE"
+	6404 = "mkMovingFloorTrapN"
+	6405 = "mkMovingFloorTrapW"
+	6406 = "mkMovingFloorTrapS"
+	6410 = "mkGreenTwinedTorch"
+	6411 = "mkGreenTwinedTorchUnlit"
+	6412 = "mkSmolGreenFlame"
+	6413 = "mkShootMe"
+	6414 = "mkGreenChandelier"
+	6415 = "mkGreenStatueTall"
+	6416 = "mkGreenStatueShort"
+	6417 = "mkLargeGreenFlame"
+	6418 = "mkGreenTeleSmoke"
+	6419 = "mkWizardStatue"
+	6420 = "mkSnowEttin"
+	6421 = "mkIceDemon"
+	6422 = "mkElderApprentice"
+	6423 = "mkElderAcolyte"
+	6424 = "mkElderWizard"
+	6425 = "mkSkeleton"
+	6426 = "mkMinotaur"
+	6427 = "mkMinotaurEx"
+	6428 = "mkSlime"
+	6430 = "mkClericNPC"
+	6431 = "mkApprenticeSighting"
+	6432 = "mkMirrorMan"
+	6433 = "mkNightmareLordSighting"
+	6434 = "mkSageNPC"
+	6435 = "mkEttinSpectator"
+	6440 = "mkFullQuietus"
+	6441 = "mkFullWraithverge"
+	6442 = "mkFullBloodscourge"
+	6443 = "mkLamp"
+	6444 = "mkHubGemFire"
+	6445 = "mkHubGemWater"
+	6446 = "mkHubGemEarth"
+	6447 = "mkHubGemAir"
+	6448 = "mkHubGemAether"
+	6449 = "mkHubGemNether"
+}
+
+DamageType Eldrich
+{
+	NoArmor
+	Obituary = "%o was consumed by dark energies."
+}

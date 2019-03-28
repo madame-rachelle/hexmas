@@ -1,16 +1,18 @@
 Knight Archer monster: Ravagefox, based on sprites by Raven Software & CodenniumRed
-tulku3 MIDI: Hexen 2 - Portals Of Praevus
+tulku3: Hexen 2 - Portals Of Praevus
 H2TX* textures: Hexen 2, compiled by Ceeb
 NW*, W_*, F*, NF* textures: C.R.U.E.L. pack by Ettingrinder
 SNOW* skybox: Kothic Skyboxes pack by Kell
 TRE* sprites: Necrodome
-creepy, horror, drone, bossbttl, shoggoth, temple tracks: Taken from Frackin' Universe (original credits unknown)
-exboss track: another dummied out Dark Souls 3 track
+creepy, horror, drone, bossbttl, shoggoth, temple, violin1 tracks: Taken from Frackin' Universe (original credits unknown)
+dungeon6, combat7, combat8: Taken from Fantasy Soundtrack Project by AceeQ (Skyrim mod. Seems to be gone forever from the nexus, along with the author, apparently)
 GARGSMAL, GRGW_LWR fonts: NeuralStunner
-LMWZ* sprites: Freedoom
-ACOL* sprites: Eriance
+VIRL* sprites: Freedoom
+ECOL* sprites: Eriance
+SAGE* sprites: Shadowcaster by Raven Software
 marisa/amb sounds: Unreal
 Cleric standing sprites: EttinGrinder
+Skeleton monster: Virtue, sounds from Diablo, sprites from Dungeon Keeper
 
 C.R.U.E.L. full credits:
 

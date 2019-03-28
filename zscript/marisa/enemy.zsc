@@ -11,12 +11,13 @@ Class mkSnowEttin : Ettin
 		Tag "Snow Ettin";
 		Obituary "%o was smashed by a Snow Ettin.";
 		Scale 1.2;
-		Health 320;
-		Speed 15;
+		Health 250;
+		Speed 16;
 		Radius 30;
 		Height 80;
-		MinMissileChance 100;
+		MinMissileChance 120;
 		MissileHeight 40;
+		MeleeThreshold 250;
 		+MISSILEMORE;
 	}
 	double _PitchTo( Actor other )
@@ -69,7 +70,7 @@ Class mkIceDemon : Demon2
 		HitObituary "%o got too close to an Ice Serpent.";
 		Obituary "%o was cryogenized by an Ice Serpent.";
 		Tag "Ice Serpent";
-		Health 400;
+		Health 350;
 		Scale 1.5;
 		Speed 16;
 		Radius 48;
@@ -226,7 +227,7 @@ Class mkElderApprentice : Actor
 		//$Title Elder Apprentice
 		//$Category Marisa/Monsters
 		Translation "0:255=#[102,102,102]", "146:163=[0,0,0]:[49,122,73]", "0:32=[0,0,0]:[49,122,73]", "231:239=33:50", "164:185=231:239", "186:202=231:239", "51:66=231:239";
-		Health 150;
+		Health 160;
 		PainChance 150;
 		Speed 12;
 		Radius 16;
@@ -237,6 +238,7 @@ Class mkElderApprentice : Actor
 		Tag "Elder Apprentice";
 		SeeSound "apprentice/see";
 		BloodColor "Purple";
+		DamageFactor "Eldrich", 0.3;
 	}
 	override void Tick()
 	{
@@ -257,18 +259,18 @@ Class mkElderApprentice : Actor
 		SpawnMissileXYZ(Vec3Angle(radius*1.5,angle-40,48.),target,"mkIcyPoof",false);
 		if ( (Distance3D(target) < MeleeRange*2.4) && abs(deltaangle(angle,AngleTo(target))) < 60 )
 		{
-			int dmg = Random[Apprentice](4,5)*3;
+			int dmg = Random[Apprentice](4,5)*2;
 			target.DamageMobj(self,self,dmg,'Ice');
 			if ( target.Mass >= LARGE_MASS || target.bDONTTHRUST ) return;
-			target.vel += Vec3To(target).unit()*6;
-			target.vel.z += 2.;
+			target.vel += Vec3To(target).unit()*5;
+			target.vel.z += 3.;
 			return;
 		}
 	}
 	bool CheckDoor()
 	{
 		FLineTraceData d;
-		LineTrace(angle,radius*speed,0,TRF_THRUACTORS,50.,data:d);
+		LineTrace(angle,radius+speed,0,TRF_THRUACTORS,50.,data:d);
 		if ( d.HitType != TRACE_HitWall ) return false;
 		if ( d.HitLine.Activation&SPAC_MUse )
 		{
@@ -280,7 +282,7 @@ Class mkElderApprentice : Actor
 	bool CheckDoorMove()
 	{
 		FLineTraceData d;
-		LineTrace(angle,radius*speed,0,TRF_THRUACTORS,height,data:d);
+		LineTrace(angle,radius+speed,0,TRF_THRUACTORS,height,data:d);
 		if ( (d.HitType == TRACE_HitWall) && d.HitLine.Activation&SPAC_MUse ) return false;
 		return true;
 	}
@@ -346,6 +348,13 @@ Class mkElderApprentice : Actor
 		MAGE Y 5 A_FreezeDeath();
 		MAGE Y 1 A_FreezeDeathChunks();
 		Wait;
+	Death.Silent:
+	XDeath.Silent:
+		MAGE HIJK 6;
+		MAGE L 6 A_NoBlocking();
+		MAGE M 6 A_QueueCorpse();
+		MAGE N -1;
+		Stop;
 	}
 }
 
@@ -392,7 +401,7 @@ Class mkAcolyteFire : Actor
 		Radius 4;
 		Height 4;
 		Translation "0:255=%[0.00,0.00,0.00]:[0.80,2.00,0.80]";
-		DamageFunction Random[Acolyte](2,3)*3;
+		DamageFunction Random[Acolyte](3,5);
 		PROJECTILE;
 		SeeSound "DemonMissileFire";
 		DeathSound "DemonMissileExplode";
@@ -420,7 +429,7 @@ Class mkAcolyteFire : Actor
 		DMFX AABBCC 1 Bright
 		{
 			A_SpawnItemEx("mkSmokePoof");
-			if ( level.time&5 ) A_DTSeeker(0.15);
+			if ( !(GetAge()%5) ) A_DTSeeker(0.15);
 			vel += Acceleration/TICRATE;
 			vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](2,4);
 			Vector3 dir = vel.unit();
@@ -430,6 +439,7 @@ Class mkAcolyteFire : Actor
 		}
 		Loop;
 	Death:
+		TNT1 A 0 A_Explode(Random[Acolyte](2,3),80,0);
 		DMFX DEFG 3 Bright;
 		Stop;
 	}
@@ -441,7 +451,7 @@ Class mkWizardFire : mkAcolyteFire
 	{
 		Scale 1.25;
 		Speed 6;
-		DamageFunction Random[EWizFire](2,3)*4;
+		DamageFunction Random[EWizFire](2,3)*(args[0]?2:4);
 	}
 	States
 	{
@@ -449,9 +459,10 @@ Class mkWizardFire : mkAcolyteFire
 		DMFX AABBCC 1 Bright
 		{
 			A_SpawnItemEx("mkSmokePoof");
-			if ( level.time&3 ) A_DTSeeker();
+			if ( args[0] || !(GetAge()%3) ) A_DTSeeker();
 			vel += Acceleration/TICRATE;
-			vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](1,2);
+			if ( args[0] ) vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](0.4,0.8);
+			else vel += (FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1),FRandom[EWizFX](-1,1))*FRandom[EWizFX](1,2);
 			Vector3 dir = vel.unit();
 			if ( vel.length() > 30. ) vel = dir*30.;
 			angle = atan2(dir.y,dir.x);
@@ -459,8 +470,9 @@ Class mkWizardFire : mkAcolyteFire
 		}
 		Loop;
 	Death:
-		TNT1 A 0 A_Explode(Random[EWizFire](2,3)*3,80,0);
-		Goto Super::Death;
+		TNT1 A 0 A_Explode(Random[EWizFire](2,3)*(args[0]?2:3),args[0]?30:80,0);
+		DMFX DEFG 3 Bright;
+		Stop;
 	}
 }
 
@@ -524,14 +536,22 @@ Class mkAcolyteBoom : Actor
 			}
 		}
 		if ( !args[0] ) return;
-		int mx = (args[0]==3)?16:(args[0]==2)?4:2;
+		int mx = (args[0]==4)?1:(args[0]==3)?6:(args[0]==2)?4:2;
 		for ( int i=0; i<mx; i++ )
 		{
 			Actor a;
-			if ( args[0] == 3 )
+			if ( args[0] == 4 )
+			{
+				a = Spawn("mkWizardFire",pos);
+				a.scale *= 0.5;
+				a.args[0] = 1;
+				a.angle = angle+FRandom[EWizFire](-3,3);
+				a.pitch = pitch+FRandom[EWizFire](-3,3);
+			}
+			else if ( args[0] == 3 )
 			{
 				a = Spawn("mkAcolyteFire",pos);
-				a.vel *= 3;
+				a.speed *= 3;
 				a.angle = FRandom[Acolyte](0,360);
 				a.pitch = FRandom[Acolyte](-60,30);
 			}
@@ -564,18 +584,21 @@ Class mkElderAcolyte : Actor
 {
 	int scnt, dcnt, strafedir;
 	int bobstate;
+	bool ismelee;
 
 	Default
 	{
 		//$Title Elder Acolyte
 		//$Category Marisa/Monsters
 		Scale 1.2;
-		Health 500;
+		Health 280;
 		Radius 25;
 		Height 78;
-		Speed 10;
-		PainChance 80;
-		MeleeRange 90;
+		Speed 8;
+		PainChance 120;
+		MeleeRange 50;
+		MeleeThreshold 200;
+		MinMissileChance 240;
 		MONSTER;
 		+FLOAT;
 		+NOGRAVITY;
@@ -583,12 +606,15 @@ Class mkElderAcolyte : Actor
 		+NOTARGET;
 		+DONTMORPH;
 		+QUICKTORETALIATE;
+		+DONTHARMSPECIES;
+		Species "Eldrich";
 		SeeSound "acolyte/see";
 		PainSound "acolyte/pain";
 		DeathSound "acolyte/death";
 		ActiveSound "acolyte/actives";
 		Obituary "%o was blown to pieces by an Elder Acolyte.";
 		Tag "Elder Acolyte";
+		DamageFactor "Eldrich", 0.1;
 	}
 	double _PitchTo( Actor other )
 	{
@@ -598,40 +624,47 @@ Class mkElderAcolyte : Actor
 		if ( dist > 0 ) return -asin(otherpos.z/dist);
 		return 0;
 	}
+	void A_SetMelee()
+	{
+		ismelee = CheckMeleeRange();
+	}
 	void A_AcolyteAttack()
 	{
 		if ( !target ) return;
 		A_FaceTarget();
 		let a = SpawnMissileXYZ(Vec3Angle(radius,angle,45.),target,"mkAcolyteBoom",false);
 		a.pitch = _PitchTo(target);
-		if ( Distance3D(target) > radius*2.4 ) a.args[0] = 1;
-		else
+		if ( !ismelee ) a.args[0] = 1;
+		else if ( CheckMeleeRange() )
 		{
-			target.DamageMobj(self,self,Random[AcolyteBoom](30,40),'AcolyteBoom');
+			target.DamageMobj(self,self,Random[AcolyteBoom](10,20),'AcolyteBoom');
 			if ( target.Mass >= LARGE_MASS || target.bDONTTHRUST ) return;
-			target.vel.xy += Vec2To(target).unit()*16;
-			target.vel.z += 6.;
+			target.vel.xy += Vec2To(target).unit()*8;
+			target.vel.z += 3.;
 		}
 	}
 	void A_AcolyteChase()
 	{
 		double newz = pos.z - BobSin(bobstate) / 2.;
-		bobstate = (bobstate + 4) & 63;
+		bobstate = (bobstate + 1) & 63;
 		newz += BobSin(bobstate) / 2.;
 		if ( target )
 		{
 			Vector3 pdiff = level.Vec3Diff(pos,target.pos);
-			if ( pdiff.z > 32 ) newz += 3.;
-			else if ( pdiff.z < -32 ) newz -= 3.;
+			if ( pdiff.z > 32 ) newz += 1.;
+			else if ( pdiff.z < -32 ) newz -= 1.;
 		}
 		SetOrigin(Vec2OffsetZ(0,0,newz),true);
-		A_VileChase();
+		if ( Random[AcolyteDecide](0,4) || A_CheckForResurrection() )
+			A_Chase(null,"Missile");
+		if ( target && (Distance3D(target) < meleethreshold) && !Random[AcolyteDecide](0,7) )
+			SetStateLabel("Melee");
 	}
 	void A_AcolyteDecide()
 	{
 		if ( !target ) return;
 		Vector3 sc = level.SphericalCoords(target.pos,pos,(target.angle,target.pitch));
-		if ( !Random[AcolyteDecide](0,3) && target.CheckSight(self) && (sc.z < 600) && (abs(sc.x) < 15) && (abs(sc.y) < 15) )
+		if ( !Random[AcolyteDecide](0,4) && target.CheckSight(self) && (sc.z < 600) && (abs(sc.x) < 15) && (abs(sc.y) < 15) )
 		{
 			double ang = AngleTo(target);
 			Vector2 dir[2];
@@ -647,9 +680,9 @@ Class mkElderAcolyte : Actor
 				ca = 0;
 				cb = 1;
 			}
-			if ( CheckMove(pos.xy+dir[ca]*speed*2) )
+			if ( CheckStrafe(dir[ca]) )
 				strafedir = sdir[ca];
-			else if ( CheckMove(pos.xy+dir[cb]*speed*2) )
+			else if ( CheckStrafe(dir[cb]) )
 				strafedir = sdir[cb];
 			if ( strafedir != 0 )
 			{
@@ -658,11 +691,25 @@ Class mkElderAcolyte : Actor
 			}
 		}
 	}
+	bool CheckStrafe( Vector2 dir )
+	{
+		dir *= speed*2;
+		Vector3 oldpos = pos;
+		bool free = true;
+		for ( int i=0; i<9; i++ )
+		{
+			if ( TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight)) ) continue;
+			free = false;
+			break;
+		}
+		SetOrigin(oldpos,false);
+		return free;
+	}
 	void A_Strafe()
 	{
 		A_FaceTarget(10);
-		Vector2 dir = RotateVector((0,strafedir),angle);
-		bool moved = TryMove(pos.xy+dir*speed*1.5,int(maxdropoffheight));
+		Vector2 dir = RotateVector((0,strafedir),angle)*speed*2;
+		bool moved = TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight));
 		if ( !moved )
 		{
 			SetStateLabel("See");
@@ -672,23 +719,39 @@ Class mkElderAcolyte : Actor
 	void A_DecideBack()
 	{
 		if ( !target ) return;
-		Vector2 dir = RotateVector((-1,0),AngleTo(target));
-		if ( CheckMove(pos.xy+dir*speed*3) )
-			SetStateLabel("MoveBack");
+		Vector2 dir = RotateVector((-1,0),AngleTo(target))*speed*3;
+		Vector3 oldpos = pos;
+		bool free = true;
+		for ( int i=0; i<9; i++ )
+		{
+			if ( TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight)) ) continue;
+			free = false;
+			break;
+		}
+		SetOrigin(oldpos,false);
+		if ( free ) SetStateLabel("MoveBack");
 	}
 	void A_TryMoveAway()
 	{
 		if ( !target ) return;
 		if ( Random[AcolyteEscape](0,1) ) return;
-		Vector2 dir = RotateVector((-1,0),AngleTo(target));
-		if ( CheckMove(pos.xy+dir*speed*3) )
-			SetStateLabel("MoveAway");
+		Vector2 dir = RotateVector((-1,0),AngleTo(target))*speed*3;
+		Vector3 oldpos = pos;
+		bool free = true;
+		for ( int i=0; i<9; i++ )
+		{
+			if ( TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight)) ) continue;
+			free = false;
+			break;
+		}
+		SetOrigin(oldpos,false);
+		if ( free ) SetStateLabel("MoveAway");
 	}
 	void A_MoveAway( bool missile = false )
 	{
 		A_FaceTarget(30);
-		Vector2 dir = RotateVector((-1,0),angle);
-		bool moved = TryMove(pos.xy+dir*speed*2.5,int(maxdropoffheight));
+		Vector2 dir = RotateVector((-1,0),angle)*speed*3;
+		bool moved = TryMove(Vec2Offset(dir.x,dir.y),int(maxdropoffheight));
 		if ( !moved )
 		{
 			if ( missile ) SetStateLabel("Missile");
@@ -702,12 +765,7 @@ Class mkElderAcolyte : Actor
 		ECOL A 2 A_Look();
 		Wait;
 	See:
-		ECOL A 2 A_VileChase();
-		ECOL A 2 A_AcolyteChase();
-		ECOL A 2 A_VileChase();
-		ECOL B 2 A_VileChase();
-		ECOL B 2 A_AcolyteChase();
-		ECOL B 2 A_VileChase();
+		ECOL AAAAAABBBBBB 1 A_AcolyteChase();
 		ECOL A 0 A_AcolyteDecide();
 		Loop;
 	Heal:
@@ -723,6 +781,7 @@ Class mkElderAcolyte : Actor
 		ECOL A 0 A_PlaySound("BishopAttack");
 		ECOL A 3 A_FaceTarget();
 		ECOL DE 4 Bright A_FaceTarget();
+		ECOL F 0 A_SetMelee();
 		ECOL FFFF 6 Bright A_AcolyteAttack();
 		ECOL ED 4 Bright;
 		ECOL A 3;
@@ -835,6 +894,16 @@ Class mkElderAcolyte : Actor
 			else return ResolveState(null);
 		}
 		Wait;
+	Death.Silent:
+		ECOL G 6;
+		ECOL H 6 Bright;
+		ECOL I 5 Bright A_NoBlocking();
+		ECOL JK 5 Bright;
+		ECOL LM 4 Bright;
+		ECOL N 4;
+		ECOL O 4 A_QueueCorpse();
+		ECOL P -1;
+		Stop;
 	}
 }
 
@@ -854,5 +923,53 @@ Class mkAcolyteAfterImage : Actor
 	Spawn:
 		ECOL # 1 A_FadeOut(0.03);
 		Wait;
+	}
+}
+
+Class mkSkeleton : Actor
+{
+	Default
+	{
+		//$Title Skeleton
+		//$Category Marisa/Monsters
+		HitObituary "%o's funny bone was tickled by a skeleton.";
+		Health 80;
+		PainChance 180;
+		Speed 10;
+		Radius 24;
+		Height 64;
+		Scale 1.2;
+		SeeSound "skelsit";
+		PainSound "skelpai";
+		DeathSound "skeldth";
+		MONSTER;
+		+NOBLOOD;
+		Tag "Skeleton";
+	}
+	states
+	{
+	Spawn:
+		SKLT R 10 A_Look();
+		Wait;
+	See:
+		SKLT AABBCCDDEEFF 2 A_Chase();
+		Loop;
+	Melee:
+		SKLT GH 4 A_FaceTarget();
+		SKLT I 4 A_PlaySound("skelatt",CHAN_AUTO);
+		SKLT J 4 A_CustomMeleeAttack(Random[Bone](2,4)*3,"swordhit","");
+		SKLT K 4 A_FaceTarget();
+		Goto See;
+	Pain:
+		SKLT L 2;
+		SKLT L 2 A_Pain;
+		Goto See;
+	Death:
+		SKLT M 4 A_Scream();
+		SKLT N 4 A_Fall();
+		SKLT O 8 A_NoBlocking();
+		SKLT P 12;
+		SKLT Q -1;
+		Stop;
 	}
 }
