@@ -4,7 +4,9 @@ H2TX* textures: Hexen 2, compiled by Ceeb
 NW*, W_*, F*, NF* textures: C.R.U.E.L. pack by Ettingrinder
 SNOW* skybox: Kothic Skyboxes pack by Kell
 TRE* sprites: Necrodome
-creepy, horror, drone, bossbttl, shoggoth, temple, violin1 tracks: Taken from Frackin' Universe (original credits unknown)
+horror, drone, shoggoth, temple, violin1 tracks: Taken from Frackin' Universe (original credits unknown)
+bossbttl: Peter Crowley - The Lord Of Chaos (Taken from Frackin' Universe, came without tags or credits, so I didn't identify this track until I got a content id match)
+creepy: Swamp Theme 1 from Eldritch (Also taken from Frackin' Universe, track was identified by Serious Cacodemon, thank you)
 dungeon6, combat7, combat8: Taken from Fantasy Soundtrack Project by AceeQ (Skyrim mod. Seems to be gone forever from the nexus, along with the author, apparently)
 GARGSMAL, GRGW_LWR fonts: NeuralStunner
 VIRL* sprites: Freedoom
