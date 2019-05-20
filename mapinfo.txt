@@ -71,7 +71,7 @@ map HRUNT "Hruntheim - Crazy Toni"
 	cluster = 1
 	par = 180
 	sky1 = "SKY1", 0
-	music = "CRYPTR"
+	music = "Praevus"
 }
 
 // 5
