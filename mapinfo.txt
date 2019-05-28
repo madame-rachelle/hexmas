@@ -61,7 +61,7 @@ map FORTRESS "Fortress of Solitude - Paar"
 	outsidefog = "FF FF FF"
 	outsidefogdensity = "32"
         skyfog = "172"
-	music = "BONESR"
+	music = "tides"
 }
 
 // 4
