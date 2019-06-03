@@ -212,6 +212,23 @@ Class mkSageNPC : Actor
 {
 	int scnt;
 
+	override void Activate( Actor activator )
+	{
+		Super.Activate(activator);
+		bSOLID = true;
+		bINCOMBAT = false;
+		bINVISIBLE = false;
+		SetStateLabel("Spawn");
+	}
+	override void Deactivate( Actor activator )
+	{
+		Super.Deactivate(activator);
+		bSOLID = false;
+		bINCOMBAT = true;	// prevents dialogue
+		bINVISIBLE = true;
+		SetStateLabel("Inactive");
+	}
+
 	Default
 	{
 		//$Title Sage NPC
@@ -250,6 +267,9 @@ Class mkSageNPC : Actor
 	Greetings:
 		SAGE B 1;
 		Goto Spawn;
+	Inactive:
+		TNT1 A -1;
+		Stop;
 	}
 }
 
@@ -340,7 +360,7 @@ Class mkHubGemAir : mkHubGem
 		Stop;
 	}
 }
-Class mkHubGemAether : mkHubGem
+/*Class mkHubGemAether : mkHubGem
 {
 	Default
 	{
@@ -356,7 +376,7 @@ Class mkHubGemAether : mkHubGem
 		EGEM E -1;
 		Stop;
 	}
-}
+}*/
 Class mkHubGemNether : mkHubGem
 {
 	Default
@@ -372,6 +392,243 @@ Class mkHubGemNether : mkHubGem
 	Spawn:
 		EGEM F -1;
 		Stop;
+	}
+}
+
+/*
+   for destruction cutscene
+   shamelessly recycled from dummied out 20 heretics content
+*/
+Class mkNetherGem : Actor
+{
+	Default
+	{
+		Radius 6;
+		Height 7;
+	}
+	States
+	{
+	Spawn:
+		EGEM Z -1;
+		Stop;
+	Raise:
+		EGEM Z 0
+		{
+			bNoGravity = true;
+			vel.z = 0.75;
+			A_PlaySound("ngem/float",CHAN_6,1.0,true);
+			tracer = Spawn("mkDispelLight",Vec3Offset(0,0,7));
+			tracer.target = self;
+		}
+		EGEM Z 3 Bright
+		{
+			vel.z *= 0.995;
+			for ( int i=0; i<16; i++ )
+			{
+				A_SpawnParticle("20 A0 10",SPF_FULLBRIGHT|SPF_RELPOS,30,FRandom[NGem](1,5),FRandom[NGem](0,360),FRandom[NGem](0,8),0,FRandom[NGem](0,12),accelz:0.1);
+				A_SpawnParticle("A0 20 A0",SPF_FULLBRIGHT|SPF_RELPOS,60,FRandom[NGem](3,6),FRandom[NGem](0,360),FRandom[NGem](0,8),0,FRandom[NGem](0,12),accelz:0.1);
+			}
+			special1++;
+			return A_JumpIf(special1>=330,"Death");
+		}
+		Wait;
+	Death:
+		TNT1 A 0
+		{
+			tracer.target = null;
+			A_StopSound(CHAN_6);
+			Spawn("mkDispelExplo",pos);
+			Spawn("mkDispelRing",pos);
+		}
+		TNT1 AAAAA 1
+		{
+			for ( int i=0; i<64; i++ )
+			{
+				A_SpawnParticle("20 A0 10",SPF_FULLBRIGHT,Random[NGem](100,150),FRandom[NGem](2,4),zoff:7,velx:FRandom[NGem](-4,4),vely:FRandom[NGem](-4,4),velz:FRandom[NGem](-4,4),accelz:0.02);
+				A_SpawnParticle("A0 20 A0",SPF_FULLBRIGHT,Random[NGem](200,300),FRandom[NGem](4,16),zoff:7,velx:FRandom[NGem](-4,4),vely:FRandom[NGem](-4,4),velz:FRandom[NGem](-4,4),accelz:0.02);
+			}
+		}
+		TNT1 AAAAA 3
+		{
+			for ( int i=0; i<64; i++ )
+			{
+				A_SpawnParticle("20 A0 10",SPF_FULLBRIGHT,Random[NGem](300,400),FRandom[NGem](2,4),zoff:7,velx:FRandom[NGem](-2,2),vely:FRandom[NGem](-2,2),velz:FRandom[NGem](-2,2),accelz:0.01);
+				A_SpawnParticle("A0 20 A0",SPF_FULLBRIGHT,Random[NGem](600,800),FRandom[NGem](4,16),zoff:7,velx:FRandom[NGem](-2,2),vely:FRandom[NGem](-2,2),velz:FRandom[NGem](-2,2),accelz:0.01);
+			}
+		}
+		Stop;
+	}
+}
+
+Class mkDispelLight : PointLightAttenuated
+{
+	int cnt;
+
+	Default
+	{
+		args 255, 32, 255, 600;
+	}
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		cnt = 300;
+	}
+	override void Tick()
+	{
+		Super.Tick();
+		if ( target ) SetOrigin(target.Vec3Offset(0,0,7),true);
+		else
+		{
+			args[3] = 1200;
+			args[0] = int(255*(cnt/300.));
+			args[1] = 0;
+			args[2] = int(255*(cnt/300.));
+			cnt--;
+			if ( cnt <= 0 ) Destroy();
+		}
+	}
+}
+
+Class mkDispelExplo : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Scale 4.0;
+		Radius 0;
+		Height 0.1;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+FORCEXYBILLBOARD;
+	}
+	States
+	{
+	Spawn:
+		XXP3 ABCDEFGHIJKLMNOPQRSTUVWXYZ[\] 4 Bright;
+		Stop;
+	}
+}
+
+Class mkDispelRing : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Scale 6.0;
+		Radius 0;
+		Height 0.1;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+FORCEXYBILLBOARD;
+	}
+	States
+	{
+	Spawn:
+		XRG5 ABCDEFGHIJKLMNOPQRSTUVWX 5 Bright;
+		Stop;
+	}
+}
+
+Class mkDispelSpot : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Scale 1.5;
+		Alpha 0.0;
+		Radius 0;
+		Height 0.1;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+FORCEXYBILLBOARD;
+	}
+	States
+	{
+	Spawn:
+		XPPT A -1 Bright;
+		Stop;
+	}
+}
+
+Class mkDispelBeam : Actor
+{
+	Default
+	{
+		RenderStyle "Add";
+		Alpha 0.0;
+		Radius 0;
+		Height 0.1;
+		RenderRadius 800;
+		+NOBLOCKMAP;
+		+NOGRAVITY;
+		+DONTSPLASH;
+		+INTERPOLATEANGLES;
+	}
+	override void Activate( Actor activator )
+	{
+		// find target
+		target = ActorIterator.Create(args[0]).Next();
+		if ( !target )
+		{
+			Destroy();
+			return;
+		}
+		master = Spawn("mkDispelSpot",pos);
+		tracer = Spawn("mkDispelSpot",target.Vec3Offset(0,0,4));
+		tracer.scale *= 0.5;
+		A_FaceTarget(0,0,0,90);
+		SetStateLabel("See");
+	}
+	override void Deactivate( Actor activator )
+	{
+		SetStateLabel("Death");
+	}
+	void A_AdjustBeam()
+	{
+		if ( !target )
+		{
+			SetStateLabel("Death");
+			return;
+		}
+		master.SetOrigin(pos,true);
+		tracer.SetOrigin(target.Vec3Offset(0,0,4),true);
+		if ( alpha < 0.999 ) alpha = min(alpha+0.01,0.999);
+		master.alpha = alpha;
+		tracer.alpha = alpha*0.15;
+		A_SetScale(3.,Distance3D(target));
+		A_FaceTarget(0,0,0,90,0,4);
+		special1++;
+		if ( !(special1%3) )
+		{
+			for ( int i=0; i<16; i++ )
+				A_SpawnParticle("A0 20 A0",SPF_FULLBRIGHT|SPF_RELPOS,60,FRandom[NGem](3,6),FRandom[NGem](0,360),FRandom[NGem](0,8),0,FRandom[NGem](0,12),accelz:0.1);
+		}
+	}
+	States
+	{
+	Spawn:
+		TNT1 A -1;
+		Stop;
+	See:
+		PRKM A 1 Bright A_AdjustBeam();
+		Wait;
+	Death:
+		PRKM A 1
+		{
+			alpha -= 0.02;
+			master.alpha = alpha;
+			tracer.alpha = alpha*0.15;
+			if ( alpha <= 0 )
+			{
+				tracer.Destroy();
+				master.Destroy();
+				Destroy();
+			}
+		}
+		Wait;
 	}
 }
 

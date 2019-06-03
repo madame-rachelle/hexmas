@@ -542,6 +542,20 @@ Class mkUtility abstract
 			a.SetZ(newz);
 		}
 	}
+
+	static play void SetLineFullbright( int tag )
+	{
+		let l = LineIdIterator.Create(tag);
+		int i;
+		while ( (i = l.Next()) != -1 )
+		{
+			level.Lines[i].sidedef[0].light = 255;
+			level.Lines[i].sidedef[0].flags |= Side.WALLF_ABSLIGHTING;
+			if ( !level.Lines[i].sidedef[1] ) continue;
+			level.Lines[i].sidedef[1].light = 255;
+			level.Lines[i].sidedef[1].flags |= Side.WALLF_ABSLIGHTING;
+		}
+	}
 }
 
 Class mkMovingFloorTrap : Actor abstract

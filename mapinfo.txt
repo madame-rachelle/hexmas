@@ -137,7 +137,7 @@ DoomEdNums
 	6445 = "mkHubGemWater"
 	6446 = "mkHubGemEarth"
 	6447 = "mkHubGemAir"
-	6448 = "mkHubGemAether"
+	//6448 = "mkHubGemAether"
 	6449 = "mkHubGemNether"
 }
 

@@ -1231,6 +1231,7 @@ Class mkWizBeam : Actor
 		RenderStyle "Add";
 		Radius 0;
 		Height 0.1;
+		RenderRadius 8000;
 		+NOBLOCKMAP;
 		+NOGRAVITY;
 		+DONTSPLASH;
