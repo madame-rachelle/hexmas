@@ -1,8 +1,8 @@
 GameInfo
 {
 	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler", "mkInventoryResetHandler", "mkEldrichHandler", "mkHubGemDisplayHandler"
-	finalemusic = "music/merryend.mp3"
-	titlemusic = "music/xmasmenu.mp3"
+	finalemusic = "music/merryend.ogg"
+	titlemusic = "music/xmasmenu.ogg"
 }
 
 clearepisodes
