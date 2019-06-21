@@ -385,7 +385,7 @@ Class mkHubGemNether : mkHubGem
 		//$Category Marisa/Key Items
 		Inventory.Icon "GEMICN5";
 		Tag "Nether Gem";
-		mkHubGem.GemMessage "There's something off about this gem...";
+		mkHubGem.GemMessage "Something feels wrong about it...";
 	}
 	States
 	{

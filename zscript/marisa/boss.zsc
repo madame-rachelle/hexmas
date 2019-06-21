@@ -1231,7 +1231,7 @@ Class mkWizBeam : Actor
 		RenderStyle "Add";
 		Radius 0;
 		Height 0.1;
-		RenderRadius 8000;
+		RenderRadius 1000;
 		+NOBLOCKMAP;
 		+NOGRAVITY;
 		+DONTSPLASH;
@@ -1242,7 +1242,7 @@ Class mkWizBeam : Actor
 		if ( !t ) t = new("mkWizBeamTracer");
 		t.ignoreme = target;
 		t.hitlist.Clear();
-		t.Trace(pos,CurSector,(cos(angle)*cos(pitch-90),sin(angle)*cos(pitch-90),-sin(pitch-90)),8000,0);
+		t.Trace(pos,CurSector,(cos(angle)*cos(pitch-90),sin(angle)*cos(pitch-90),-sin(pitch-90)),2000,0);
 		for ( int i=0; i<t.hitlist.Size(); i++ )
 			t.hitlist[i].DamageMobj(self,target,10,'Railgun',DMG_THRUSTLESS);
 		A_SetScale(2.,t.Results.Distance);
