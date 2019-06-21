@@ -22,6 +22,18 @@ Model "mkWizBeam"
 	FrameIndex PRKM A 0 0
 }
 
+Model "mkDispelBeam"
+{
+	Path "models"
+	Model 0 "wizbeam.obj"
+	Skin 0 "DISPBEAM"
+	USEACTORPITCH
+	USEACTORROLL
+	DONTCULLBACKFACES
+	Scale 1 1 0.6
+	FrameIndex PRKM A 0 0
+}
+
 Model "mkMovingFloorTrapS"
 {
 	Path "models"

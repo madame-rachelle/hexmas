@@ -183,3 +183,9 @@ hellsmith/step4		hs_step4
 $random hellsmith/step { hellsmith/step1 hellsmith/step2 hellsmith/step3 hellsmith/step4 }
 hellsmith/swing		THROW9
 hellsmith/skid		skid
+
+ngem/raisepillar	explo5
+ngem/float		phum6b
+ngem/zap		sim3c
+$pitchshift ngem/float 0
+$pitchshift ngem/zap 0

@@ -42,6 +42,16 @@ brightmap texture GSPAWN10
 	map GSPAWB10
 }
 
+brightmap texture DISPFAC2
+{
+	map DISPFC2B
+}
+
+brightmap texture DISPFAC3
+{
+	map DISPFC3B
+}
+
 hardwareshader texture "ELDERFL1"
 {
 	Shader "shaders/glsl/bwarp.fp" 330

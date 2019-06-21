@@ -1,6 +1,8 @@
 GameInfo
 {
 	AddEventHandlers = "mkGradingHandler", "mkBossHealthbarHandler", "mkInventoryResetHandler", "mkEldrichHandler", "mkHubGemDisplayHandler"
+	finalemusic = "music/merryend.ogg"
+	titlemusic = "music/xmasmenu.ogg"
 }
 
 clearepisodes
@@ -16,8 +18,8 @@ cluster 1
 	pic = "interpic"
 	exittext = "Stepping into the portal, you find yourself\
 back in town. Looks like everything's ready\
-for the Winter Solstice celebrations. The\
-streets are lit up in a multitude of colors,\
+for the Winter Solstice celebrations. Various\
+buildings are lit up in a multitude of colors,\
 and the townsfolk roam the streets, merrily\
 spreading the holiday spirit around.\
 \
@@ -61,7 +63,7 @@ map FORTRESS "Fortress of Solitude - Paar"
 	outsidefog = "FF FF FF"
 	outsidefogdensity = "32"
         skyfog = "172"
-	music = "BONESR"
+	music = "tides"
 }
 
 // 4
@@ -71,7 +73,7 @@ map HRUNT "Hruntheim - Crazy Toni"
 	cluster = 1
 	par = 180
 	sky1 = "SKY1", 0
-	music = "CRYPTR"
+	music = "Praevus"
 }
 
 // 5
@@ -137,7 +139,7 @@ DoomEdNums
 	6445 = "mkHubGemWater"
 	6446 = "mkHubGemEarth"
 	6447 = "mkHubGemAir"
-	6448 = "mkHubGemAether"
+	//6448 = "mkHubGemAether"
 	6449 = "mkHubGemNether"
 }
 
