@@ -425,7 +425,7 @@ Class mkSmoothLookTo : Thinker
 		if ( !a || !b ) return 0;
 		Vector3 otherpos = level.Vec3Diff(a.Vec3Offset(0,0,a.height),b.Vec3Offset(0,0,b.height));
 		double dist = otherpos.length();
-		if ( dist > 0 ) return asin(otherpos.z/dist);
+		if ( dist > 0 ) return -asin(otherpos.z/dist);
 		return 0;
 	}
 
