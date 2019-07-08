@@ -674,3 +674,131 @@ Class mkMovingFloorTrapS : mkMovingFloorTrap
 	}
 }
 
+Class mkFindUseTracer : LineTracer
+{
+	Actor skipme;
+
+	override ETraceStatus TraceCallback()
+	{
+		if ( Results.HitType == TRACE_HitActor )
+		{
+			if ( (Results.HitActor != skipme) && Results.HitActor.bUSESPECIAL ) return TRACE_Stop;
+			return TRACE_Skip;
+		}
+		else if ( Results.HitType == TRACE_HitWall )
+		{
+			if ( Results.HitLine.Activation&SPAC_USE ) return TRACE_Stop;
+			else if ( Results.HitLine.flags&(Line.ML_BLOCKING|Line.ML_BLOCKEVERYTHING|Line.ML_BLOCKUSE) ) return TRACE_Abort;
+			return TRACE_Skip;
+		}
+		return TRACE_Abort;
+	}
+}
+
+Class mkUsableMessage : HUDMessageBase
+{
+	bool active;
+	String ustr;
+
+	override void Draw( int bottom, int visibility )
+	{
+		if ( !active ) return;
+		Vector2 hscale = StatusBar.GetHudScale();
+		Vector2 vsize = (Screen.GetWidth()/hscale.x,Screen.GetHeight()/hscale.y);
+		double xpos = (vsize.x-smallfont.StringWidth(ustr))*0.5;
+		double ypos = (bottom/hscale.y)-smallfont.GetHeight()*3;
+		Screen.DrawText(smallfont,Font.CR_WHITE,xpos,ypos,ustr,DTA_VirtualWidthF,vsize.x,DTA_VirtualHeightF,vsize.y,DTA_KeepRatio,true);
+	}
+}
+
+// class for highlighting the usability of certain non-obvious lines in my map
+Class mkHighlightUsables : EventHandler
+{
+	bool LookUsable[MAXPLAYERS];
+	String UsableName[MAXPLAYERS];
+	transient mkFindUseTracer t;
+	ui mkUsableMessage msg;
+
+	override void WorldTick()
+	{
+		if ( !t ) t = new("mkFindUseTracer");
+		for ( int i=0; i<MAXPLAYERS; i++ )
+		{
+			if ( !playeringame[i] ) continue;
+			PlayerInfo p = players[i];
+			t.skipme = p.mo;
+			Vector3 tracedir = (cos(p.mo.angle),sin(p.mo.angle),0);
+			t.Trace(p.mo.Vec2OffsetZ(0,0,p.viewz),p.mo.CurSector,tracedir,p.mo.userange,0);
+			LookUsable[i] = (t.Results.HitType == TRACE_HitWall);
+			if ( t.Results.HitType != TRACE_HitWall )
+			{
+				LookUsable[i] = false;
+				continue;
+			}
+			// guess what this is
+			Line l = t.Results.HitLine;
+			if ( (l.special != 80) && (l.special != 226) )
+			{
+				LookUsable[i] = false;
+				continue;
+			}
+			if ( l.args[0] == -Int('SomethingInside') ) UsableName[i] = "Check Casket";
+			else if ( l.args[0] == -Int('TimTheToolmanTaylor') ) UsableName[i] = "???";
+			else if ( l.args[0] == -Int('Mirror') ) UsableName[i] = "Check Mirror";
+			else if ( l.args[0] == -Int('Closet') ) UsableName[i] = "Check Closet";
+			else if ( l.args[0] == -Int('Bookworm') )
+			{
+				switch( l.args[2] )
+				{
+				case 1:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+				case 7:
+				case 8:
+				case 9:
+				case 10:
+				case 11:
+					UsableName[i] = "Check Bookshelf";
+					break;
+				case 2:
+				case 12:
+				case 13:
+					UsableName[i] = "Check Book";
+					break;
+				case 14:
+				case 15:
+				case 17:
+					UsableName[i] = "Read Diary";
+					break;
+				case 16:
+				case 18:
+				case 20:
+					UsableName[i] = "Read Engraving";
+					break;
+				case 19:
+					UsableName[i] = "Read Note";
+					break;
+				}
+			}
+			else LookUsable[i] = false;
+		}
+	}
+
+	override void PostUiTick()
+	{
+		if ( !msg )
+		{
+			msg = new("mkUsableMessage");
+			StatusBar.AttachMessage(msg);
+		}
+		if ( !LookUsable[consoleplayer] || (players[consoleplayer].mo != players[consoleplayer].camera) )
+		{
+			msg.active = false;
+			return;
+		}
+		msg.active = true;
+		msg.ustr = UsableName[consoleplayer];
+	}
+}

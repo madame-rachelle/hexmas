@@ -90,6 +90,7 @@ map MARISA "Viridescent - Marisa Kirisame"
 	strictmonsteractivation
 	checkswitchrange
 	grinding_polyobj
+	eventhandlers = "mkHighlightUsables"
 }
 
 SpawnNums
