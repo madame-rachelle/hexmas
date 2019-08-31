@@ -361,6 +361,9 @@ Class mkMinotaur : Actor
 	See:
 		MINO ABCD 4
 		{
+			// cheap fix
+			if ( floorpic == TexMan.CheckForTexture("X_001",TexMan.Type_Flat) )
+				Teleport((-4096,2816,128),270,TELF_SOURCEFOG|TELF_DESTFOG);
 			if ( brother && brother.bKILLED )
 			{
 				A_SetTics(3);
@@ -895,6 +898,9 @@ Class mkMinotaurEx : Actor
 		MIN2 A 0 { scnt = 2; }
 		MIN2 AABBCCDD 3
 		{
+			// cheap fix
+			if ( floorpic == TexMan.CheckForTexture("X_001",TexMan.Type_Flat) )
+				Teleport((-4096,2816,128),270,TELF_SOURCEFOG|TELF_DESTFOG);
 			scnt++;
 			if ( wasinair ) return ResolveState("Fall");
 			if ( !(scnt%4) )

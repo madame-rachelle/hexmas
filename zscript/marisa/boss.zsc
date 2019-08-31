@@ -1244,7 +1244,7 @@ Class mkWizBeam : Actor
 		t.hitlist.Clear();
 		t.Trace(pos,CurSector,(cos(angle)*cos(pitch-90),sin(angle)*cos(pitch-90),-sin(pitch-90)),2000,0);
 		for ( int i=0; i<t.hitlist.Size(); i++ )
-			t.hitlist[i].DamageMobj(self,target,10,'Railgun',DMG_THRUSTLESS);
+			t.hitlist[i].DamageMobj(self,target,3,'Railgun',DMG_THRUSTLESS);
 		A_SetScale(2.,t.Results.Distance);
 		if ( level.Vec3Diff(t.Results.HitPos,lasthit).length() > 12 )
 		{
@@ -1415,8 +1415,9 @@ Class mkEldrichHandler : EventHandler
 		else if ( (e.DamageSource is 'mkElderWizard') || (e.DamageSource is 'mkElderAcolyte') )
 		{
 			mkInsanityCounter cnt = mkInsanityCounter(e.Thing.FindInventory("mkInsanityCounter"));
-			if ( !cnt ) e.Thing.GiveInventory("mkInsanityCounter",e.Damage*10*Random[Insane](3,5));
+			if ( !cnt ) e.Thing.GiveInventory("mkInsanityCounter",e.Damage*15*Random[Insane](3,5));
 			else if ( cnt.special1 ) cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*3*Random[Insane](3,5));
+			else if ( cnt.Amount > cnt.MaxAmount/2 ) cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*5*Random[Insane](3,5));
 			else cnt.Amount = min(cnt.MaxAmount,cnt.Amount+e.Damage*10*Random[Insane](3,5));
 		}
 	}
@@ -1430,9 +1431,9 @@ Class mkEldrichHandler : EventHandler
 		}
 	}
 
+	// "pre-cache" shader
 	override void WorldLoaded( WorldEvent e )
 	{
-		// "pre-cache" shader
 		Shader.SetEnabled(players[consoleplayer],"insanity1",true);
 		Shader.SetEnabled(players[consoleplayer],"insanity2",true);
 		Shader.SetEnabled(players[consoleplayer],"insanity1",false);
@@ -1448,15 +1449,15 @@ Class mkEldrichHandler : EventHandler
 			Shader.SetEnabled(players[consoleplayer],"insanity2",true);
 			if ( cnt.special1 )
 			{
-				Shader.SetUniform1f(players[consoleplayer],"insanity1","dfact",clamp(cnt.amount*0.00075-0.3,0.0,1.0));
-				Shader.SetUniform1f(players[consoleplayer],"insanity2","dfact",clamp(cnt.amount*0.00075-0.3,0.0,1.0));
-				Shader.SetUniform1f(players[consoleplayer],"insanity2","tun",clamp(cnt.amount*0.001-1.0,0.0,0.8));
+				Shader.SetUniform1f(players[consoleplayer],"insanity1","dfact",clamp(cnt.amount*0.00075-0.3,0.0,0.6));
+				Shader.SetUniform1f(players[consoleplayer],"insanity2","dfact",clamp(cnt.amount*0.00075-0.3,0.0,0.8));
+				Shader.SetUniform1f(players[consoleplayer],"insanity2","tun",clamp(cnt.amount*0.001-1.0,0.0,0.7));
 			}
 			else
 			{
-				Shader.SetUniform1f(players[consoleplayer],"insanity1","dfact",clamp(cnt.amount*0.00075-0.9,0.0,1.0));
-				Shader.SetUniform1f(players[consoleplayer],"insanity2","dfact",clamp(cnt.amount*0.00075-0.9,0.0,1.0));
-				Shader.SetUniform1f(players[consoleplayer],"insanity2","tun",clamp(cnt.amount*0.0025-4.0,0.0,0.8));
+				Shader.SetUniform1f(players[consoleplayer],"insanity1","dfact",clamp(cnt.amount*0.00075-0.9,0.0,0.6));
+				Shader.SetUniform1f(players[consoleplayer],"insanity2","dfact",clamp(cnt.amount*0.00075-0.9,0.0,0.8));
+				Shader.SetUniform1f(players[consoleplayer],"insanity2","tun",clamp(cnt.amount*0.0025-4.0,0.0,0.7));
 			}
 			Shader.SetUniform1f(players[consoleplayer],"insanity1","timer",(gametic+e.Fractic)/35.);
 			Shader.SetUniform1f(players[consoleplayer],"insanity2","timer",(gametic+e.Fractic)/35.);
@@ -1491,13 +1492,13 @@ Class mkInsanityCounter : Inventory
 		}
 		if ( special1 )
 		{
-			owner.A_SetAngle(owner.angle+sin(level.time*1.4325)*0.000234346*min(amount,1000),SPF_INTERPOLATE);
-			owner.A_SetPitch(owner.pitch+sin(level.time*1.6346)*0.000243457*min(amount,1000),SPF_INTERPOLATE);
+			owner.A_SetAngle(owner.angle+sin(level.time*1.4325)*0.000134346*min(amount,1000),SPF_INTERPOLATE);
+			owner.A_SetPitch(owner.pitch+sin(level.time*1.6346)*0.000143457*min(amount,1000),SPF_INTERPOLATE);
 		}
 		if ( !(level.time%4) && !Random[Insane](0,3) )
 		{
-			owner.A_SetAngle(owner.angle+cos(level.time*8.4325)*0.000434346*amount,SPF_INTERPOLATE);
-			owner.A_SetPitch(owner.pitch+cos(level.time*8.6346)*0.000443457*amount,SPF_INTERPOLATE);
+			owner.A_SetAngle(owner.angle+cos(level.time*8.4325)*0.000834346*amount,SPF_INTERPOLATE);
+			owner.A_SetPitch(owner.pitch+cos(level.time*8.6346)*0.000843457*amount,SPF_INTERPOLATE);
 			if ( special1 && !Random[Insane](0,2) && (Random[Insane](0,amount/10) > 20) )
 				owner.DamageMobj(null,null,int(amount*0.002*FRandom[Insane](0.2,1.2)),'Eldrich',DMG_THRUSTLESS|DMG_NO_PAIN);
 		}

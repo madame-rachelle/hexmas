@@ -91,6 +91,9 @@ map MARISA "Viridescent - Marisa Kirisame"
 	checkswitchrange
 	grinding_polyobj
 	eventhandlers = "mkHighlightUsables"
+	// should prevent stutter first time one takes sanity damage
+	precachetextures = "emeter_b", "emeter_i", "emeter_m", "fluidtex", "warptex"
+	precachesounds = "insanity/layer1", "insanity/layer2", "insanity/layer3"
 }
 
 SpawnNums
